@@ -1,35 +1,40 @@
 import ky from "ky";
-import { USERNAME, PASSWORD } from "../constants/loginCredentials.js";
-import { encode } from "base-64";
 import { getToken } from "./token.js";
-
-const URL = 'https://wise-tt.com/WTTWebRestAPI/ws/rest/'
+import { setSchoolInfo, setServerUrl } from "../store/schoolInfo.js";
+import { URL } from '../constants/http.js'
 
 function handleError(error) {
   console.log(error)
+
+  throw new Error(error)
 }
 
-export async function fetchToken() {
-  let json = await ky.get(URL + 'login', {
-    headers: new Headers ({
-      'Authorization': 'Basic ' + encode(`${USERNAME}:${PASSWORD}`), 
-      'Content-Type': 'application/json'
-  })}).json().catch(handleError)
-
-  return json.token
-}
-
-export async function getSchool(schoolCode) {
-  schoolCode = schoolCode.toLowerCase()
+async function fetchWithToken(url) {
   const token = await getToken()
-  console.log(token)
 
-  let json = await ky.get('https://www.wise-tt.com/WTTWebRestAPI/ws/rest/schoolCode?' + `schoolCode=${schoolCode}&language=slo`, {
+  const json = await ky.get(url, {
     headers: new Headers ({
       'Authorization': `Bearer ${token}`, 
       'Content-Type': 'application/json'
   })}).json().catch(handleError)
 
-  console.log(json)
   return json
+}
+
+async function getSchoolUrl(schoolCode) {
+  let json = await fetchWithToken(URL + `url?schoolCode=${schoolCode}&language=slo`)
+  return json.server.replace('http://', 'https://') // FUNNY WISE
+}
+
+export async function getSchoolInfo(schoolCode) {
+  schoolCode = schoolCode.toLowerCase()
+
+  const serverURL = await getSchoolUrl(schoolCode)
+  setServerUrl(serverURL)
+
+  let schoolInfo = await fetchWithToken(serverURL + `schoolCode?schoolCode=${schoolCode}&language=slo`)
+  await setSchoolInfo(schoolInfo)
+  console.log(schoolInfo)
+
+  return schoolInfo
 }

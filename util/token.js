@@ -1,7 +1,19 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { fetchToken } from './http';
+import { USERNAME, PASSWORD } from "../constants/loginCredentials.js";
+import { encode } from "base-64";
+import { URL } from '../constants/http.js'
 
 const TOKEN_NAME = 'token'
+
+async function fetchToken() {
+  let json = await ky.get(URL + 'login', {
+    headers: new Headers ({
+      'Authorization': 'Basic ' + encode(`${USERNAME}:${PASSWORD}`), 
+      'Content-Type': 'application/json'
+  })}).json().catch(handleError)
+
+  return json.token
+}
 
 export async function storeToken(token) {
   try {

@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 async function setKey(key, value) {
   try {
@@ -20,12 +21,21 @@ async function getKey(key) {
   return null
 }
 
-export async function setSchoolInfo() {
-  return await getKey('schoolInfo')
+export async function getSchoolInfo() {
+  const jsonString = await getKey('schoolInfo')
+  return JSON.parse(jsonString)
 }
 
-export async function getSchoolInfo(value) {
-  await setKey('schoolInfo', value)
+export async function setSchoolInfo(value) {
+  await setKey('schoolInfo', value.toString())
+}
+
+export async function getServerUrl() {
+  return await getKey('serverUrl')
+}
+
+export async function setServerUrl(value) {
+  await setKey('serverUrl', value)
 }
 
 /* schoolInfo = { // example
