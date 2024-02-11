@@ -11,13 +11,17 @@ function SchoolCodeInputScreen() {
     setCode(code)
   }
 
+  async function onConfirm() {
+    console.log(code)
+  }
+
   return (
     <View style={style.container}>
       <Title>Please write your school code</Title>
       <StyledTextInput label='School code' textInputOptions={{
         placeholder: 'FERI', autoCapitalize: 'none', autoComplete: 'off', autoCorrect: false, onChangeText: onCodeChange, value: code
         }}/>
-      <StyledButton title="OK" />
+      <StyledButton title="OK" onPress={onConfirm}/>
     </View>
   )
 }
