@@ -1,11 +1,11 @@
-import { StyleSheet, Text, View } from "react-native"
+import { Alert, StyleSheet, Text, View } from "react-native"
 import StyledTextInput from "../../components/ui/StyledTextInput"
 import StyledButton from "../../components/ui/StyledButton"
 import Title from "../../components/ui/Title"
 import { useState } from "react"
 import { getSchoolInfo } from "../../util/http"
 
-function SchoolCodeInputScreen() {
+function SchoolCodeInputScreen({navigation}) {
   const [code, setCode] = useState('')
 
   function onCodeChange(code) {
@@ -13,7 +13,12 @@ function SchoolCodeInputScreen() {
   }
 
   async function onConfirm() {
-    getSchoolInfo(code)
+    try {
+      const schoolInfo = await getSchoolInfo(code)
+      navigation.navigate('SelectGroups', { schoolInfo: schoolInfo })
+    } catch (error) {
+      Alert.alert('An error ocurred', error.message)
+    }
   }
 
   return (
