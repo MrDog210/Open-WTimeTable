@@ -3,6 +3,7 @@ import StyledTextInput from "../../components/ui/StyledTextInput"
 import StyledButton from "../../components/ui/StyledButton"
 import Title from "../../components/ui/Title"
 import { useState } from "react"
+import { fetchToken, getSchool } from "../../util/http"
 
 function SchoolCodeInputScreen() {
   const [code, setCode] = useState('')
@@ -13,6 +14,7 @@ function SchoolCodeInputScreen() {
 
   async function onConfirm() {
     console.log(code)
+    getSchool(code)
   }
 
   return (
