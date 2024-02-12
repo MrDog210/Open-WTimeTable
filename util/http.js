@@ -77,10 +77,18 @@ export async function fetchNotifications() {
   return json
 }
 
-export async function fetchTimetable() {
+export async function fetchLecturesForGroups(schoolCode, groups) { // groups is array { id, name }
   const url = await getServerUrl()
 
-  const json = await fetchWithToken(url + `scheduleByGroups?schoolCode=wtt_um_feri&dateFrom=2023-09-01&dateTo=2024-02-29&language=slo&groupsId=87_231_640`)
+  let allGroupsId = ''
+  
+  groups.forEach(group => {
+    allGroupsId += group.id.toString() + '_'
+  });
+  allGroupsId = allGroupsId.slice(0, -1);
+
+  // TODO: DATUMI
+  const json = await fetchWithToken(url + `scheduleByGroups?schoolCode=${schoolCode}&dateFrom=2023-09-01&dateTo=2024-02-29&language=slo&groupsId=${allGroupsId}`)
   console.log(json)
   console.log(JSON.stringify(json, null, '\t'));
 

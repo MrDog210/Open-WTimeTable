@@ -5,6 +5,7 @@ import Title from "../../components/ui/Title"
 import { useState } from "react"
 import { getSchoolInfo } from "../../util/http"
 import Spinner from 'react-native-loading-spinner-overlay';
+import { getAllGroups, insertCourse, insertGroup } from "../../util/database"
 
 function SchoolCodeInputScreen({navigation}) {
   const [code, setCode] = useState('')
@@ -25,6 +26,11 @@ function SchoolCodeInputScreen({navigation}) {
     setIsFetchingData(false)
   }
 
+  function sraje() {
+    insertGroup(0, 'To je ime coursa')
+    getAllGroups()
+  }
+
   return (
     <View style={style.container}>
       <Spinner visible={isFetchingData} />
@@ -33,6 +39,7 @@ function SchoolCodeInputScreen({navigation}) {
         placeholder: 'FERI', autoCapitalize: 'none', autoComplete: 'off', autoCorrect: false, onChangeText: onCodeChange, value: code
         }}/>
       <StyledButton title="OK" onPress={onConfirm}/>
+      <StyledButton title='testiraj' onPress={sraje} />
     </View>
   )
 }

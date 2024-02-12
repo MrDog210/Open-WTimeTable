@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react"
 import { View, Text } from "react-native"
-import { fetchGroupsForBranch, fetchNotifications, fetchTimetable } from "../../util/http"
+import { fetchGroupsForBranch, fetchLecturesForGroups, fetchNotifications, fetchTimetable } from "../../util/http"
 import StyledButton from "../../components/ui/StyledButton"
 import { getToken } from "../../util/token"
 import { getServerUrl } from "../../store/schoolInfo"
+import { getAllUniqueGroups } from "../../util/groupUtil"
 
 function GroupSelectScreen({route}) {
   const { schoolInfo, chosenProgramm, chosenYear, branchId } = route.params
@@ -15,7 +16,7 @@ function GroupSelectScreen({route}) {
         setIsFetchingData(true)
         //await fetchGroupsForBranch(schoolInfo.schoolCode, branchId)
         //await fetchNotifications()
-        await fetchTimetable()
+        //await fetchTimetable()
       } catch (error) {
         Alert.alert('An error ocurred', error.message)
       }
@@ -25,8 +26,11 @@ function GroupSelectScreen({route}) {
   }, [])
 
   async function sraje() {
-    console.log(await getToken())
-    console.log(await getServerUrl())
+    /* console.log(await getToken())
+    console.log(await getServerUrl()) */
+    const groups = getAllUniqueGroups(await fetchGroupsForBranch(schoolInfo.schoolCode, branchId))
+    fetchLecturesForGroups(schoolInfo.schoolCode, groups)
+    console.log(groups)
   }
 
   return (
