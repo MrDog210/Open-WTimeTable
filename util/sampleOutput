@@ -1,0 +1,178 @@
+
+ALL GROUPS FOR BRANCH // RIT UN 2 letnik
+[
+  {
+    "id": "87",
+    "name": "RIT 2 UN",
+    "childGroups": [
+      {
+        "id": 231,
+        "name": "RIT 2 UN RV 1"
+      },
+      {
+        "id": 232,
+        "name": "RIT 2 UN RV 2"
+      },
+      {
+        "id": 233,
+        "name": "RIT 2 UN RV 3"
+      },
+      {
+        "id": 234,
+        "name": "RIT 2 UN RV 4"
+      },
+      {
+        "id": 235,
+        "name": "RIT 2 UN RV 5"
+      },
+      {
+        "id": 596,
+        "name": "RIT 2 UN RV 6"
+      },
+      {
+        "id": 617,
+        "name": "RIT 2 UN RV 7"
+      },
+      {
+        "id": 626,
+        "name": "RIT 2 UN RV 8"
+      },
+      {
+        "id": 640,
+        "name": "RIT 2 UN 1. sk."
+      },
+      {
+        "id": 641,
+        "name": "RIT 2 UN 2. sk."
+      }
+    ]
+  },
+  {
+    "id": "231",
+    "name": "RIT 2 UN RV 1",
+    "childGroups": []
+  },
+  {
+    "id": "232",
+    "name": "RIT 2 UN RV 2",
+    "childGroups": []
+  },
+  {
+    "id": "233",
+    "name": "RIT 2 UN RV 3",
+    "childGroups": []
+  },
+  {
+    "id": "234",
+    "name": "RIT 2 UN RV 4",
+    "childGroups": []
+  },
+  {
+    "id": "235",
+    "name": "RIT 2 UN RV 5",
+    "childGroups": []
+  },
+  {
+    "id": "574",
+    "name": "RIT 2 UN Erasmus",
+    "childGroups": []
+  },
+  {
+    "id": "596",
+    "name": "RIT 2 UN RV 6",
+    "childGroups": []
+  },
+  {
+    "id": "617",
+    "name": "RIT 2 UN RV 7",
+    "childGroups": []
+  },
+  {
+    "id": "626",
+    "name": "RIT 2 UN RV 8",
+    "childGroups": []
+  },
+  {
+    "id": "640",
+    "name": "RIT 2 UN 1. sk.",
+    "childGroups": []
+  },
+  {
+    "id": "641",
+    "name": "RIT 2 UN 2. sk.",
+    "childGroups": []
+  }
+]
+
+[ // ELEKTROTEHNIKA
+  {
+    "id": "37",
+    "name": "E 2 UN avt.",
+    "childGroups": [
+      {
+        "id": 343,
+        "name": "E 2 UN avt. LV 1. sk."
+      },
+      {
+        "id": 344,
+        "name": "E 2 UN avt. LV 2. sk"
+      }
+    ]
+  },
+  {
+    "id": "343",
+    "name": "E 2 UN avt. LV 1. sk.",
+    "childGroups": []
+  },
+  {
+    "id": "344",
+    "name": "E 2 UN avt. LV 2. sk",
+    "childGroups": []
+  },
+  {
+    "id": "573",
+    "name": "E 2 UN avt. Erasmus",
+    "childGroups": []
+  }
+]
+
+
+
+{
+  "id": "S175",
+  "start_time": "2023-12-15T10:00:00",
+  "end_time": "2023-12-15T12:00:00",
+  "courseId": "1381",
+  "course": "LINEARNA ALGEBRA",
+  "eventType": "",
+  "note": "",
+  "executionTypeId": "3",
+  "executionType": "SV",
+  "branches": [
+          {
+                  "id": 59,
+                  "name": "BU20-R"
+          }
+  ],
+  "rooms": [
+          {
+                  "id": 17,
+                  "name": "A-301"
+          }
+  ],
+  "groups": [
+          {
+                  "id": 640,
+                  "name": "RIT 2 UN 1. sk."
+          }
+  ],
+  "lecturers": [
+          {
+                  "id": 479,
+                  "name": "GORDANA RADIĆ"
+          }
+  ],
+  "showLink": "",
+  "color": "",
+  "colorText": ""
+},

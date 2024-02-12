@@ -61,7 +61,28 @@ export async function fetchGroupsForBranch(schoolCode, branchId) {
 
   const json = await fetchWithToken(url + `groupAllForBranch?schoolCode=${schoolCode}&language=slo&branchId=${branchId}`)
   console.log(json)
-  console.dir(json, { depth: null })
+  //console.dir(json, { depth: null })
+  console.log(JSON.stringify(json, null, '\t'));
+
+  return json
+}
+
+export async function fetchNotifications() {
+  const url = await getServerUrl()
+
+  const json = await fetchWithToken(url + `notificationByGroups?schoolCode=wtt_um_feri&language=slo&groupsId=87_231_640`)
+  console.log(json)
+  console.log(JSON.stringify(json, null, '\t'));
+
+  return json
+}
+
+export async function fetchTimetable() {
+  const url = await getServerUrl()
+
+  const json = await fetchWithToken(url + `scheduleByGroups?schoolCode=wtt_um_feri&dateFrom=2023-09-01&dateTo=2024-02-29&language=slo&groupsId=87_231_640`)
+  console.log(json)
+  console.log(JSON.stringify(json, null, '\t'));
 
   return json
 }
