@@ -59,14 +59,53 @@ export function insertCourse(id, course) {
   })
 }
 
+export function insertLecturesHasGroups(lecturesId, groupsId) {
+  database.transaction((tx) => {
+    tx.executeSql('INSERT INTO lectures_has_groups (lectures_id, groups_id) VALUES (?,?);', [lecturesId, groupsId], () => {}, handleError)
+  })
+}
+
+export function insertLecturesHasLecturers(lecturesId, lecturersId) {
+  database.transaction((tx) => {
+    tx.executeSql('INSERT INTO lectures_has_lecturers (lectures_id, lecturers_id) VALUES (?,?);', [lecturesId, lecturersId], () => {}, handleError)
+  })
+}
+
+export function insertLecturesHasRooms(lecturesId, roomsId) {
+  database.transaction((tx) => {
+    tx.executeSql('INSERT INTO lectures_has_rooms (lectures_id, rooms_id) VALUES (?,?);', [lecturesId, roomsId], () => {}, handleError)
+  })
+}
+
+export function insertSelectedGroups(courses_id, groups_id) {
+  database.transaction((tx) => {
+    tx.executeSql('INSERT INTO selected_groups (courses_id, groups_id) VALUES (?,?);', [courses_id, groups_id], () => {}, handleError)
+  })
+}
+
 export function insertLecture({start_time, end_time, eventType, note, showLink, color, colorText, course_id, executionType_id, branches, rooms, groups, lecturers}) {
-  let lectureId;
   database.transaction((tx) => {
     tx.executeSql('INSERT INTO lectures (start_time, end_time, eventType, note, showLink, color, colorText, executionType_id, course_id) VALUES (?,?,?,?,?,?,?,?,?);', 
                                         [start_time, end_time, eventType, note, showLink, color, colorText, executionType_id, course_id], 
       (_, resultSet) => {
-        lectureId = resultSet.insertId
+        //console.log('result: ' + resultSet.insertId)
+        let lectureId = resultSet.insertId
+        rooms.forEach(room => {insertLecturesHasRooms(lectureId, Number(room.id))})
+        groups.forEach(group => {insertLecturesHasGroups(lectureId, Number(group.id))})
+        lecturers.forEach(lecturer => {insertLecturesHasGroups(lectureId, Number(lecturer.id))})
       }, handleError)
   })
-  return lectureId;
+}
+
+
+export function getAllLectures() {
+  database.transaction((tx) => {
+    tx.executeSql('SELECT * FROM lectures;', [], (_, result) => {
+      console.log('quarried')
+      for (const dp of result.rows._array){
+        console.log(dp)
+      }
+    }, handleError)
+  })
+  console.log('AAAAfdsf')
 }
