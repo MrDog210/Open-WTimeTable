@@ -1,25 +1,31 @@
 import { useEffect, useLayoutEffect, useState } from "react"
 import { Text, View } from "react-native"
 import { getBasicProgrammes } from "../../util/http"
-import SectionedMultiSelect from 'react-native-sectioned-multi-select';
-import { MaterialIcons } from '@expo/vector-icons'
+import DropDownPicker from "react-native-dropdown-picker"
+import StyledButton from "../../components/ui/StyledButton"
+import Spinner from "react-native-loading-spinner-overlay"
+
 
 function generateYearsOfProgram(program) {
   const numOfYears = Number(program.year)
   const years = []
   for(let i = 1; i <= numOfYears; i++)
     years.push({id: i, name: i.toString()})
+
+    console.log(years)
   return years
 }
-
-var year
 
 function SelectGroupsScreen({route, navigation}) {
   const { schoolInfo } = route.params
   const [isFetchingData, setIsFetchingData] = useState(false)
   const [programms, setProgramms] = useState([])
-  const [chosenProgramm, setChosenProgramm] = useState([])
-  const [chosenYear, setChosenYear] = useState([])
+  const [chosenProgrammID, setChosenProgrammID] = useState(null)
+
+  const [yearopen, setYearOpen] = useState(false)
+  const [years, setYears] = useState([])
+  const [chosenYear, setChosenYear] = useState(null)
+  const [open, setOpen] = useState(false)
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -37,51 +43,57 @@ function SelectGroupsScreen({route, navigation}) {
     fetchData()
   }, [])
 
-  function onSelectedProgram(id) {
-    const program = programms.find((item) => item.id === id[0])
-    setChosenProgramm([program])
-    years = generateYearsOfProgram(program)
+  useEffect(() => {
+    if(chosenProgrammID === null)
+      return
+    console.log(chosenProgrammID)
+    const program = programms.find((item) => item.id === chosenProgrammID)
+    setYears(generateYearsOfProgram(program))
     console.log(program)
-  }
+  }, [chosenProgrammID])
 
-  function onSelectedYear(year) {
-    console.log(year[0])
+  function proceedToGroupSelect() {
+
   }
 
   return (
     <View>
+      <Spinner visible={isFetchingData} />
       <View>
         <Text>Program:</Text>
-        <SectionedMultiSelect IconRenderer={MaterialIcons} hideSearch={true}
-          items={programms}
-          uniqueKey='id'
-          onSelectedItemsChange={onSelectedProgram}
-          selectText="Please choose your program"
-          single={true}
-          hideConfirm={true}
-          modalAnimationType='slide'
-          showChips={true}
-          selectedItems={chosenProgramm}
+        <DropDownPicker items={programms}
+          open={open}
+          setOpen={setOpen}
+          value={chosenProgrammID}
+          setValue={setChosenProgrammID}
+          schema={{
+            label: 'name',
+            value: 'id'
+          }}
+          zIndex={3000}
+          placeholder="Select program"
         />
-        <Text>{chosenProgramm?.name}</Text>
+        <Text>{chosenProgrammID?.name}</Text>
       </View>
       <View>
-        {chosenProgramm && <SectionedMultiSelect IconRenderer={MaterialIcons} hideSearch={true}
-          items={years}
-          onSelectedItemsChange={onSelectedYear}
-          uniqueKey='id'
-          selectText="Please choose your program"
-          showDropDowns={true}
-          single={true}
-          hideConfirm={true}
-          modalAnimationType='slide'
-          showChips={true}
-          //selectedItems={chosenYear}
+        {chosenProgrammID && <DropDownPicker items={years}
+          open={yearopen}
+          setOpen={setYearOpen}
+          value={chosenYear}
+          setValue={setChosenYear}
+          schema={{
+            label: 'name',
+            value: 'id'
+          }}
+          zIndex={2000}
+          placeholder="Select year"
         />}
+      </View>
+      <View>
+        {chosenYear && <StyledButton onPress={proceedToGroupSelect} title='Proceed to group selection' />}
       </View>
     </View>
   )
 }
-
 
 export default SelectGroupsScreen
