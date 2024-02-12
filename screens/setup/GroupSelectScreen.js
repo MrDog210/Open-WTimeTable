@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react"
 import { View, Text } from "react-native"
 import { fetchGroupsForBranch, fetchNotifications, fetchTimetable } from "../../util/http"
+import StyledButton from "../../components/ui/StyledButton"
+import { getToken } from "../../util/token"
+import { getServerUrl } from "../../store/schoolInfo"
 
 function GroupSelectScreen({route}) {
   const { schoolInfo, chosenProgramm, chosenYear, branchId } = route.params
@@ -21,9 +24,15 @@ function GroupSelectScreen({route}) {
     fetchData()
   }, [])
 
+  async function sraje() {
+    console.log(await getToken())
+    console.log(await getServerUrl())
+  }
+
   return (
     <View>
       <Text>Select your groups</Text>
+      <StyledButton title='test' onPress={sraje} />
     </View>
   )
 }

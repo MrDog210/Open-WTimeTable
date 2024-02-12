@@ -1,7 +1,7 @@
-DROP TABLE IF EXISTS lectures_has_courses;
 DROP TABLE IF EXISTS lectures_has_groups;
 DROP TABLE IF EXISTS lectures_has_lecturers;
 DROP TABLE IF EXISTS lectures_has_rooms;
+DROP TABLE IF EXISTS selected_groups;
 DROP TABLE IF EXISTS groups;
 DROP TABLE IF EXISTS rooms;
 DROP TABLE IF EXISTS courses;
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS lecturers (
 );
 
 CREATE TABLE IF NOT EXISTS lectures (
-  id VARCHAR(20) PRIMARY KEY UNIQUE NOT NULL,
+  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
   start_time VARCHAR(40),
   end_time VARCHAR(40),
   eventType VARCHAR(100),
@@ -44,7 +44,9 @@ CREATE TABLE IF NOT EXISTS lectures (
   color VARCHAR(10),
   colorText TEXT,
   executionType_id VARCHAR(20),
-  FOREIGN KEY (executionType_id) REFERENCES executionTypes (id)
+  courses_id VARCHAR(20),
+  FOREIGN KEY (executionType_id) REFERENCES executionTypes (id),
+  FOREIGN KEY (courses_id) REFERENCES courses (id)
 );
 
 CREATE TABLE IF NOT EXISTS lectures_has_groups (
@@ -52,14 +54,6 @@ CREATE TABLE IF NOT EXISTS lectures_has_groups (
   groups_id INTEGER NOT NULL,
   lectures_id VARCHAR(20) NOT NULL,
   FOREIGN KEY (groups_id) REFERENCES groups (id),
-  FOREIGN KEY (lectures_id) REFERENCES lectures (id)
-);
-
-CREATE TABLE IF NOT EXISTS lectures_has_courses (
-  id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL,
-  courses_id VARCHAR(20) NOT NULL,
-  lectures_id VARCHAR(20) NOT NULL,
-  FOREIGN KEY (courses_id) REFERENCES courses (id),
   FOREIGN KEY (lectures_id) REFERENCES lectures (id)
 );
 
@@ -77,4 +71,12 @@ CREATE TABLE IF NOT EXISTS lectures_has_rooms (
   lectures_id VARCHAR(20) NOT NULL,
   FOREIGN KEY (rooms_id) REFERENCES rooms (id),
   FOREIGN KEY (lectures_id) REFERENCES lectures (id)
+);
+
+CREATE TABLE IF NOT EXISTS selected_groups (
+  id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL,
+  courses_id VARCHAR(20) NOT NULL,
+  groups_id INTEGER NOT NULL,
+  FOREIGN KEY (courses_id) REFERENCES courses (id),
+  FOREIGN KEY (groups_id) REFERENCES groups (id)
 );
