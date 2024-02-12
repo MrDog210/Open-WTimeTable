@@ -2,8 +2,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { USERNAME, PASSWORD } from "../constants/loginCredentials.js";
 import { encode } from "base-64";
 import { URL } from '../constants/http.js'
+import ky from 'ky';
 
 const TOKEN_NAME = 'token'
+
+function handleError(error) {
+  console.log(error)
+
+  throw new Error(error)
+}
 
 async function fetchToken() {
   let json = await ky.get(URL + 'login', {

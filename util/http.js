@@ -87,6 +87,16 @@ export async function fetchTimetable() {
   return json
 }
 
+export async function testFetch() {
+  const url = await getServerUrl()
+
+  const json = await fetchWithToken(url + `scheduleByGroups?schoolCode=wtt_um_feri&dateFrom=2023-09-01&dateTo=2024-02-29&language=slo&groupsId=87_231_640`)
+  console.log(json)
+  console.log(JSON.stringify(json, null, '\t'));
+
+  return json
+}
+
 /*const basicPrograms = [
   {
     id: 1,

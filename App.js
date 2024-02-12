@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import SetupScreen from './screens/setup/SetupScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import { COLORS } from './constants/colors';

@@ -176,3 +176,121 @@ ALL GROUPS FOR BRANCH // RIT UN 2 letnik
   "color": "",
   "colorText": ""
 },
+
+
+{
+  "id": "S176",
+  "start_time": "2024-01-12T10:00:00",
+  "end_time": "2024-01-12T12:00:00",
+  "courseId": "1381",
+  "course": "LINEARNA ALGEBRA",
+  "eventType": "",
+  "note": "",
+  "executionTypeId": "3",
+  "executionType": "SV",
+  "branches": [
+          {
+                  "id": 59,
+                  "name": "BU20-R"
+          }
+  ],
+  "rooms": [
+          {
+                  "id": 17,
+                  "name": "A-301"
+          }
+  ],
+  "groups": [
+          {
+                  "id": 640,
+                  "name": "RIT 2 UN 1. sk."
+          }
+  ],
+  "lecturers": [
+          {
+                  "id": 479,
+                  "name": "GORDANA RADIĆ"
+          }
+  ],
+  "showLink": "",
+  "color": "",
+  "colorText": ""
+},
+
+
+
+
+
+{
+  "id": "S176",
+  "start_time": "2024-01-19T10:00:00",
+  "end_time": "2024-01-19T12:00:00",
+  "courseId": "1381",
+  "course": "LINEARNA ALGEBRA",
+  "eventType": "",
+  "note": "",
+  "executionTypeId": "3",
+  "executionType": "SV",
+  "branches": [
+          {
+                  "id": 59,
+                  "name": "BU20-R"
+          }
+  ],
+  "rooms": [
+          {
+                  "id": 17,
+                  "name": "A-301"
+          }
+  ],
+  "groups": [
+          {
+                  "id": 640,
+                  "name": "RIT 2 UN 1. sk."
+          }
+  ],
+  "lecturers": [
+          {
+                  "id": 479,
+                  "name": "GORDANA RADIĆ"
+          }
+  ],
+  "showLink": "",
+  "color": "",
+  "colorText": ""
+},
+{
+  "id": "Rd19a87e8-4e06-41c5-a552-0bd8c58ad705",
+  "start_time": "2024-01-24T07:00:00",
+  "end_time": "2024-01-24T10:00:00",
+  "courseId": "",
+  "course": "",
+  "eventType": "Reseravtion 1",
+  "note": "",
+  "executionTypeId": "",
+  "executionType": "",
+  "branches": [],
+  "rooms": [],
+  "groups": [
+          {
+                  "id": 86,
+                  "name": "RIT 1 UN"
+          },
+          {
+                  "id": 87,
+                  "name": "RIT 2 UN"
+          },
+          {
+                  "id": 414,
+                  "name": "RIT 3 UN UP1"
+          },
+          {
+                  "id": 415,
+                  "name": "RIT 3 UN UP2"
+          }
+  ],
+  "lecturers": [],
+  "showLink": "",
+  "color": "c30012",
+  "colorText": "Reseravtion 1"
+}
