@@ -47,6 +47,25 @@ export async function getBasicProgrammes(schoolCode) {
   return json
 }
 
+export async function fetchBranchesForProgramm(schoolCode, programmeId, year) {
+  const url = await getServerUrl()
+
+  const json = await fetchWithToken(url + `branchAllForProgrmmeYear?schoolCode=${schoolCode}&language=slo&programmeId=${programmeId}&year=${year}`)
+  console.log(json)
+
+  return json
+}
+
+export async function fetchGroupsForBranch(schoolCode, branchId) {
+  const url = await getServerUrl()
+
+  const json = await fetchWithToken(url + `groupAllForBranch?schoolCode=${schoolCode}&language=slo&branchId=${branchId}`)
+  console.log(json)
+  console.dir(json, { depth: null })
+
+  return json
+}
+
 /*const basicPrograms = [
   {
     id: 1,

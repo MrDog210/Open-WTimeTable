@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useState } from "react"
 import { Text, View } from "react-native"
-import { getBasicProgrammes } from "../../util/http"
+import { fetchBranchesForProgramm, getBasicProgrammes } from "../../util/http"
 import DropDownPicker from "react-native-dropdown-picker"
 import StyledButton from "../../components/ui/StyledButton"
 import Spinner from "react-native-loading-spinner-overlay"
@@ -16,16 +16,21 @@ function generateYearsOfProgram(program) {
   return years
 }
 
-function SelectGroupsScreen({route, navigation}) {
+function ProgramSelectScreen({route, navigation}) {
   const { schoolInfo } = route.params
   const [isFetchingData, setIsFetchingData] = useState(false)
+
+  const [programsOpen, setProgramsOpen] = useState(false)
   const [programms, setProgramms] = useState([])
   const [chosenProgrammID, setChosenProgrammID] = useState(null)
 
   const [yearopen, setYearOpen] = useState(false)
   const [years, setYears] = useState([])
   const [chosenYear, setChosenYear] = useState(null)
-  const [open, setOpen] = useState(false)
+
+  const [branchOpen, setBranchOpen] = useState(false)
+  const [branches, SetBranches] = useState([])
+  const [chosenBranchID, setChosenBranchID] = useState(null)
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -35,9 +40,13 @@ function SelectGroupsScreen({route, navigation}) {
 
   useEffect(() => {
     async function fetchData() {
-      setIsFetchingData(true)
-      const prog = await getBasicProgrammes(schoolInfo.schoolCode)
-      setProgramms(prog)
+      try {
+        setIsFetchingData(true)
+        const prog = await getBasicProgrammes(schoolInfo.schoolCode)
+        setProgramms(prog)
+      } catch (error) {
+        Alert.alert('An error ocurred', error.message)
+      }
       setIsFetchingData(false)
     }
     fetchData()
@@ -49,11 +58,37 @@ function SelectGroupsScreen({route, navigation}) {
     console.log(chosenProgrammID)
     const program = programms.find((item) => item.id === chosenProgrammID)
     setYears(generateYearsOfProgram(program))
+    setChosenYear(null)
+    setChosenBranchID(null)
     console.log(program)
   }, [chosenProgrammID])
 
-  function proceedToGroupSelect() {
+  useEffect(() => {
+    if(chosenYear === null){
+      SetBranches([])
+      return
+    }
+    async function getBranches() {
+      try {
+        setIsFetchingData(true)
+        setChosenBranchID(null)
+        SetBranches(await fetchBranchesForProgramm(schoolInfo.schoolCode, chosenProgrammID, chosenYear))
+      } catch (error) {
+        Alert.alert('An error ocurred', error.message)
+      }
+      setIsFetchingData(false)
+    }
+    getBranches()
+  }, [chosenYear])
 
+  function proceedToGroupSelect() {
+    const program = programms.find((item) => item.id === chosenProgrammID)
+    navigation.navigate('SelectGroups', {
+      schoolInfo: schoolInfo,
+      chosenProgramm: program,
+      chosenYear: chosenYear,
+      branchId: chosenBranchID
+    })
   }
 
   return (
@@ -62,8 +97,8 @@ function SelectGroupsScreen({route, navigation}) {
       <View>
         <Text>Program:</Text>
         <DropDownPicker items={programms}
-          open={open}
-          setOpen={setOpen}
+          open={programsOpen}
+          setOpen={setProgramsOpen}
           value={chosenProgrammID}
           setValue={setChosenProgrammID}
           schema={{
@@ -90,10 +125,24 @@ function SelectGroupsScreen({route, navigation}) {
         />}
       </View>
       <View>
-        {chosenYear && <StyledButton onPress={proceedToGroupSelect} title='Proceed to group selection' />}
+      {chosenYear && <DropDownPicker items={branches}
+          open={branchOpen}
+          setOpen={setBranchOpen}
+          value={chosenBranchID}
+          setValue={setChosenBranchID}
+          schema={{
+            label: 'branchName',
+            value: 'id'
+          }}
+          zIndex={1000}
+          placeholder="Select branch"
+        />}
+      </View>
+      <View>
+        {chosenBranchID && <StyledButton onPress={proceedToGroupSelect} title='Proceed to group selection' />}
       </View>
     </View>
   )
 }
 
-export default SelectGroupsScreen
+export default ProgramSelectScreen

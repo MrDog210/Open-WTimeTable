@@ -1,7 +1,8 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import SchoolCodeInputScreen from "./SchoolCodeInputScreen"
 import { COLORS } from "../../constants/colors"
-import SelectGroupsScreen from "./SelectGroupsScreen"
+import ProgramSelectScreen from "./ProgramSelectScreen"
+import GroupSelectScreen from "./GroupSelectScreen"
 
 const Stack = createNativeStackNavigator()
 
@@ -9,7 +10,8 @@ function SetupScreen() {
   return (
     <Stack.Navigator>
       <Stack.Screen name="CodeInput" component={SchoolCodeInputScreen} options={{headerShown: false}} />
-      <Stack.Screen name="SelectGroups" component={SelectGroupsScreen} />
+      <Stack.Screen name="ProgramSelect" component={ProgramSelectScreen} />
+      <Stack.Screen name="SelectGroups" component={GroupSelectScreen} options={{headerTitle: 'Select your program groups'}}/>
     </Stack.Navigator>
   )
 }

@@ -18,7 +18,7 @@ function SchoolCodeInputScreen({navigation}) {
     try {
       setIsFetchingData(true)
       const schoolInfo = await getSchoolInfo(code)
-      navigation.navigate('SelectGroups', { schoolInfo: schoolInfo })
+      navigation.navigate('ProgramSelect', { schoolInfo: schoolInfo })
     } catch (error) {
       Alert.alert('An error ocurred', error.message)
     }
