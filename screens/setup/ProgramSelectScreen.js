@@ -89,6 +89,7 @@ function ProgramSelectScreen({route, navigation}) {
     const program = programms.find((item) => item.id === chosenProgrammID)
     try {
       truncateDatabase()
+      console.log('Fetchig groups')
       const groups = getAllUniqueGroups(await fetchGroupsForBranch(schoolInfo.schoolCode, chosenBranchID))
       await fillUpDatabase(schoolInfo.schoolCode, groups)
     } catch (error) {
