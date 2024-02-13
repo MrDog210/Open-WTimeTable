@@ -1,6 +1,5 @@
 import * as SQLite from 'expo-sqlite/next';
 import { CREATE_DATABASE, DELETE_COMMANDS } from '../constants/database';
-import { Group } from './groupUtil';
 
 const database = SQLite.openDatabaseSync('lectures.db')
 
@@ -37,8 +36,8 @@ export async function insertCourse(id, course) {
   return database.runAsync('INSERT OR IGNORE INTO courses (id, course) VALUES (?,?);', [id, course])
 }
 
-export function insertLecturesHasGroups(lecturesId, groupsId) {
-  database.runSync('INSERT INTO lectures_has_groups (lectures_id, groups_id) VALUES (?,?);', [lecturesId, groupsId])
+export async function insertLecturesHasGroups(lecturesId, groupsId) {
+  return database.runAsync('INSERT INTO lectures_has_groups (lectures_id, groups_id) VALUES (?,?);', [lecturesId, groupsId])
 }
 
 export async function insertLecturesHasLecturers(lecturesId, lecturersId) {
@@ -62,12 +61,12 @@ export async function insertLecture({start_time, end_time, eventType, note, show
     rooms.forEach(async room => { insertLecturesHasRooms(lectureId, Number(room.id))})
     lecturers.forEach(async lecturer => { insertLecturesHasLecturers(lectureId, Number(lecturer.id))})
     for( const group of groups) {
-      insertLecturesHasGroups(lectureId, Number(group.id))
+      await insertLecturesHasGroups(lectureId, Number(group.id))
     }
 }
 
-export function getAllDistinctGroupsOfCourse(courseId) {
-  const result = database.getAllSync(`SELECT DISTINCT groups.id, groups.name FROM groups 
+export async function getAllDistinctGroupsOfCourse(courseId) {
+  const result = await database.getAllAsync(`SELECT DISTINCT groups.id, groups.name FROM groups 
       JOIN lectures_has_groups ON groups.id = lectures_has_groups.groups_id
       JOIN lectures ON lectures.id = lectures_has_groups.lectures_id
       WHERE lectures.course_id = ?;`, [courseId])
