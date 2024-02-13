@@ -1,4 +1,4 @@
-export const CREATE_DATABASE = [`DROP TABLE IF EXISTS lectures_has_groups`,
+export const CREATE_DATABASE = [/*`DROP TABLE IF EXISTS lectures_has_groups`,
 `DROP TABLE IF EXISTS lectures_has_lecturers`,
 `DROP TABLE IF EXISTS lectures_has_rooms`,
 `DROP TABLE IF EXISTS selected_groups`,
@@ -7,7 +7,7 @@ export const CREATE_DATABASE = [`DROP TABLE IF EXISTS lectures_has_groups`,
 `DROP TABLE IF EXISTS courses`,
 `DROP TABLE IF EXISTS executionTypes`,
 `DROP TABLE IF EXISTS lecturers`,
-`DROP TABLE IF EXISTS lectures`,
+`DROP TABLE IF EXISTS lectures`,*/
 `CREATE TABLE IF NOT EXISTS groups (
   id INTEGER PRIMARY KEY UNIQUE NOT NULL,
   name VARCHAR(250)
@@ -70,3 +70,13 @@ export const CREATE_DATABASE = [`DROP TABLE IF EXISTS lectures_has_groups`,
   FOREIGN KEY (courses_id) REFERENCES courses (id),
   FOREIGN KEY (groups_id) REFERENCES groups (id)
 )`]
+
+export const DELETE_COMMANDS = [`DELETE FROM lectures_has_lecturers`,
+`DELETE FROM lectures_has_rooms`,
+`DELETE FROM selected_groups`,
+`DELETE FROM groups`,
+`DELETE FROM rooms`,
+`DELETE FROM courses`,
+`DELETE FROM executionTypes`,
+`DELETE FROM lecturers`,
+`DELETE FROM lectures`]

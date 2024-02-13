@@ -5,7 +5,7 @@ import StyledButton from "../../components/ui/StyledButton"
 import { getToken } from "../../util/token"
 import { getServerUrl } from "../../store/schoolInfo"
 import { getAllUniqueGroups } from "../../util/groupUtil"
-import { getAllGroups, getAllLectures } from "../../util/database"
+import { getAllDistinctGroupsOfCourse, getAllGroups, getAllLectures } from "../../util/database"
 
 function GroupSelectScreen({route}) {
   const { schoolInfo, chosenProgramm, chosenYear, branchId } = route.params
@@ -32,8 +32,9 @@ function GroupSelectScreen({route}) {
     //const groups = getAllUniqueGroups(await fetchGroupsForBranch(schoolInfo.schoolCode, branchId))
     //fetchLecturesForGroups(schoolInfo.schoolCode, groups)
     getAllGroups()
-    getAllLectures()
+    //getAllLectures()
     //console.log(groups)
+    getAllDistinctGroupsOfCourse(540)
   }
 
   return (

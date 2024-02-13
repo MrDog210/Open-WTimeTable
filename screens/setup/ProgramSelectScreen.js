@@ -6,6 +6,7 @@ import StyledButton from "../../components/ui/StyledButton"
 import Spinner from "react-native-loading-spinner-overlay"
 import { fillUpDatabase } from "../../util/timetableUtils"
 import { getAllUniqueGroups } from "../../util/groupUtil"
+import { truncateDatabase } from "../../util/database"
 
 
 function generateYearsOfProgram(program) {
@@ -87,6 +88,7 @@ function ProgramSelectScreen({route, navigation}) {
     setIsFetchingData(true)
     const program = programms.find((item) => item.id === chosenProgrammID)
     try {
+      truncateDatabase()
       const groups = getAllUniqueGroups(await fetchGroupsForBranch(schoolInfo.schoolCode, chosenBranchID))
       await fillUpDatabase(schoolInfo.schoolCode, groups)
     } catch (error) {

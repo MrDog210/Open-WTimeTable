@@ -1,5 +1,6 @@
 import * as SQLite from 'expo-sqlite';
-import { CREATE_DATABASE } from '../constants/database';
+import { CREATE_DATABASE, DELETE_COMMANDS } from '../constants/database';
+import { Group } from './groupUtil';
 
 const database = SQLite.openDatabase('lectures.db')
 
@@ -18,28 +19,21 @@ export function init() {
   }) // i hate this
 }
 
-export function insertGroup(id, name) {
-  return new Promise((resolve, reject) => {
+export function truncateDatabase() {
+  DELETE_COMMANDS.forEach(sql => {
     database.transaction((tx) => {
-      tx.executeSql(
-        'INSERT OR IGNORE INTO groups (id, name) VALUES (?,?);',
-        [id, name],
-        (_, result) => {
-          resolve(result);
-        },
-        (_, error) => {
-          reject(error);
-        }
-      );
-    });
-  });
+      tx.executeSql(sql, [], 
+        () => {console.log('success')},
+        handleError)
+    }, handleError)
+  })
 }
 
-/* export function insertGroup(id, name) {
+export function insertGroup(id, name) {
   database.transaction((tx) => {
     tx.executeSql('INSERT INTO groups (id, name) VALUES (?,?);', [id, name], () => {}, handleError)
   })
-} */
+} 
 
 export function getAllGroups() {
   database.transaction((tx) => {
@@ -102,16 +96,16 @@ export function insertSelectedGroups(courses_id, groups_id) {
   })
 }
 
-export function insertLecture({start_time, end_time, eventType, note, showLink, color, colorText, course_id, executionType_id, branches, rooms, groups, lecturers}) {
+export function insertLecture({start_time, end_time, eventType, note, showLink, color, colorText, courseId, executionTypeId, branches, rooms, groups, lecturers}) {
   database.transaction((tx) => {
     tx.executeSql('INSERT INTO lectures (start_time, end_time, eventType, note, showLink, color, colorText, executionType_id, course_id) VALUES (?,?,?,?,?,?,?,?,?);', 
-                                        [start_time, end_time, eventType, note, showLink, color, colorText, executionType_id, course_id], 
+                                        [start_time, end_time, eventType, note, showLink, color, colorText, executionTypeId, courseId], 
       (_, resultSet) => {
         //console.log('result: ' + resultSet.insertId)
         let lectureId = resultSet.insertId
         rooms.forEach(room => {insertLecturesHasRooms(lectureId, Number(room.id))})
         groups.forEach(group => {insertLecturesHasGroups(lectureId, Number(group.id))})
-        lecturers.forEach(lecturer => {insertLecturesHasGroups(lectureId, Number(lecturer.id))})
+        lecturers.forEach(lecturer => {insertLecturesHasLecturers(lectureId, Number(lecturer.id))})
       }, handleError)
   })
 }
@@ -126,4 +120,26 @@ export function getAllLectures() {
       }
     }, handleError)
   })
+}
+
+
+export function getAllDistinctGroupsOfCourse(courseId) {
+  const promise = new Promise ((resolve, reject) => {
+    database.transaction(tx => {
+      tx.executeSql(`SELECT DISTINCT groups.id, groups.name FROM groups 
+      JOIN lectures_has_groups ON groups.id = lectures_has_groups.groups_id
+      JOIN lectures ON lectures.id = lectures_has_groups.lectures_id
+      WHERE lectures.course_id = ?;`, [courseId], 
+      (_, result) => {
+        const groups = []
+        console.log(result.rows._array)
+        for (const row of result.rows._array) {
+          groups.push(new Group(row.id, row.name))
+        }
+        resolve(groups)
+      }, (_, error) => {reject(error)})
+    })
+  })
+
+  return promise
 }
