@@ -5,6 +5,7 @@ const database = SQLite.openDatabase('lectures.db')
 
 function handleError(_,error) {
   console.log('DB ERROR: ' + error)
+  throw new Error(error)
 }
 
 export function init() {
@@ -18,10 +19,27 @@ export function init() {
 }
 
 export function insertGroup(id, name) {
+  return new Promise((resolve, reject) => {
+    database.transaction((tx) => {
+      tx.executeSql(
+        'INSERT OR IGNORE INTO groups (id, name) VALUES (?,?);',
+        [id, name],
+        (_, result) => {
+          resolve(result);
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+}
+
+/* export function insertGroup(id, name) {
   database.transaction((tx) => {
     tx.executeSql('INSERT INTO groups (id, name) VALUES (?,?);', [id, name], () => {}, handleError)
   })
-}
+} */
 
 export function getAllGroups() {
   database.transaction((tx) => {
@@ -32,30 +50,31 @@ export function getAllGroups() {
       }
     }, handleError)
   })
-  console.log('AAAAfdsf')
+
+  console.log('end')
 }
 
 export function insertRoom(id, name) {
   database.transaction((tx) => {
-    tx.executeSql('INSERT INTO rooms (id, name) VALUES (?,?);', [id, name], () => {}, handleError)
+    tx.executeSql('INSERT OR IGNORE INTO rooms (id, name) VALUES (?,?);', [id, name], () => {}, handleError)
   })
 }
 
 export function insertLecturer(id, name) {
   database.transaction((tx) => {
-    tx.executeSql('INSERT INTO lecturers (id, name) VALUES (?,?);', [id, name], () => {}, handleError)
+    tx.executeSql('INSERT OR IGNORE INTO lecturers (id, name) VALUES (?,?);', [id, name], () => {}, handleError)
   })
 }
 
 export function insertExecutionType(id, executionType) {
   database.transaction((tx) => {
-    tx.executeSql('INSERT INTO executionTypes (id, executionType) VALUES (?,?);', [id, executionType], () => {}, handleError)
+    tx.executeSql('INSERT OR IGNORE INTO executionTypes (id, executionType) VALUES (?,?);', [id, executionType], () => {}, handleError)
   })
 }
 
 export function insertCourse(id, course) {
   database.transaction((tx) => {
-    tx.executeSql('INSERT INTO courses (id, course) VALUES (?,?);', [id, course], () => {}, handleError)
+    tx.executeSql('INSERT OR IGNORE INTO courses (id, course) VALUES (?,?);', [id, course], () => {}, handleError)
   })
 }
 
@@ -107,5 +126,4 @@ export function getAllLectures() {
       }
     }, handleError)
   })
-  console.log('AAAAfdsf')
 }

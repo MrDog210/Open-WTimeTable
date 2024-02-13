@@ -67,7 +67,7 @@ export async function fetchGroupsForBranch(schoolCode, branchId) {
   return json
 }
 
-export async function fetchNotifications() {
+export async function fetchNotifications() { // ?????????
   const url = await getServerUrl()
 
   const json = await fetchWithToken(url + `notificationByGroups?schoolCode=wtt_um_feri&language=slo&groupsId=87_231_640`)
@@ -89,8 +89,8 @@ export async function fetchLecturesForGroups(schoolCode, groups) { // groups is 
 
   // TODO: DATUMI
   const json = await fetchWithToken(url + `scheduleByGroups?schoolCode=${schoolCode}&dateFrom=2023-09-01&dateTo=2024-02-29&language=slo&groupsId=${allGroupsId}`)
-  console.log(json)
-  console.log(JSON.stringify(json, null, '\t'));
+  //console.log(json)
+  //console.log(JSON.stringify(json, null, '\t'));
 
   return json
 }

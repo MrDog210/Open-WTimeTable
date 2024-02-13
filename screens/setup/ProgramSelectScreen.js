@@ -1,9 +1,11 @@
 import { useEffect, useLayoutEffect, useState } from "react"
-import { Text, View } from "react-native"
-import { fetchBranchesForProgramm, getBasicProgrammes } from "../../util/http"
+import { Alert, Text, View } from "react-native"
+import { fetchBranchesForProgramm, fetchGroupsForBranch, getBasicProgrammes } from "../../util/http"
 import DropDownPicker from "react-native-dropdown-picker"
 import StyledButton from "../../components/ui/StyledButton"
 import Spinner from "react-native-loading-spinner-overlay"
+import { fillUpDatabase } from "../../util/timetableUtils"
+import { getAllUniqueGroups } from "../../util/groupUtil"
 
 
 function generateYearsOfProgram(program) {
@@ -81,14 +83,22 @@ function ProgramSelectScreen({route, navigation}) {
     getBranches()
   }, [chosenYear])
 
-  function proceedToGroupSelect() {
+  async function proceedToGroupSelect() {
+    setIsFetchingData(true)
     const program = programms.find((item) => item.id === chosenProgrammID)
+    try {
+      const groups = getAllUniqueGroups(await fetchGroupsForBranch(schoolInfo.schoolCode, chosenBranchID))
+      await fillUpDatabase(schoolInfo.schoolCode, groups)
+    } catch (error) {
+      Alert.alert('Error', error.message)
+    }
     navigation.navigate('SelectGroups', {
       schoolInfo: schoolInfo,
       chosenProgramm: program,
       chosenYear: chosenYear,
       branchId: chosenBranchID
     })
+    setIsFetchingData(false)
   }
 
   return (

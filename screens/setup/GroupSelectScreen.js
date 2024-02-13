@@ -5,6 +5,7 @@ import StyledButton from "../../components/ui/StyledButton"
 import { getToken } from "../../util/token"
 import { getServerUrl } from "../../store/schoolInfo"
 import { getAllUniqueGroups } from "../../util/groupUtil"
+import { getAllGroups, getAllLectures } from "../../util/database"
 
 function GroupSelectScreen({route}) {
   const { schoolInfo, chosenProgramm, chosenYear, branchId } = route.params
@@ -28,9 +29,11 @@ function GroupSelectScreen({route}) {
   async function sraje() {
     /* console.log(await getToken())
     console.log(await getServerUrl()) */
-    const groups = getAllUniqueGroups(await fetchGroupsForBranch(schoolInfo.schoolCode, branchId))
-    fetchLecturesForGroups(schoolInfo.schoolCode, groups)
-    console.log(groups)
+    //const groups = getAllUniqueGroups(await fetchGroupsForBranch(schoolInfo.schoolCode, branchId))
+    //fetchLecturesForGroups(schoolInfo.schoolCode, groups)
+    getAllGroups()
+    getAllLectures()
+    //console.log(groups)
   }
 
   return (
