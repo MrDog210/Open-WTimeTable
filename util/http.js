@@ -62,7 +62,7 @@ export async function fetchGroupsForBranch(schoolCode, branchId) {
   const json = await fetchWithToken(url + `groupAllForBranch?schoolCode=${schoolCode}&language=slo&branchId=${branchId}`)
   console.log(json)
   //console.dir(json, { depth: null })
-  console.log(JSON.stringify(json, null, '\t'));
+  //console.log(JSON.stringify(json, null, '\t'));
 
   return json
 }

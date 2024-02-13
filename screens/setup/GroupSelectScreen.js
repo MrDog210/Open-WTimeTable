@@ -31,10 +31,10 @@ function GroupSelectScreen({route}) {
     console.log(await getServerUrl()) */
     //const groups = getAllUniqueGroups(await fetchGroupsForBranch(schoolInfo.schoolCode, branchId))
     //fetchLecturesForGroups(schoolInfo.schoolCode, groups)
-    getAllGroups()
-    //getAllLectures()
+    //getAllGroups()
+    getAllLectures()
     //console.log(groups)
-    getAllDistinctGroupsOfCourse(540)
+    //getAllDistinctGroupsOfCourse(540)
   }
 
   return (

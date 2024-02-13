@@ -71,8 +71,8 @@ export const CREATE_DATABASE = [/*`DROP TABLE IF EXISTS lectures_has_groups`,
   FOREIGN KEY (groups_id) REFERENCES groups (id)
 )`]
 
-export const DELETE_COMMANDS = [`DELETE FROM lectures_has_lecturers`,
-`DELETE FROM lectures_has_rooms`,
+export const DELETE_COMMANDS = [`DELETE FROM lectures_has_lecturers;`,
+`DELETE FROM lectures_has_rooms;`,
 `DELETE FROM selected_groups`,
 `DELETE FROM groups`,
 `DELETE FROM rooms`,
