@@ -38,6 +38,14 @@ export async function setServerUrl(value) {
   await setKey('serverUrl', value)
 }
 
+export async function getAllStoredBranchGroups() {
+  return await getKey('groups')
+}
+
+export async function setAllBranchGroups(value) {
+  await setKey('groups', value)
+}
+
 /* schoolInfo = { // example
   firstDayOfWeek: 1,
   lastChangeDate: "19.01.2024 11:16",
