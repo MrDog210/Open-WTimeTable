@@ -70,6 +70,9 @@ export async function getAllDistinctGroupsOfCourse(courseId) {
       JOIN lectures_has_groups ON groups.id = lectures_has_groups.groups_id
       JOIN lectures ON lectures.id = lectures_has_groups.lectures_id
       WHERE lectures.course_id = ?;`, [courseId])
-  console.log(result)
   return result
 } 
+
+export async function getAllCourses() {
+  return database.getAllAsync('SELECT * FROM courses;')
+}
