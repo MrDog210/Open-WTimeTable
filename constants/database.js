@@ -73,6 +73,7 @@ export const CREATE_DATABASE = [/*`DROP TABLE IF EXISTS lectures_has_groups`,
 
 export const DELETE_COMMANDS = [`DELETE FROM lectures_has_lecturers;`,
 `DELETE FROM lectures_has_rooms;`,
+`DELETE FROM lectures_has_groups;`,
 `DELETE FROM selected_groups`,
 `DELETE FROM groups`,
 `DELETE FROM rooms`,

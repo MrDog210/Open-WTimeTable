@@ -1,15 +1,23 @@
 import { View } from "react-native"
 import Title from "../ui/Title"
-import { useImperativeHandle, useState } from "react"
+import { useState } from "react"
 import DropDownPicker from "react-native-dropdown-picker"
 
-function CourseGroupSelect({course, groups, _ref}) {
+function CourseGroupSelect({course, groups}) {
   const [isDropDownOpen, setIsDropDownOpen] = useState(false)
   const [chosenGroupsID, setChosenGroupsID] = useState([])
 
-  useImperativeHandle(_ref, () => {
-    getChosenGroupIDs: () => chosenGroupsID
-  })
+  function onGroupSelected(groupsIds) {
+    groups.forEach(group => {
+      group.selected = false
+    });
+
+    groupsIds.forEach(groupId => {
+      let group = groups.find(g => g.id === groupId)
+      group.selected = true
+    })
+  }
+
   return (
   <View>
     <Title>{course.course}:</Title>
@@ -27,6 +35,7 @@ function CourseGroupSelect({course, groups, _ref}) {
           min={0}
           max={groups.length}
           listMode='MODAL'
+          onChangeValue={onGroupSelected}
         />
   </View>)
 }
