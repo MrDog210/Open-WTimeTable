@@ -8,6 +8,8 @@ import Title from "../../components/ui/Title"
 import { COLORS } from "../../constants/colors"
 import { SPINNER_STYLE } from "../../constants/globalStyles"
 import { UserPreferencesContext } from "../../store/userPreferencesContext"
+import { getAllStoredBranchGroups } from "../../store/schoolInfo"
+import { getGroupsIntersection } from "../../util/groupUtil"
 
 function GroupSelectScreen({route, navigation}) {
   const [isFetchingData, setIsFetchingData] = useState(false)
@@ -21,10 +23,12 @@ function GroupSelectScreen({route, navigation}) {
         setIsFetchingData(true)
         setFetchingDataMessage('Querying data')
         setCoursesAndTheirGroups([])
+        const branchGroups = await getAllStoredBranchGroups()
         const allCourses = await getAllCourses()
         console.log('All courses: ' + JSON.stringify(allCourses, null, '\t'))
         for (const course of allCourses) {
-          const courseGroups = await getAllDistinctGroupsOfCourse(course.id)
+          let courseGroups = await getAllDistinctGroupsOfCourse(course.id)
+          courseGroups = getGroupsIntersection(courseGroups, branchGroups)
           courseGroups.forEach(group => {
             group.selected = false
           })
