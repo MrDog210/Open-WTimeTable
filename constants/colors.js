@@ -10,6 +10,7 @@ export const COLORS = {
   background: {
     primary: 'white',
     secondary: '#fbfbfb',
-    seperator: '#E6E3E6'
+    seperator: '#E6E3E6',
+    primaryOpaque: '#ffffff99'
   }
 }

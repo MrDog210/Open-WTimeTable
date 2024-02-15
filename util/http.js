@@ -16,7 +16,22 @@ async function fetchWithToken(url) {
     headers: new Headers ({
       'Authorization': `Bearer ${token}`, 
       'Content-Type': 'application/json'
-  })}).json().catch(handleError)
+    }),
+    /* retry: {
+      limit: 2,
+      methods: ['get'],
+      statusCodes: [401],
+      backoffLimit: 5000
+    },
+    hooks: {
+      beforeRetry: [
+        ({request, options, error, retryCount}) => {
+          console.log('AAAAA')
+          console.log(error, retryCount)
+        }
+      ]
+    } */
+  }).json().catch(handleError)
 
   return json
 }
@@ -42,7 +57,6 @@ export async function getBasicProgrammes(schoolCode) {
   const url = await getServerUrl()
 
   const json = await fetchWithToken(url + `basicProgrammeAll?schoolCode=${schoolCode}&language=slo`)
-  console.log(json)
 
   return json
 }
@@ -51,7 +65,6 @@ export async function fetchBranchesForProgramm(schoolCode, programmeId, year) {
   const url = await getServerUrl()
 
   const json = await fetchWithToken(url + `branchAllForProgrmmeYear?schoolCode=${schoolCode}&language=slo&programmeId=${programmeId}&year=${year}`)
-  console.log(json)
 
   return json
 }
@@ -60,9 +73,6 @@ export async function fetchGroupsForBranch(schoolCode, branchId) {
   const url = await getServerUrl()
 
   const json = await fetchWithToken(url + `groupAllForBranch?schoolCode=${schoolCode}&language=slo&branchId=${branchId}`)
-  console.log(json)
-  //console.dir(json, { depth: null })
-  //console.log(JSON.stringify(json, null, '\t'));
 
   return json
 }
@@ -71,8 +81,7 @@ export async function fetchNotifications() { // ?????????
   const url = await getServerUrl()
 
   const json = await fetchWithToken(url + `notificationByGroups?schoolCode=wtt_um_feri&language=slo&groupsId=87_231_640`)
-  console.log(json)
-  console.log(JSON.stringify(json, null, '\t'));
+  //console.log(JSON.stringify(json, null, '\t'));
 
   return json
 }
@@ -91,16 +100,6 @@ export async function fetchLecturesForGroups(schoolCode, groups) { // groups is 
   const json = await fetchWithToken(url + `scheduleByGroups?schoolCode=${schoolCode}&dateFrom=2023-09-01&dateTo=2024-02-29&language=slo&groupsId=${allGroupsId}`)
   //console.log(json)
   //console.log(JSON.stringify(json, null, '\t'));
-
-  return json
-}
-
-export async function testFetch() {
-  const url = await getServerUrl()
-
-  const json = await fetchWithToken(url + `scheduleByGroups?schoolCode=wtt_um_feri&dateFrom=2023-09-01&dateTo=2024-02-29&language=slo&groupsId=87_231_640`)
-  console.log(json)
-  console.log(JSON.stringify(json, null, '\t'));
 
   return json
 }

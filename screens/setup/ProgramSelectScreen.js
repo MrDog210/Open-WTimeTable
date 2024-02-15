@@ -7,6 +7,7 @@ import Spinner from "react-native-loading-spinner-overlay"
 import { fillUpDatabase } from "../../util/timetableUtils"
 import { getAllUniqueGroups } from "../../util/groupUtil"
 import { truncateDatabase } from "../../util/database"
+import { SPINNER_STYLE } from "../../constants/globalStyles"
 
 
 function generateYearsOfProgram(program) {
@@ -58,12 +59,10 @@ function ProgramSelectScreen({route, navigation}) {
   useEffect(() => {
     if(chosenProgrammID === null)
       return
-    console.log(chosenProgrammID)
     const program = programms.find((item) => item.id === chosenProgrammID)
     setYears(generateYearsOfProgram(program))
     setChosenYear(null)
     setChosenBranchID(null)
-    console.log(program)
   }, [chosenProgrammID])
 
   useEffect(() => {
@@ -92,21 +91,16 @@ function ProgramSelectScreen({route, navigation}) {
       console.log('Fetchig groups')
       const groups = getAllUniqueGroups(await fetchGroupsForBranch(schoolInfo.schoolCode, chosenBranchID))
       await fillUpDatabase(schoolInfo.schoolCode, groups)
+      navigation.navigate('SelectGroups')
     } catch (error) {
       Alert.alert('Error', error.message)
     }
-    navigation.navigate('SelectGroups', {
-      schoolInfo: schoolInfo,
-      chosenProgramm: program,
-      chosenYear: chosenYear,
-      branchId: chosenBranchID
-    })
     setIsFetchingData(false)
   }
 
   return (
     <View>
-      <Spinner visible={isFetchingData} />
+      <Spinner visible={isFetchingData} {...SPINNER_STYLE} />
       <View>
         <Text>Program:</Text>
         <DropDownPicker items={programms}

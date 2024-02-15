@@ -2,49 +2,11 @@ import { Alert, StyleSheet, Text, View } from "react-native"
 import StyledTextInput from "../../components/ui/StyledTextInput"
 import StyledButton from "../../components/ui/StyledButton"
 import Title from "../../components/ui/Title"
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { getSchoolInfo } from "../../util/http"
 import Spinner from 'react-native-loading-spinner-overlay';
-import { getAllGroups, getAllLectures, insertCourse, insertGroup, insertLecture } from "../../util/database"
-
-const DUMMY_LECTUR = {
-  "id": "S2585",
-  "start_time": "2023-11-27T07:00:00",
-  "end_time": "2023-11-27T10:00:00",
-  "courseId": "540",
-  "course": "OPERACIJSKI SISTEMI",
-  "eventType": "",
-  "note": "",
-  "executionTypeId": "5",
-  "executionType": "RV",
-  "branches": [
-      {
-          "id": 59,
-          "name": "BU20-R"
-      }
-  ],
-  "rooms": [
-      {
-          "id": 130,
-          "name": "(RU) E-110"
-      }
-  ],
-  "groups": [
-      {
-          "id": 596,
-          "name": "RIT 2 UN RV 6"
-      }
-  ],
-  "lecturers": [
-      {
-          "id": 598,
-          "name": "MARTIN ŠAVC"
-      }
-  ],
-  "showLink": "",
-  "color": "",
-  "colorText": ""
-}
+import { SPINNER_STYLE } from "../../constants/globalStyles"
+import { UserPreferencesContext } from "../../store/userPreferencesContext"
 
 function SchoolCodeInputScreen({navigation}) {
   const [code, setCode] = useState('')
@@ -65,22 +27,24 @@ function SchoolCodeInputScreen({navigation}) {
     setIsFetchingData(false)
   }
 
+  const userPreferencesCtx = useContext(UserPreferencesContext)
+  console.log(userPreferencesCtx.preferences)
   function sraje() {
-    //insertGroup(0, 'To je ime coursa')
-    //getAllGroups()
-    insertLecture(DUMMY_LECTUR)
-    getAllLectures()
+    const pref = userPreferencesCtx.preferences // should find better way of doing this
+    pref.hasCompletedSetup = true
+    userPreferencesCtx.setPreferences(pref)
+    console.log(pref)
   }
 
   return (
     <View style={style.container}>
-      <Spinner visible={isFetchingData} />
+      <Spinner visible={isFetchingData} {...SPINNER_STYLE} />
       <Title>Please write your school code</Title>
       <StyledTextInput label='School code' textInputOptions={{
         placeholder: 'FERI', autoCapitalize: 'none', autoComplete: 'off', autoCorrect: false, onChangeText: onCodeChange, value: code
         }}/>
       <StyledButton title="OK" onPress={onConfirm}/>
-      <StyledButton title='testiraj' onPress={sraje} />
+      <StyledButton title='test' onPress={sraje} />
     </View>
   )
 }

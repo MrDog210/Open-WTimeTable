@@ -48,6 +48,10 @@ export async function insertLecturesHasRooms(lecturesId, roomsId) {
   return database.runAsync('INSERT INTO lectures_has_rooms (lectures_id, rooms_id) VALUES (?,?);', [lecturesId, roomsId])
 }
 
+export async function truncateSelectedGroups() {
+  return database.execAsync('DELETE FROM selected_groups;')
+}
+
 export async function insertSelectedGroups(courses_id, groups_id) {
   return database.runAsync('INSERT INTO selected_groups (courses_id, groups_id) VALUES (?,?);', [courses_id, groups_id])
 }

@@ -1,19 +1,25 @@
-import { useEffect, useState } from "react"
-import { View, Text, Alert, FlatList } from "react-native"
-import { getAllCourses, getAllDistinctGroupsOfCourse, getAllGroups, getAllLectures } from "../../util/database"
+import { useContext, useEffect, useState } from "react"
+import { View, Alert, FlatList, StyleSheet } from "react-native"
+import { getAllCourses, getAllDistinctGroupsOfCourse, insertSelectedGroups, truncateSelectedGroups } from "../../util/database"
 import CourseGroupSelect from "../../components/groupSelect/CourseGroupSelect"
 import StyledButton from "../../components/ui/StyledButton"
 import Spinner from "react-native-loading-spinner-overlay"
+import Title from "../../components/ui/Title"
+import { COLORS } from "../../constants/colors"
+import { SPINNER_STYLE } from "../../constants/globalStyles"
+import { UserPreferencesContext } from "../../store/userPreferencesContext"
 
-function GroupSelectScreen({route}) {
-  const { schoolInfo, chosenProgramm, chosenYear, branchId } = route.params
+function GroupSelectScreen({route, navigation}) {
   const [isFetchingData, setIsFetchingData] = useState(false)
+  const [fetchingDataMessage, setFetchingDataMessage] = useState('')
   const [coursesAndTheirGroups, setCoursesAndTheirGroups] = useState([])
+  const userPreferencesCtx = useContext(UserPreferencesContext)
 
   useEffect(() => {
     async function fetchData() {
       try {
         setIsFetchingData(true)
+        setFetchingDataMessage('Querying data')
         setCoursesAndTheirGroups([])
         const allCourses = await getAllCourses()
         console.log('All courses: ' + JSON.stringify(allCourses, null, '\t'))
@@ -33,19 +39,55 @@ function GroupSelectScreen({route}) {
     fetchData()
   }, [])
 
-  function onFinishedPressed() {
-    console.log(JSON.stringify(coursesAndTheirGroups, null, '\t'));
+  async function onFinishedPressed() {
+    try {
+      setIsFetchingData(true)
+      setFetchingDataMessage('Inserting data into db')
+
+      await truncateSelectedGroups()
+      coursesAndTheirGroups.forEach(async courseAndGroup => {
+        const {course, groups} = courseAndGroup
+        const courseId = course.id
+        groups.forEach(async group => {
+          if(group.selected)
+            insertSelectedGroups(courseId, group.id)
+        })
+      })
+      const pref = userPreferencesCtx.preferences // should find better way of doing this
+      console.log(pref)
+      pref.hasCompletedSetup = true
+      userPreferencesCtx.setPreferences(pref)
+    } catch (error) {
+      Alert.alert('An error occured', error.message)
+    }
+    setIsFetchingData(false)
   }
 
   return (
-    <View>
-      <Spinner visible={isFetchingData} />
-      <Text>Select your group</Text>
-      <FlatList data={coursesAndTheirGroups} keyExtractor={item => item.course.id} 
-      renderItem={({item}) => <CourseGroupSelect groups={item.groups} course={item.course} />} />
-      <StyledButton title='Finished' onPress={onFinishedPressed} />
+    <View style={styles.container}>
+      <Spinner visible={isFetchingData} textContent={fetchingDataMessage} 
+      {...SPINNER_STYLE}
+      />
+      <View style={styles.groupSelectContainer}>
+        <Title>Select your groups</Title>
+        <FlatList data={coursesAndTheirGroups} keyExtractor={item => item.course.id} 
+          renderItem={({item}) => <CourseGroupSelect groups={item.groups} course={item.course} />} 
+        />
+      </View>
+      <View>
+        <StyledButton title='Finish' onPress={onFinishedPressed} />
+      </View>
     </View>
   )
 }
 
 export default GroupSelectScreen
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1
+  },
+  groupSelectContainer: {
+    flex: 1
+  }
+})

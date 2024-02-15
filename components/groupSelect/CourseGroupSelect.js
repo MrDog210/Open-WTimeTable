@@ -1,5 +1,4 @@
-import { View } from "react-native"
-import Title from "../ui/Title"
+import { Text, View } from "react-native"
 import { useState } from "react"
 import DropDownPicker from "react-native-dropdown-picker"
 
@@ -20,7 +19,7 @@ function CourseGroupSelect({course, groups}) {
 
   return (
   <View>
-    <Title>{course.course}:</Title>
+    <Text>{course.course}:</Text>
     <DropDownPicker items={groups}
           open={isDropDownOpen}
           setOpen={setIsDropDownOpen}
