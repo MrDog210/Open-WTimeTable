@@ -80,3 +80,58 @@ export async function getAllDistinctGroupsOfCourse(courseId) {
 export async function getAllCourses() {
   return database.getAllAsync('SELECT * FROM courses;')
 }
+
+function getGroupsForLecture(lectureId) {
+  return database.getAllSync(`SELECT groups.id, groups.name FROM groups
+  JOIN lectures_has_groups ON groups.id = lectures_has_groups.groups_id
+  AND lectures_has_groups.lectures_id = ?;`, [lectureId])
+}
+
+function getRoomsForLecture(lectureId) {
+  return database.getAllSync(`SELECT rooms.id, rooms.name FROM rooms
+  JOIN lectures_has_rooms ON rooms.id = lectures_has_rooms.rooms_id
+  AND lectures_has_rooms.lectures_id = ?;`, [lectureId])
+}
+
+function getLecturersForLecture(lectureId) {
+  return database.getAllSync(`SELECT lecturers.id, lecturers.name FROM lecturers
+  JOIN lectures_has_lecturers ON lecturers.id = lectures_has_lecturers.lecturers_id
+  AND lectures_has_lecturers.lectures_id = ?;`, [lectureId])
+}
+
+function getExecutionType(executionTypeId) {
+  return database.getFirstSync(`SELECT executionTypes.executionType FROM executionTypes
+  WHERE executionTypes.id = ?;`, [executionTypeId])
+}
+
+function getLecturesForDateWithNoCurses(date) { //edge case, when there is no course attached
+  return database.getAllSync(
+  `SELECT * FROM lectures
+  WHERE course_id = ''
+  AND start_time LIKE '${date}%'`
+  )
+}
+
+export async function getLecturesForDate(date) { // pazi če je execution type prazen
+  let lectures = database.getAllSync(
+  `SELECT DISTINCT lectures.id, lectures.start_time, lectures.end_time, courses.course, lectures.executionType_id,
+  eventType, note, showLink, color, colorText
+  FROM groups JOIN lectures_has_groups ON groups.id = lectures_has_groups.groups_id
+  JOIN lectures ON lectures.id = lectures_has_groups.lectures_id
+  JOIN courses ON courses.id = lectures.course_id
+  JOIN selected_groups ON selected_groups.groups_id = groups.id
+  AND selected_groups.courses_id = courses.id
+  AND start_time LIKE '${date}%'`)
+
+  lectures = [...lectures, ...getLecturesForDateWithNoCurses(date)]
+
+  lectures.forEach(lecture => {
+    lecture.groups = getGroupsForLecture(lecture.id)
+    lecture.rooms = getRoomsForLecture(lecture.id)
+    lecture.lecturers = getLecturersForLecture(lecture.id)
+    if(lecture.executionType_id)
+      lecture.executionType = getExecutionType(lecture.executionType_id).executionType
+  })
+
+  return lectures
+}

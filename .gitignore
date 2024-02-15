@@ -36,3 +36,4 @@ yarn-error.*
 
 # custom git ignores
 constants/loginCredentials.js
+%ProgramData%
