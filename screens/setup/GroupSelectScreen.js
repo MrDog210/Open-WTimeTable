@@ -23,12 +23,12 @@ function GroupSelectScreen({route, navigation}) {
         setIsFetchingData(true)
         setFetchingDataMessage('Querying data')
         setCoursesAndTheirGroups([])
-        const branchGroups = await getAllStoredBranchGroups()
+        //const branchGroups = await getAllStoredBranchGroups()
         const allCourses = await getAllCourses()
         console.log('All courses: ' + JSON.stringify(allCourses, null, '\t'))
         for (const course of allCourses) {
           let courseGroups = await getAllDistinctGroupsOfCourse(course.id)
-          courseGroups = getGroupsIntersection(courseGroups, branchGroups)
+          //courseGroups = getGroupsIntersection(courseGroups, branchGroups)
           courseGroups.forEach(group => {
             group.selected = false
           })

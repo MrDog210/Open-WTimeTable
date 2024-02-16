@@ -11,11 +11,14 @@ function formatArray(array, key) {
 }
 
 function HourSlice({style, item, dayIndex, daysTotal}) {
-  const {course, eventType, start_time, end_time, note, showLink, color, colorText, rooms, groups, lecturers} = item.lecture
+  const {course, eventType, start_time, end_time, note, showLink, color, colorText, rooms, groups, lecturers, executionType} = item.lecture
   //console.log(JSON.stringify(item.lecture))
   return (
     <View style={[style,styles.container]}>
-        <Text>{course ? course : eventType}</Text>
+        <View style={styles.titleContainer}>
+          <Text style={styles.courseName}>{course ? course : eventType}</Text>
+          <Text>{executionType}</Text>
+        </View>
         <Text>{`${getTimeFromDate(start_time)} - ${getTimeFromDate(end_time)}`}</Text>
         <Text>{formatArray(rooms, 'name')}</Text>
         <Text>{formatArray(lecturers, 'name')}</Text>
@@ -31,6 +34,14 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background.primary,
     borderWidth: 1,
     borderColor: COLORS.background.seperator,
-    padding: 5
+    padding: 5,
+    overflow: 'hidden'
+  },
+  titleContainer: {
+    flexDirection: 'row'
+  },
+  courseName: {
+    flexGrow: 10,
+    fontWeight: 'bold'
   }
 })

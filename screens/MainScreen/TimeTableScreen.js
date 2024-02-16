@@ -12,7 +12,6 @@ function TimeTableScreen() {
   useEffect(() => {
     async function fetchTimetable() {
       const data = await getLecturesForDate(getISODateNoTimestamp(date))
-      console.log(date.toISOString())
       console.log(data)
       setLectures([])
       data.forEach(lecture => {
@@ -26,8 +25,10 @@ function TimeTableScreen() {
     <ScrollView>
       <Timetable items={lectures} renderItem={props => <HourSlice {...props}/>} 
         date={date}
+
         fromHour={6}
         toHour={22}
+        hourHeight={80}
       />
     </ScrollView>
   )
