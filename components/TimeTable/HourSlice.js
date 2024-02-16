@@ -1,28 +1,33 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { getTimeFromDate } from "../../util/dateUtils";
 import { COLORS } from "../../constants/colors";
+import { formatArray } from "../../util/timetableUtils";
 
-function formatArray(array, key) {
-  let string = ''
-  for(let i = 0; i<array.length; i++)
-    string += array[i][key] +((i !== array.length -1) ? ', ' : '')
-
-  return string
-}
-
-function HourSlice({style, item, dayIndex, daysTotal}) {
+function HourSlice({style, item, dayIndex, daysTotal, onPress}) {
   const {course, eventType, start_time, end_time, note, showLink, color, colorText, rooms, groups, lecturers, executionType} = item.lecture
   //console.log(JSON.stringify(item.lecture))
+  const hexColor = (color === null || color === '') ? COLORS.foreground.primary : `#${color}`
+  function onPressed() {
+    onPress(item.lecture)
+  }
   return (
-    <View style={[style,styles.container]}>
-        <View style={styles.titleContainer}>
-          <Text style={styles.courseName}>{course ? course : eventType}</Text>
-          <Text>{executionType}</Text>
-        </View>
-        <Text>{`${getTimeFromDate(start_time)} - ${getTimeFromDate(end_time)}`}</Text>
-        <Text>{formatArray(rooms, 'name')}</Text>
-        <Text>{formatArray(lecturers, 'name')}</Text>
-    </View>
+    <Pressable style={style} onPress={onPressed}>
+      <View style={styles.container}>
+          <View style={styles.titleContainer}>
+            <Text style={styles.courseName}>{course ? course : eventType}</Text>
+            <Text>{executionType}</Text>
+          </View>
+          <View style={styles.detailsContainer}>
+            <Text style={styles.timeText}>{`${getTimeFromDate(start_time)} - ${getTimeFromDate(end_time)}`}</Text>
+            <Text>{formatArray(rooms, 'name')}</Text>
+            <Text>{formatArray(lecturers, 'name')}</Text>
+          </View>
+          <View>
+            <Text style={{color: hexColor, textAlign:'right'}}>{colorText}</Text>
+          </View>
+      </View>
+    </Pressable>
+    
 );
 }
 
@@ -30,6 +35,7 @@ export default HourSlice
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     //elevation: 5,
     backgroundColor: COLORS.background.primary,
     borderWidth: 1,
@@ -43,5 +49,14 @@ const styles = StyleSheet.create({
   courseName: {
     flexGrow: 10,
     fontWeight: 'bold'
+  },
+  timeText: {
+    fontSize: 13
+  },
+  detailsContainer: {
+    flex: 1
+  },
+  bottomContainer: {
   }
+
 })
