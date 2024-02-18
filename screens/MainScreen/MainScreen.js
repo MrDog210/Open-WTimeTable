@@ -4,6 +4,7 @@ import TimeTableScreen from "./TimeTableScreen"
 const BottomTabs = createBottomTabNavigator();
 
 function MainScreen() {
+  return <TimeTableScreen />
   return (
   <BottomTabs.Navigator>
     <BottomTabs.Screen name='DayTimeTable' component={TimeTableScreen} />
