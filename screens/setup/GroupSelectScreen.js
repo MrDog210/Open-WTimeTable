@@ -5,11 +5,8 @@ import CourseGroupSelect from "../../components/groupSelect/CourseGroupSelect"
 import StyledButton from "../../components/ui/StyledButton"
 import Spinner from "react-native-loading-spinner-overlay"
 import Title from "../../components/ui/Title"
-import { COLORS } from "../../constants/colors"
 import { SPINNER_STYLE } from "../../constants/globalStyles"
 import { UserPreferencesContext } from "../../store/userPreferencesContext"
-import { getAllStoredBranchGroups } from "../../store/schoolInfo"
-import { getGroupsIntersection } from "../../util/groupUtil"
 
 function GroupSelectScreen({route, navigation}) {
   const [isFetchingData, setIsFetchingData] = useState(false)

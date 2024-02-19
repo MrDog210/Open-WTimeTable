@@ -2,6 +2,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { getTimeFromDate } from "../../util/dateUtils";
 import { COLORS } from "../../constants/colors";
 import { formatArray } from "../../util/timetableUtils";
+import StyledText from "../ui/StyledText";
 
 function HourSlice({style, item, dayIndex, daysTotal, onPress}) {
   const {course, eventType, start_time, end_time, note, showLink, color, colorText, rooms, groups, lecturers, executionType} = item.lecture
@@ -14,16 +15,16 @@ function HourSlice({style, item, dayIndex, daysTotal, onPress}) {
     <Pressable style={style} onPress={onPressed}>
       <View style={styles.container}>
           <View style={styles.titleContainer}>
-            <Text style={styles.courseName}>{course ? course : eventType}</Text>
-            <Text>{executionType}</Text>
+            <StyledText style={styles.courseName}>{course ? course : eventType}</StyledText>
+            <StyledText>{executionType}</StyledText>
           </View>
           <View style={styles.detailsContainer}>
-            <Text style={styles.timeText}>{`${getTimeFromDate(start_time)} - ${getTimeFromDate(end_time)}`}</Text>
-            <Text>{formatArray(rooms, 'name')}</Text>
-            <Text>{formatArray(lecturers, 'name')}</Text>
+            <StyledText style={styles.timeText}>{`${getTimeFromDate(start_time)} - ${getTimeFromDate(end_time)}`}</StyledText>
+            <StyledText>{formatArray(rooms, 'name')}</StyledText>
+            <StyledText>{formatArray(lecturers, 'name')}</StyledText>
           </View>
           <View>
-            <Text style={{color: hexColor, textAlign:'right'}}>{colorText}</Text>
+            <StyledText style={{color: hexColor, textAlign:'right'}}>{colorText}</StyledText>
           </View>
       </View>
     </Pressable>
@@ -58,5 +59,4 @@ const styles = StyleSheet.create({
   },
   bottomContainer: {
   }
-
 })

@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useState } from "react"
-import { Alert, Text, View } from "react-native"
+import { Alert, View } from "react-native"
 import { fetchBranchesForProgramm, fetchGroupsForBranch, getBasicProgrammes } from "../../util/http"
 import DropDownPicker from "react-native-dropdown-picker"
 import StyledButton from "../../components/ui/StyledButton"
@@ -8,6 +8,7 @@ import { fillUpDatabase } from "../../util/timetableUtils"
 import { getAllUniqueGroups } from "../../util/groupUtil"
 import { truncateDatabase } from "../../util/database"
 import { SPINNER_STYLE } from "../../constants/globalStyles"
+import StyledText from "../../components/ui/StyledText"
 
 
 function generateYearsOfProgram(program) {
@@ -102,7 +103,7 @@ function ProgramSelectScreen({route, navigation}) {
     <View>
       <Spinner visible={isFetchingData} {...SPINNER_STYLE} />
       <View>
-        <Text>Program:</Text>
+        <StyledText>Program:</StyledText>
         <DropDownPicker items={programms}
           open={programsOpen}
           setOpen={setProgramsOpen}
@@ -115,7 +116,7 @@ function ProgramSelectScreen({route, navigation}) {
           zIndex={3000}
           placeholder="Select program"
         />
-        <Text>{chosenProgrammID?.name}</Text>
+        <StyledText>{chosenProgrammID?.name}</StyledText>
       </View>
       <View>
         {chosenProgrammID && <DropDownPicker items={years}
