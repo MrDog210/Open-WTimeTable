@@ -17,3 +17,8 @@ export function getTimeFromDate(dateString) {
     minutes += '0'
   return `${date.getHours()}:${minutes}`
 }
+
+export function formatDate(date) {
+  date = new Date(date)
+  return date.toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"}) 
+}

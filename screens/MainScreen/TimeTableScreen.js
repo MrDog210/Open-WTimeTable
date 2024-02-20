@@ -1,15 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import Timetable from "react-native-calendar-timetable";
 import { getLecturesForDate } from "../../util/database";
 import HourSlice from "../../components/TimeTable/HourSlice";
-import { getISODateNoTimestamp, subtrackSeconds } from "../../util/dateUtils";
+import { formatDate, getISODateNoTimestamp, subtrackSeconds } from "../../util/dateUtils";
 import LectureDetails from "../../components/TimeTable/LectureDetails";
 import CalendarStrip from 'react-native-calendar-strip';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS } from "../../constants/colors";
+import IconButton from "../../components/ui/IconButton";
+import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 
-function TimeTableScreen() {
+function TimeTableScreen({ navigation }) {
   const [isFetchingData, setIsFetchingData] = useState(false)
   const [modalVisible, setModelVisible] = useState(false)
   const [modalLecture, setModalLecture] = useState(null)
@@ -17,10 +19,24 @@ function TimeTableScreen() {
   const [date, setDate] = useState(new Date('2023-12-13'))
 
   useEffect(() => {
+    navigation.setOptions({
+      title: formatDate(date)
+    })
+  }, [date])
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      title: formatDate(date),
+      headerRight: () => {
+        return <IconButton name='calendar-clear-outline' style={{backgroundColor: COLORS.background.secondary}} onPress={openDatePicker} />
+      }
+    },)
+  }, [])
+
+  useEffect(() => {
     async function fetchTimetable() {
       setIsFetchingData(true)
       const data = await getLecturesForDate(getISODateNoTimestamp(date))
-      //console.log(data)
       setLectures([])
       data.forEach(lecture => {
         setLectures(values => [...values, {lecture: lecture, startDate: lecture.start_time, endDate: subtrackSeconds(lecture.end_time, 1)}])
@@ -35,11 +51,18 @@ function TimeTableScreen() {
     setModelVisible(true)
   }
 
+  function openDatePicker() {
+    DateTimePickerAndroid.open({
+      value: date,
+      onChange: (date) => {setDate(new Date(date.nativeEvent.timestamp))},
+      mode: 'date',
+    });
+  }
+
   return (
     <>
       <LectureDetails modalVisible={modalVisible} lecture={modalLecture} onRequestClose={() => {setModelVisible(false)}} />
       <SafeAreaView style={{ flex: 1}}>
-        
         <ScrollView>
           <Timetable items={lectures} renderItem={props => <HourSlice {...props} onPress={lecturePressed}/>} 
             date={date}
@@ -81,21 +104,6 @@ const timetableStyles = StyleSheet.create({
   container: {
     backgroundColor: COLORS.background.primary,
     marginVertical: 10
-  },
-  headerContainer: {
-
-  },
-  headerText: {
-
-  },
-  headersContainer: {
-
-  },
-  contentContainer: { 
-
-  },
-  timeContainer: {
-
   },
   time: {
     color: COLORS.foreground.secondary
