@@ -22,3 +22,31 @@ export function formatDate(date) {
   date = new Date(date)
   return date.toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"}) 
 }
+
+export function getMonday(d) {
+  d = new Date(d);
+  var day = d.getDay(),
+    diff = d.getDate() - day + (day == 0 ? -6 : 1); // adjust when day is sunday
+  return new Date(d.setDate(diff));
+}
+
+export function getFriday(d) {
+  d = getMonday(d)
+  diff = d.getDate() + 4
+  return new Date(d.setDate(diff));
+}
+
+export function getWeekDates(date) {
+  return {from: getMonday(date), till: getFriday(date)}
+}
+
+export function getDates(startDate, stopDate) {
+  console.log('start' + startDate.toISOString())
+  var dateArray = new Array();
+  var currentDate = startDate;
+  while (currentDate <= stopDate) {
+      dateArray.push(new Date (currentDate));
+      currentDate.setDate(currentDate.getDate() + 1);
+  }
+  return dateArray;
+}

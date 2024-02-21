@@ -3,26 +3,23 @@ import { ScrollView, StyleSheet } from "react-native";
 import Timetable from "react-native-calendar-timetable";
 import { getLecturesForDate } from "../../util/database";
 import HourSlice from "../../components/TimeTable/HourSlice";
-import { formatDate, getISODateNoTimestamp, subtrackSeconds } from "../../util/dateUtils";
+import { formatDate, getDates, getISODateNoTimestamp, getWeekDates, subtrackSeconds } from "../../util/dateUtils";
 import LectureDetails from "../../components/TimeTable/LectureDetails";
 import CalendarStrip from 'react-native-calendar-strip';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS } from "../../constants/colors";
 import IconButton from "../../components/ui/IconButton";
-import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 
-function TimeTableScreen({ navigation }) {
+function TimeTableScreen({ navigation, route }) {
   const [isFetchingData, setIsFetchingData] = useState(false)
   const [modalVisible, setModelVisible] = useState(false)
   const [modalLecture, setModalLecture] = useState(null)
   const [lectures, setLectures] = useState([])
   const [date, setDate] = useState(new Date('2023-12-13'))
+  const [week, setWeek] = useState(getWeekDates(date))
 
-  useEffect(() => {
-    navigation.setOptions({
-      title: formatDate(date)
-    })
-  }, [date])
+  const { isWeekView } = route.params
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -34,12 +31,26 @@ function TimeTableScreen({ navigation }) {
   }, [])
 
   useEffect(() => {
+    navigation.setOptions({
+      title: formatDate(date)
+    })
+
     async function fetchTimetable() {
       setIsFetchingData(true)
-      const data = await getLecturesForDate(getISODateNoTimestamp(date))
       setLectures([])
-      data.forEach(lecture => {
-        setLectures(values => [...values, {lecture: lecture, startDate: lecture.start_time, endDate: subtrackSeconds(lecture.end_time, 1)}])
+      let dates = []
+      if(isWeekView) {
+        setWeek(getWeekDates(date))
+        dates = getDates(week.from, week.till)
+        console.log(dates)
+      } else {
+        dates.push(date)
+      }
+      dates.forEach(async (d) => {
+        const data = await getLecturesForDate(getISODateNoTimestamp(d))
+        data.forEach(lecture => {
+          setLectures(values => [...values, {lecture: lecture, startDate: lecture.start_time, endDate: subtrackSeconds(lecture.end_time, 1)}])
+        })
       })
       setIsFetchingData(false)
     }
@@ -65,7 +76,8 @@ function TimeTableScreen({ navigation }) {
       <SafeAreaView style={{ flex: 1}}>
         <ScrollView>
           <Timetable items={lectures} renderItem={props => <HourSlice {...props} onPress={lecturePressed}/>} 
-            date={date}
+            date={isWeekView ? null : date}
+            range={isWeekView ? week : null}
 
             fromHour={6}
             toHour={22}

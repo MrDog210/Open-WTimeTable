@@ -2,7 +2,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, useState } from "react";
 
 const userPreferences = {
-  hasCompletedSetup: false
+  hasCompletedSetup: false,
+  defaultView: 'DayView',
+  language: 'en',
+  darkMode: 'auto'
 }
 
 export const UserPreferencesContext = createContext({
@@ -23,8 +26,11 @@ function UserPreferencesContextProvider({children}) {
   async function loadPreferences() {
     const values = await AsyncStorage.getItem('preferences')
     console.log('Saved preferences: ' + values)
-
-    if(values){
+    //savePreferences(userPreferences)
+    //return
+    
+    if(values !== null){
+      console.log('Parsing json')
       try {
         setPreferences(JSON.parse(values))
       } catch (error) {
