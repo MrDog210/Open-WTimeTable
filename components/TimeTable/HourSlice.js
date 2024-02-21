@@ -45,7 +45,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden'
   },
   titleContainer: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    flexWrap: 'wrap'
   },
   courseName: {
     flexGrow: 10,

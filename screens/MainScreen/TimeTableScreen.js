@@ -3,58 +3,60 @@ import { ScrollView, StyleSheet } from "react-native";
 import Timetable from "react-native-calendar-timetable";
 import { getLecturesForDate } from "../../util/database";
 import HourSlice from "../../components/TimeTable/HourSlice";
-import { formatDate, getDates, getISODateNoTimestamp, getWeekDates, subtrackSeconds } from "../../util/dateUtils";
+import { formatDate, formatWeekDate, getDates, getISODateNoTimestamp, getWeekDates, subtrackSeconds } from "../../util/dateUtils";
 import LectureDetails from "../../components/TimeTable/LectureDetails";
 import CalendarStrip from 'react-native-calendar-strip';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS } from "../../constants/colors";
-import IconButton from "../../components/ui/IconButton";
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+import { getColumnWidth } from "../../util/timetableUtils";
+import IconButton from "../../components/ui/IconButton";
 
 function TimeTableScreen({ navigation, route }) {
   const [isFetchingData, setIsFetchingData] = useState(false)
   const [modalVisible, setModelVisible] = useState(false)
   const [modalLecture, setModalLecture] = useState(null)
   const [lectures, setLectures] = useState([])
-  const [date, setDate] = useState(new Date('2023-12-13'))
+  const [date, setDate] = useState(new Date())
   const [week, setWeek] = useState(getWeekDates(date))
 
   const { isWeekView } = route.params
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: formatDate(date),
       headerRight: () => {
         return <IconButton name='calendar-clear-outline' style={{backgroundColor: COLORS.background.secondary}} onPress={openDatePicker} />
       }
     },)
   }, [])
 
-  useEffect(() => {
+  useEffect(() =>{
     navigation.setOptions({
-      title: formatDate(date)
+      title: isWeekView ? formatWeekDate(week.from, week.till) : formatDate(date)
     })
+  }, [date, week])
 
-    async function fetchTimetable() {
-      setIsFetchingData(true)
-      setLectures([])
-      let dates = []
-      if(isWeekView) {
-        setWeek(getWeekDates(date))
-        dates = getDates(week.from, week.till)
-        console.log(dates)
-      } else {
-        dates.push(date)
-      }
-      dates.forEach(async (d) => {
-        const data = await getLecturesForDate(getISODateNoTimestamp(d))
-        data.forEach(lecture => {
-          setLectures(values => [...values, {lecture: lecture, startDate: lecture.start_time, endDate: subtrackSeconds(lecture.end_time, 1)}])
-        })
-      })
-      setIsFetchingData(false)
+  useEffect(() => {
+    setIsFetchingData(true)
+
+    let dates = []
+    if(isWeekView) {
+      const WEEK = getWeekDates(date)
+      dates = getDates(WEEK.from, WEEK.till)
+      console.log(dates)
+    } else {
+      dates.push(date)
     }
-    fetchTimetable()
+    const lec = []
+    dates.forEach((d) => {
+      const data = getLecturesForDate(getISODateNoTimestamp(d))
+      data.forEach(lecture => {
+        lec.push({lecture: lecture, startDate: lecture.start_time, endDate: subtrackSeconds(lecture.end_time, 1)})
+      })
+    })
+    setLectures([...lec])
+    setIsFetchingData(false)
+    setWeek(getWeekDates(date)) // stupid
   }, [date])
 
   function lecturePressed(lecture) {
@@ -76,13 +78,17 @@ function TimeTableScreen({ navigation, route }) {
       <SafeAreaView style={{ flex: 1}}>
         <ScrollView>
           <Timetable items={lectures} renderItem={props => <HourSlice {...props} onPress={lecturePressed}/>} 
-            date={isWeekView ? null : date}
-            range={isWeekView ? week : null}
+            date={isWeekView ? undefined : date}
+            range={isWeekView ? week : undefined}
 
             fromHour={6}
             toHour={22}
             hourHeight={80}
             style={timetableStyles}
+
+            renderHeader={isWeekView ? true : undefined}
+
+            columnWidth={isWeekView ? getColumnWidth(isWeekView) : undefined}
           />
         </ScrollView>
         <CalendarStrip

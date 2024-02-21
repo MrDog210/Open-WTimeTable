@@ -112,7 +112,7 @@ function getLecturesForDateWithNoCurses(date) { //edge case, when there is no co
   )
 }
 
-export async function getLecturesForDate(date) { // pazi če je execution type prazen
+export function getLecturesForDate(date) { // pazi če je execution type prazen
   let lectures = database.getAllSync(
   `SELECT DISTINCT lectures.id, lectures.start_time, lectures.end_time, courses.course, lectures.executionType_id,
   eventType, note, showLink, color, colorText

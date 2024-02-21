@@ -2,6 +2,7 @@ import ky from "ky";
 import { getToken } from "./token.js";
 import { getServerUrl, setSchoolInfo, setServerUrl } from "../store/schoolInfo.js";
 import { URL } from '../constants/http.js'
+import { getISODateNoTimestamp, getSchoolYearDates } from "./dateUtils.js";
 
 function handleError(error) {
   console.log(error)
@@ -96,8 +97,10 @@ export async function fetchLecturesForGroups(schoolCode, groups) { // groups is 
   });
   allGroupsId = allGroupsId.slice(0, -1);
 
-  // TODO: DATUMI
-  const json = await fetchWithToken(url + `scheduleByGroups?schoolCode=${schoolCode}&dateFrom=2023-09-01&dateTo=2024-02-29&language=slo&groupsId=${allGroupsId}`)
+  let {startDate, endDate} = getSchoolYearDates()
+  startDate = getISODateNoTimestamp(startDate)
+  endDate = getISODateNoTimestamp(endDate)
+  const json = await fetchWithToken(url + `scheduleByGroups?schoolCode=${schoolCode}&dateFrom=${startDate}&dateTo=${endDate}&language=slo&groupsId=${allGroupsId}`)
   //console.log(json)
   //console.log(JSON.stringify(json, null, '\t'));
 

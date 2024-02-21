@@ -23,10 +23,16 @@ export function formatDate(date) {
   return date.toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"}) 
 }
 
+export function formatWeekDate(fromDate, toDate) {
+  fromDate = new Date(fromDate)
+  toDate = new Date(toDate)
+  return `${fromDate.getDate()}.${fromDate.getMonth()} - ${toDate.getDate()}.${toDate.getMonth()}`
+}
+
 export function getMonday(d) {
   d = new Date(d);
   var day = d.getDay(),
-    diff = d.getDate() - day + (day == 0 ? -6 : 1); // adjust when day is sunday
+    diff = d.getDate() - day + 1; // adjust when day is sunday
   return new Date(d.setDate(diff));
 }
 
@@ -49,4 +55,18 @@ export function getDates(startDate, stopDate) {
       currentDate.setDate(currentDate.getDate() + 1);
   }
   return dateArray;
+}
+
+export function getSchoolYearDates() {
+  const currentDate = new Date()
+  let startDate, endDate
+  if(currentDate.getMonth()>=8) { // then we start this year to +1
+    startDate = new Date(`${currentDate.getFullYear()}-09-01`)
+    endDate = new Date(`${currentDate.getFullYear()+1}-08-01`)
+  } else {
+    startDate = new Date(`${currentDate.getFullYear()-1}-09-01`)
+    endDate = new Date(`${currentDate.getFullYear()}-08-01`)
+  }
+
+  return {startDate, endDate}
 }

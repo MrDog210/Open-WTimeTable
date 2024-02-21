@@ -1,3 +1,4 @@
+import { useWindowDimensions } from "react-native";
 import { insertCourse, insertExecutionType, insertGroup, insertLecture, insertLecturer, insertRoom } from "./database";
 import { fetchLecturesForGroups } from "./http";
 
@@ -27,4 +28,15 @@ export function formatArray(array, key) {
     string += array[i][key] +((i !== array.length -1) ? ', ' : '')
 
   return string
+}
+
+export function getColumnWidth(isWeekView) { // https://github.com/dorkyboi/react-native-calendar-timetable?tab=readme-ov-file#layout
+  const {width, height} = useWindowDimensions()
+  const timeWidth = 50
+  const linesLeftInset = 15
+  const columnWidth = width - (timeWidth - linesLeftInset)
+  if(width>height && isWeekView)
+    return Math.round(columnWidth/5)
+  else 
+    return columnWidth
 }
