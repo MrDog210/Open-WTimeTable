@@ -7,7 +7,7 @@ Main advantage of this app over the official one is, that you can pick a separat
 - Separate groups for each course.
 - Support tablets
 
-## Instalation
+## Installation
 
 1. Clone the repo
 2. run  ``` npm install ```
