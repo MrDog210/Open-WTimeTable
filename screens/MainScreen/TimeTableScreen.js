@@ -1,5 +1,5 @@
-import { useEffect, useLayoutEffect, useState } from "react";
-import { ScrollView, StyleSheet } from "react-native";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { RefreshControl, ScrollView, StyleSheet } from "react-native";
 import Timetable from "react-native-calendar-timetable";
 import { getLecturesForDate } from "../../util/database";
 import HourSlice from "../../components/TimeTable/HourSlice";
@@ -9,16 +9,18 @@ import CalendarStrip from 'react-native-calendar-strip';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS } from "../../constants/colors";
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
-import { getColumnWidth } from "../../util/timetableUtils";
+import { calculateNowLineOffset, getColumnWidth } from "../../util/timetableUtils";
 import IconButton from "../../components/ui/IconButton";
 
 function TimeTableScreen({ navigation, route }) {
   const [isFetchingData, setIsFetchingData] = useState(false)
+  const [refreshing, setRefreshing] = useState(false);
   const [modalVisible, setModelVisible] = useState(false)
   const [modalLecture, setModalLecture] = useState(null)
   const [lectures, setLectures] = useState([])
   const [date, setDate] = useState(new Date())
   const [week, setWeek] = useState(getWeekDates(date))
+  const scrollRef = useRef();
 
   const { isWeekView } = route.params
 
@@ -28,6 +30,10 @@ function TimeTableScreen({ navigation, route }) {
         return <IconButton name='calendar-clear-outline' style={{backgroundColor: COLORS.background.secondary}} onPress={openDatePicker} />
       }
     },)
+    scrollRef.current?.scrollTo({
+      y: calculateNowLineOffset(),
+      animated: true
+    })
   }, [])
 
   useEffect(() =>{
@@ -72,11 +78,15 @@ function TimeTableScreen({ navigation, route }) {
     });
   }
 
+  function onRefresh() {
+    setRefreshing(true)
+  }
+
   return (
     <>
       <LectureDetails modalVisible={modalVisible} lecture={modalLecture} onRequestClose={() => {setModelVisible(false)}} />
       <SafeAreaView style={{ flex: 1}}>
-        <ScrollView>
+        <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} ref={scrollRef}>
           <Timetable items={lectures} renderItem={props => <HourSlice {...props} onPress={lecturePressed}/>} 
             date={isWeekView ? undefined : date}
             range={isWeekView ? week : undefined}

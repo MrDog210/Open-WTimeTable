@@ -40,3 +40,10 @@ export function getColumnWidth(isWeekView) { // https://github.com/dorkyboi/reac
   else 
     return columnWidth
 }
+
+export function calculateNowLineOffset() { // TODO: should make these global constants
+  const d = new Date();
+  console.log(d)
+  const fromHour = 6, minuteHeight = 80 / 60, linesTopOffset = 18
+  return (Math.max((d.getHours() - fromHour), 0) * 60 + d.getMinutes()) * minuteHeight + linesTopOffset;
+}

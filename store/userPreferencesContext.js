@@ -7,7 +7,8 @@ const userPreferences = {
   language: 'en',
   darkMode: 'auto',
   timetableUpdateInterval: 'appStartup',
-  timetableUpdateSpan: 30 // in days
+  timetableUpdateSpan: 30, // in days
+  timetableAutoScroll: true
 }
 
 export const UserPreferencesContext = createContext({
