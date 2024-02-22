@@ -1,14 +1,15 @@
 import { useEffect, useLayoutEffect, useState } from "react"
-import { Alert, View } from "react-native"
+import { Alert, ScrollView, StyleSheet, View } from "react-native"
 import { fetchBranchesForProgramm, fetchGroupsForBranch, getBasicProgrammes } from "../../util/http"
-import DropDownPicker from "react-native-dropdown-picker"
 import StyledButton from "../../components/ui/StyledButton"
 import Spinner from "react-native-loading-spinner-overlay"
 import { fillUpDatabase } from "../../util/timetableUtils"
 import { getAllUniqueGroups } from "../../util/groupUtil"
 import { truncateDatabase } from "../../util/database"
 import { SPINNER_STYLE } from "../../constants/globalStyles"
-import StyledText from "../../components/ui/StyledText"
+import DropDownWithTitle from "../../components/ui/DropDownWithTitle"
+import Title from "../../components/ui/Title"
+import Line from "../../components/ui/Line"
 
 
 function generateYearsOfProgram(program) {
@@ -100,11 +101,13 @@ function ProgramSelectScreen({route, navigation}) {
   }
 
   return (
-    <View>
-      <Spinner visible={isFetchingData} {...SPINNER_STYLE} />
+    <>
+    <Spinner visible={isFetchingData} {...SPINNER_STYLE} />
+    <ScrollView style={styles.container}>
+      <Title>Select your program, year and group</Title>
+      <Line />
       <View>
-        <StyledText>Program:</StyledText>
-        <DropDownPicker items={programms}
+        <DropDownWithTitle items={programms}
           open={programsOpen}
           setOpen={setProgramsOpen}
           value={chosenProgrammID}
@@ -115,11 +118,11 @@ function ProgramSelectScreen({route, navigation}) {
           }}
           zIndex={3000}
           placeholder="Select program"
+          title='Program'
         />
-        <StyledText>{chosenProgrammID?.name}</StyledText>
       </View>
       <View>
-        {chosenProgrammID && <DropDownPicker items={years}
+        {chosenProgrammID && <DropDownWithTitle items={years}
           open={yearopen}
           setOpen={setYearOpen}
           value={chosenYear}
@@ -130,10 +133,11 @@ function ProgramSelectScreen({route, navigation}) {
           }}
           zIndex={2000}
           placeholder="Select year"
+          title='Year'
         />}
       </View>
       <View>
-      {chosenYear && <DropDownPicker items={branches}
+      {chosenYear && <DropDownWithTitle items={branches}
           open={branchOpen}
           setOpen={setBranchOpen}
           value={chosenBranchID}
@@ -144,13 +148,23 @@ function ProgramSelectScreen({route, navigation}) {
           }}
           zIndex={1000}
           placeholder="Select branch"
+          title='Branch'
         />}
       </View>
-      <View>
-        {chosenBranchID && <StyledButton onPress={proceedToGroupSelect} title='Proceed to group selection' />}
-      </View>
+    </ScrollView>
+    <View>
+      {chosenBranchID && <StyledButton onPress={proceedToGroupSelect} title='Proceed to group selection' />}
     </View>
+    </>
   )
 }
 
 export default ProgramSelectScreen
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 10,
+    gap: 10,
+    flex: 1
+  },
+})

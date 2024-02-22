@@ -15,8 +15,7 @@ export default StyledTextInput
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 2,
-    marginHorizontal: 10
+
   },
   textInput: {
     backgroundColor: COLORS.background.secondary,

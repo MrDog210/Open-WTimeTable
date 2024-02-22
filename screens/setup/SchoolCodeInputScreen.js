@@ -54,7 +54,8 @@ export default SchoolCodeInputScreen
 const style = StyleSheet.create({
   container: {
     flex: 1,
-    //alignContent: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    padding: 10,
+    gap: 10
   }
 })
