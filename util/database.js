@@ -135,3 +135,7 @@ export function getLecturesForDate(date) { // pazi če je execution type prazen
 
   return lectures
 }
+
+export function querryNumOFSelectedGroups(courses_id, groups_id) {
+  return database.getFirstSync(`SELECT COUNT(*) AS 'num' FROM selected_groups WHERE courses_id = ? AND groups_id = ?`, [courses_id, groups_id])
+}

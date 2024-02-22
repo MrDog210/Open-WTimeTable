@@ -1,10 +1,17 @@
 import { Text, View } from "react-native"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import DropDownPicker from "react-native-dropdown-picker"
 
 function CourseGroupSelect({course, groups}) {
   const [isDropDownOpen, setIsDropDownOpen] = useState(false)
   const [chosenGroupsID, setChosenGroupsID] = useState([])
+
+  useEffect(() => {
+    groups.forEach(group => {
+      if(group.selected)
+        setChosenGroupsID(values => [...values, group.id])
+    })
+  }, [])
 
   function onGroupSelected(groupsIds) {
     groups.forEach(group => {

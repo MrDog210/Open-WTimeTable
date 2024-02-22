@@ -5,8 +5,20 @@ import { Ionicons } from '@expo/vector-icons'
 import AboutScreen from './AboutScreen';
 import { useContext } from 'react';
 import { UserPreferencesContext } from '../../store/userPreferencesContext';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import GroupSelectScreen from '../setup/GroupSelectScreen';
 
 const Drawer = createDrawerNavigator();
+const Stack = createNativeStackNavigator();
+
+function OptionsNavigaton() {
+  return (
+    <Stack.Navigator screenOptions={{headerShown: false}}>
+      <Drawer.Screen name='OptionsMain' component={OptionsScreen} />
+      <Stack.Screen name='GroupSelect' component={GroupSelectScreen} />
+    </Stack.Navigator>
+  )
+}
 
 function MainScreen() {
   const userPreferencesCtx = useContext(UserPreferencesContext)
@@ -27,11 +39,10 @@ function MainScreen() {
     }}
       initialParams={{isWeekView: true}}
     />
-    <Drawer.Screen name='Options' component={OptionsScreen} 
-      options={{
-        drawerIcon: ({tintColor}) => <Ionicons name='settings-outline' color={tintColor} size={20}/>
-      }}
-    />
+    <Drawer.Screen name='Options' component={OptionsNavigaton}
+     options={{
+          drawerIcon: ({tintColor}) => <Ionicons name='settings-outline' color={tintColor} size={20}/>
+      }}/>
     <Drawer.Screen name='About' component={AboutScreen} 
       options={{
         drawerIcon: ({tintColor}) => <Ionicons name='information-circle-outline' color={tintColor} size={20}/>

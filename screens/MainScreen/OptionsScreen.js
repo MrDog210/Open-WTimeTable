@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from "react"
 import { UserPreferencesContext } from "../../store/userPreferencesContext"
 import StyledText from "../../components/ui/StyledText"
 
-function OptionsScreen() {
+function OptionsScreen({ navigation }) {
   const userPreferencesCtx = useContext(UserPreferencesContext)
   /*const [darkModeSettings, setDarkModeSettings] = useState([
     {label: 'Auto', value: 'auto'},
@@ -16,6 +16,7 @@ function OptionsScreen() {
     {label: 'Day View', value: 'DayView'},
     {label: 'Week View', value: 'WeekView'},
   ])
+
   const [selectedView, setSelectedView] = useState(userPreferencesCtx.preferences.defaultView)
   useEffect(() => {
     console.log(selectedView)
@@ -23,10 +24,21 @@ function OptionsScreen() {
     preferences.defaultView = selectedView
     userPreferencesCtx.setPreferences(preferences)
   },[selectedView])
+
+  function restartSetup() {
+    const pref = userPreferencesCtx.preferences // should find better way of doing this
+    pref.hasCompletedSetup = false
+    userPreferencesCtx.setPreferences(pref)
+  }
+
+  function changeSelectedGroups() {
+    navigation.navigate('GroupSelect', {isEditing: true})
+  }
+
   return (
     <ScrollView>
-      <OptionsButton title='Change school settings' />
-      <OptionsButton title='Change selected groups' />
+      <OptionsButton title='Restart setup' onPress={restartSetup}/>
+      <OptionsButton title='Change selected groups' onPress={changeSelectedGroups} />
       <StyledText style={styles.text}>Default timetable view:</StyledText>
       <OptionsDropdown items={defaultView} setItems={setDefaultView} value={selectedView} setValue={setSelectedView} />
     </ScrollView>

@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react"
 import { View, Alert, FlatList, StyleSheet } from "react-native"
-import { getAllCourses, getAllDistinctGroupsOfCourse, insertSelectedGroups, truncateSelectedGroups } from "../../util/database"
+import { getAllCourses, getAllDistinctGroupsOfCourse, insertSelectedGroups, querryNumOFSelectedGroups, truncateSelectedGroups } from "../../util/database"
 import CourseGroupSelect from "../../components/groupSelect/CourseGroupSelect"
 import StyledButton from "../../components/ui/StyledButton"
 import Spinner from "react-native-loading-spinner-overlay"
@@ -14,6 +14,8 @@ function GroupSelectScreen({route, navigation}) {
   const [coursesAndTheirGroups, setCoursesAndTheirGroups] = useState([])
   const userPreferencesCtx = useContext(UserPreferencesContext)
 
+  const { isEditing } = route.params
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -23,11 +25,12 @@ function GroupSelectScreen({route, navigation}) {
         //const branchGroups = await getAllStoredBranchGroups()
         const allCourses = await getAllCourses()
         console.log('All courses: ' + JSON.stringify(allCourses, null, '\t'))
-        for (const course of allCourses) {
+        for (const course of allCourses) { // if in editing mode, we find set all the preselected groups
           let courseGroups = await getAllDistinctGroupsOfCourse(course.id)
           //courseGroups = getGroupsIntersection(courseGroups, branchGroups)
           courseGroups.forEach(group => {
-            group.selected = false
+            const data = querryNumOFSelectedGroups(course.id, group.id)
+            group.selected = data.num >= 1
           })
           console.log('Course groups: ' + JSON.stringify(courseGroups, null, '\t'));
           setCoursesAndTheirGroups(current => [...current, {course: course, groups: courseGroups}])
@@ -54,10 +57,14 @@ function GroupSelectScreen({route, navigation}) {
             insertSelectedGroups(courseId, group.id)
         })
       })
-      const pref = userPreferencesCtx.preferences // should find better way of doing this
-      console.log(pref)
-      pref.hasCompletedSetup = true
-      userPreferencesCtx.setPreferences(pref)
+      if (isEditing) {
+        navigation.goBack()
+      } else {
+        const pref = userPreferencesCtx.preferences // should find better way of doing this
+        console.log(pref)
+        pref.hasCompletedSetup = true
+        userPreferencesCtx.setPreferences(pref)
+      }
     } catch (error) {
       Alert.alert('An error occured', error.message)
     }

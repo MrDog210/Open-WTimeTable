@@ -92,7 +92,7 @@ function ProgramSelectScreen({route, navigation}) {
       console.log('Fetchig groups')
       const groups = getAllUniqueGroups(await fetchGroupsForBranch(schoolInfo.schoolCode, chosenBranchID))
       await fillUpDatabase(schoolInfo.schoolCode, groups)
-      navigation.navigate('SelectGroups')
+      navigation.navigate('SelectGroups', { isEditing: false })
     } catch (error) {
       Alert.alert('Error', error.message)
     }
