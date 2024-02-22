@@ -10,6 +10,7 @@ import { SPINNER_STYLE } from "../../constants/globalStyles"
 import DropDownWithTitle from "../../components/ui/DropDownWithTitle"
 import Title from "../../components/ui/Title"
 import Line from "../../components/ui/Line"
+import { setAllBranchGroups } from "../../store/schoolInfo"
 
 
 function generateYearsOfProgram(program) {
@@ -92,6 +93,7 @@ function ProgramSelectScreen({route, navigation}) {
       truncateDatabase()
       console.log('Fetchig groups')
       const groups = getAllUniqueGroups(await fetchGroupsForBranch(schoolInfo.schoolCode, chosenBranchID))
+      setAllBranchGroups(groups)
       await fillUpDatabase(schoolInfo.schoolCode, groups)
       navigation.navigate('SelectGroups', { isEditing: false })
     } catch (error) {

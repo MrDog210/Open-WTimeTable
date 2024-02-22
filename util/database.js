@@ -73,7 +73,7 @@ export async function getAllDistinctGroupsOfCourse(courseId) {
   const result = await database.getAllAsync(`SELECT DISTINCT groups.id, groups.name FROM groups 
       JOIN lectures_has_groups ON groups.id = lectures_has_groups.groups_id
       JOIN lectures ON lectures.id = lectures_has_groups.lectures_id
-      WHERE lectures.course_id = ?;`, [courseId])
+      WHERE lectures.course_id = ? ORDER BY groups.name;`, [courseId])
   return result
 } 
 

@@ -39,11 +39,12 @@ export async function setServerUrl(value) {
 }
 
 export async function getAllStoredBranchGroups() {
-  return await getKey('groups')
+  const json = await getKey('groups')
+  return JSON.parse(json)
 }
 
 export async function setAllBranchGroups(value) {
-  await setKey('groups', value)
+  await setKey('groups', JSON.stringify(value))
 }
 
 /* schoolInfo = { // example

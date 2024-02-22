@@ -21,6 +21,8 @@ export function getAllUniqueGroups(allGroups) {
 
 export function getGroupsIntersection(groups1, groups2) { // returns all the common groups between two arrays
   const commonGroups = []
+  console.log('g1' + groups1)
+  console.log('g2' + groups2)
 
   groups1.forEach(g1 => {
     groups2.forEach(g2 => {

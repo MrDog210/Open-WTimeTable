@@ -7,6 +7,9 @@ import Spinner from "react-native-loading-spinner-overlay"
 import Title from "../../components/ui/Title"
 import { SPINNER_STYLE } from "../../constants/globalStyles"
 import { UserPreferencesContext } from "../../store/userPreferencesContext"
+import Line from "../../components/ui/Line"
+import { getAllStoredBranchGroups } from "../../store/schoolInfo"
+import { getGroupsIntersection } from "../../util/groupUtil"
 
 function GroupSelectScreen({route, navigation}) {
   const [isFetchingData, setIsFetchingData] = useState(false)
@@ -22,12 +25,12 @@ function GroupSelectScreen({route, navigation}) {
         setIsFetchingData(true)
         setFetchingDataMessage('Querying data')
         setCoursesAndTheirGroups([])
-        //const branchGroups = await getAllStoredBranchGroups()
+        const branchGroups = await getAllStoredBranchGroups()
         const allCourses = await getAllCourses()
         console.log('All courses: ' + JSON.stringify(allCourses, null, '\t'))
         for (const course of allCourses) { // if in editing mode, we find set all the preselected groups
           let courseGroups = await getAllDistinctGroupsOfCourse(course.id)
-          //courseGroups = getGroupsIntersection(courseGroups, branchGroups)
+          courseGroups = getGroupsIntersection(courseGroups, branchGroups)
           courseGroups.forEach(group => {
             const data = querryNumOFSelectedGroups(course.id, group.id)
             group.selected = data.num >= 1
@@ -78,6 +81,7 @@ function GroupSelectScreen({route, navigation}) {
       />
       <View style={styles.groupSelectContainer}>
         <Title>Select your groups</Title>
+        <Line />
         <FlatList data={coursesAndTheirGroups} keyExtractor={item => item.course.id} 
           renderItem={({item}) => <CourseGroupSelect groups={item.groups} course={item.course} />} 
         />
