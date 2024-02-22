@@ -26,6 +26,7 @@ function generateYearsOfProgram(program) {
 function ProgramSelectScreen({route, navigation}) {
   const { schoolInfo } = route.params
   const [isFetchingData, setIsFetchingData] = useState(false)
+  const [fetchingDataMessage, setFetchingDataMessage] = useState('')
 
   const [programsOpen, setProgramsOpen] = useState(false)
   const [programms, setProgramms] = useState([])
@@ -49,6 +50,7 @@ function ProgramSelectScreen({route, navigation}) {
     async function fetchData() {
       try {
         setIsFetchingData(true)
+        setFetchingDataMessage('Fetching programs')
         const prog = await getBasicProgrammes(schoolInfo.schoolCode)
         setProgramms(prog)
       } catch (error) {
@@ -76,6 +78,7 @@ function ProgramSelectScreen({route, navigation}) {
     async function getBranches() {
       try {
         setIsFetchingData(true)
+        setFetchingDataMessage('Fetching branches')
         setChosenBranchID(null)
         SetBranches(await fetchBranchesForProgramm(schoolInfo.schoolCode, chosenProgrammID, chosenYear))
       } catch (error) {
@@ -88,12 +91,14 @@ function ProgramSelectScreen({route, navigation}) {
 
   async function proceedToGroupSelect() {
     setIsFetchingData(true)
+    setFetchingDataMessage('Fetching lectures')
     const program = programms.find((item) => item.id === chosenProgrammID)
     try {
       truncateDatabase()
       console.log('Fetchig groups')
       const groups = getAllUniqueGroups(await fetchGroupsForBranch(schoolInfo.schoolCode, chosenBranchID))
       setAllBranchGroups(groups)
+      setFetchingDataMessage('Inserting lectures into database, this WILL take a while')
       await fillUpDatabase(schoolInfo.schoolCode, groups)
       navigation.navigate('SelectGroups', { isEditing: false })
     } catch (error) {

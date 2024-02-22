@@ -5,7 +5,9 @@ const userPreferences = {
   hasCompletedSetup: false,
   defaultView: 'DayView',
   language: 'en',
-  darkMode: 'auto'
+  darkMode: 'auto',
+  timetableUpdateInterval: 'appStartup',
+  timetableUpdateSpan: 30 // in days
 }
 
 export const UserPreferencesContext = createContext({

@@ -1,6 +1,5 @@
-import { Text, View } from "react-native"
 import { useEffect, useState } from "react"
-import DropDownPicker from "react-native-dropdown-picker"
+import DropDownWithTitle from "../ui/DropDownWithTitle"
 
 function CourseGroupSelect({course, groups}) {
   const [isDropDownOpen, setIsDropDownOpen] = useState(false)
@@ -25,25 +24,25 @@ function CourseGroupSelect({course, groups}) {
   }
 
   return (
-  <View>
-    <Text>{course.course}:</Text>
-    <DropDownPicker items={groups}
-          open={isDropDownOpen}
-          setOpen={setIsDropDownOpen}
-          value={chosenGroupsID}
-          setValue={setChosenGroupsID}
-          schema={{
-            label: 'name',
-            value: 'id'
-          }}
-          placeholder='Select groups'
-          multiple={true}
-          min={0}
-          max={groups.length}
-          listMode='MODAL'
-          onChangeValue={onGroupSelected}
-        />
-  </View>)
+    <DropDownWithTitle 
+      items={groups}
+      open={isDropDownOpen}
+      setOpen={setIsDropDownOpen}
+      value={chosenGroupsID}
+      setValue={setChosenGroupsID}
+      schema={{
+        label: 'name',
+        value: 'id'
+      }}
+      placeholder='Select groups'
+      multiple={true}
+      min={0}
+      max={groups.length}
+      onChangeValue={onGroupSelected}
+      title={course.course}
+      mode='BADGE'
+    />
+  )
 }
 
 export default CourseGroupSelect

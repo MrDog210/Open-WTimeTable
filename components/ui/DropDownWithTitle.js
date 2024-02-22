@@ -19,6 +19,19 @@ function DropDownWithTitle({title, ...props}) {
         modalContentContainerStyle={{backgroundColor: COLORS.background.primary}}
         modalTitleStyle={{color: COLORS.foreground.primary, fontWeight: 'bold'}}
         modalAnimationType="slide"
+
+        showBadgeDot={false}
+        extendableBadgeContainer={true}
+        badgeStyle={{
+          borderRadius: 0,
+          backgroundColor: 'white',
+        }}
+        badgeTextStyle={{
+          color: COLORS.foreground.primary,
+        }}
+        badgeSeparatorStyle={{
+          backgroundColor: 'white',
+        }}
       />
     </View>
   )

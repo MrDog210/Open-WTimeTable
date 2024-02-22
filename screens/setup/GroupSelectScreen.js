@@ -25,12 +25,12 @@ function GroupSelectScreen({route, navigation}) {
         setIsFetchingData(true)
         setFetchingDataMessage('Querying data')
         setCoursesAndTheirGroups([])
-        const branchGroups = await getAllStoredBranchGroups()
+        const branchGroups = await getAllStoredBranchGroups() // it is used to filter out unwanted groups
         const allCourses = await getAllCourses()
         console.log('All courses: ' + JSON.stringify(allCourses, null, '\t'))
         for (const course of allCourses) { // if in editing mode, we find set all the preselected groups
           let courseGroups = await getAllDistinctGroupsOfCourse(course.id)
-          courseGroups = getGroupsIntersection(courseGroups, branchGroups)
+          courseGroups = getGroupsIntersection(courseGroups, branchGroups) // we keep only the relevant groups
           courseGroups.forEach(group => {
             const data = querryNumOFSelectedGroups(course.id, group.id)
             group.selected = data.num >= 1
@@ -100,6 +100,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   groupSelectContainer: {
-    flex: 1
+    flex: 1,
+    padding: 10,
   }
 })
