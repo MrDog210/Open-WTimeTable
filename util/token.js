@@ -12,7 +12,7 @@ function handleError(error) {
   throw new Error(error)
 }
 
-async function fetchToken() {
+export async function fetchToken() {
   let json = await ky.get(URL + 'login', {
     headers: new Headers ({
       'Authorization': 'Basic ' + encode(`${USERNAME}:${PASSWORD}`), 

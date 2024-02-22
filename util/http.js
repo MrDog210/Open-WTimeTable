@@ -1,5 +1,5 @@
 import ky from "ky";
-import { getToken } from "./token.js";
+import { fetchToken, getToken, storeToken } from "./token.js";
 import { getServerUrl, setSchoolInfo, setServerUrl } from "../store/schoolInfo.js";
 import { URL } from '../constants/http.js'
 import { getISODateNoTimestamp, getSchoolYearDates } from "./dateUtils.js";
@@ -10,7 +10,7 @@ function handleError(error) {
   throw new Error(error)
 }
 
-async function fetchWithToken(url) {
+async function fetchWithToken(url, numOfRetries = 0) {
   const token = await getToken()
 
   const json = await ky.get(url, {
@@ -18,7 +18,7 @@ async function fetchWithToken(url) {
       'Authorization': `Bearer ${token}`, 
       'Content-Type': 'application/json'
     }),
-    /* retry: {
+    /*retry: {
       limit: 2,
       methods: ['get'],
       statusCodes: [401],
@@ -26,13 +26,23 @@ async function fetchWithToken(url) {
     },
     hooks: {
       beforeRetry: [
-        ({request, options, error, retryCount}) => {
+        async ({request, options, error, retryCount}) => {
           console.log('AAAAA')
           console.log(error, retryCount)
+          //const token = await ky('https://example.com/refresh-token');
+				  //request.headers.set('Authorization', `token ${token}`);
         }
       ]
     } */
-  }).json().catch(handleError)
+  }).json().catch(async error => { // stupid
+    if(numOfRetries === 0 && error.message.includes('401')) {
+      const newToken = await fetchToken()
+      await storeToken(newToken)
+      return fetchWithToken(url, numOfRetries + 1)
+    } else {
+      handleError(error)
+    }
+  })
 
   return json
 }
