@@ -11,6 +11,7 @@ import { COLORS } from "../../constants/colors";
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { calculateNowLineOffset, getColumnWidth } from "../../util/timetableUtils";
 import IconButton from "../../components/ui/IconButton";
+import TimeTableHeader from "../../components/TimeTable/TimeTableHeader";
 
 function TimeTableScreen({ navigation, route }) {
   const [isFetchingData, setIsFetchingData] = useState(false)
@@ -96,7 +97,7 @@ function TimeTableScreen({ navigation, route }) {
             hourHeight={80}
             style={timetableStyles}
 
-            renderHeader={isWeekView ? true : undefined}
+            renderHeader={isWeekView ? props => <TimeTableHeader {...props} /> : undefined}
 
             columnWidth={isWeekView ? getColumnWidth(isWeekView) : undefined}
           />
@@ -107,17 +108,18 @@ function TimeTableScreen({ navigation, route }) {
 
         scrollable
         scrollerPaging
-        style={{height:100, paddingTop: 20, paddingBottom: 10}}
+        style={{height:90, paddingTop: 10, paddingBottom: 10}}
         calendarColor={COLORS.foreground.accentPressed}
-        calendarHeaderStyle={{color: COLORS.background.primary}}
-        dateNumberStyle={{color: COLORS.background.primary}}
-        dateNameStyle={{color: COLORS.background.primary}}
+        calendarHeaderStyle={{color: COLORS.background.primary, fontSize: 14}}
+        dateNumberStyle={{color: COLORS.background.primary, fontSize: 14}}
+        dateNameStyle={{color: COLORS.background.primary, fontSize: 8}}
         markedDatesStyle={{color: COLORS.foreground.accentPressed}}
         
-        highlightDateNumberStyle={{color: COLORS.background.primary}}
-        highlightDateNameStyle={{color: COLORS.background.primary}}
+        highlightDateNumberStyle={{color: COLORS.background.primary, fontSize: 14}}
+        highlightDateNameStyle={{color: COLORS.background.primary, fontSize: 8}}
+        highlightDateContainerStyle={{}}
 
-        iconStyle={{tintColor: COLORS.background.primary}}
+        iconStyle={{tintColor: COLORS.background.primary, height: 20}}
         iconContainer={{marginHorizontal: 5, backgroundColor: COLORS.foreground.accent, borderRadius: 30, height: 30, width: 30}}
         daySelectionAnimation={{type: 'background', duration: '200', highlightColor: COLORS.foreground.accentDisabled}}
       />

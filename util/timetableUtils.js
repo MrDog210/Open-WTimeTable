@@ -35,10 +35,10 @@ export function getColumnWidth(isWeekView) { // https://github.com/dorkyboi/reac
   const timeWidth = 50
   const linesLeftInset = 15
   const columnWidth = width - (timeWidth - linesLeftInset)
-  if(width>height && isWeekView)
+  if(width>height && isWeekView) // if in landscape
     return Math.round(columnWidth/5)
   else 
-    return columnWidth
+    return Math.max(Math.round(columnWidth/5), 150)
 }
 
 export function calculateNowLineOffset() { // TODO: should make these global constants
