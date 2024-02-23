@@ -7,6 +7,7 @@ import { useContext } from 'react';
 import { UserPreferencesContext } from '../../store/userPreferencesContext';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import GroupSelectScreen from '../setup/GroupSelectScreen';
+import { DarkTheme } from '@react-navigation/native';
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -28,24 +29,24 @@ function MainScreen() {
     <Drawer.Screen name='DayView' component={TimeTableScreen} 
     options={{
       drawerLabel: 'Day View',
-      drawerIcon: ({tintColor}) => <Ionicons name='today-outline' color={tintColor} size={20}/>
+      drawerIcon: ({ focused, color, size }) => <Ionicons name='today-outline' color={color} size={size}/>
     }}
     initialParams={{isWeekView: false}}
     />
     <Drawer.Screen name='WeekView' component={TimeTableScreen} 
     options={{
       drawerLabel: 'Week View',
-      drawerIcon: ({tintColor}) => <Ionicons name='calendar-outline' color={tintColor} size={20}/>
+      drawerIcon: ({ focused, color, size }) => <Ionicons name='calendar-outline' color={color} size={size}/>
     }}
       initialParams={{isWeekView: true}}
     />
     <Drawer.Screen name='Options' component={OptionsNavigaton}
      options={{
-          drawerIcon: ({tintColor}) => <Ionicons name='settings-outline' color={tintColor} size={20}/>
+          drawerIcon: ({ focused, color, size }) => <Ionicons name='settings-outline' color={color} size={size}/>
       }}/>
     <Drawer.Screen name='About' component={AboutScreen} 
       options={{
-        drawerIcon: ({tintColor}) => <Ionicons name='information-circle-outline' color={tintColor} size={20}/>
+        drawerIcon: ({ focused, color, size }) => <Ionicons name='information-circle-outline' color={color} size={size}/>
       }}
     />
   </Drawer.Navigator>

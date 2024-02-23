@@ -10,6 +10,7 @@ import { UserPreferencesContext } from "../../store/userPreferencesContext"
 import Line from "../../components/ui/Line"
 import { getAllStoredBranchGroups } from "../../store/schoolInfo"
 import { getGroupsIntersection } from "../../util/groupUtil"
+import { COLORS } from "../../constants/colors"
 
 function GroupSelectScreen({route, navigation}) {
   const [isFetchingData, setIsFetchingData] = useState(false)
@@ -74,6 +75,10 @@ function GroupSelectScreen({route, navigation}) {
     setIsFetchingData(false)
   }
 
+  function onCancelPressed() {
+    navigation.goBack()
+  }
+
   return (
     <View style={styles.container}>
       <Spinner visible={isFetchingData} textContent={fetchingDataMessage} 
@@ -86,8 +91,9 @@ function GroupSelectScreen({route, navigation}) {
           renderItem={({item}) => <CourseGroupSelect groups={item.groups} course={item.course} />} 
         />
       </View>
-      <View>
-        <StyledButton title='Finish' onPress={onFinishedPressed} />
+      <View style={styles.buttonContainer}>
+        {isEditing && <StyledButton containerStyle={styles.button} title='Cancel' onPress={onCancelPressed} isWarning/>}
+        <StyledButton containerStyle={styles.button} title='Finish' onPress={onFinishedPressed} />
       </View>
     </View>
   )
@@ -102,5 +108,11 @@ const styles = StyleSheet.create({
   groupSelectContainer: {
     flex: 1,
     padding: 10,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+  },
+  button: {
+    flex: 1
   }
 })

@@ -1,7 +1,7 @@
 import DropDownPicker from "react-native-dropdown-picker"
 import StyledText from "./StyledText"
 import { StyleSheet, View } from "react-native"
-import { COLORS } from "../../constants/colors"
+import { COLORS, isDarkTheme } from "../../constants/colors"
 
 function DropDownWithTitle({title, ...props}) {
   return (
@@ -24,14 +24,19 @@ function DropDownWithTitle({title, ...props}) {
         extendableBadgeContainer={true}
         badgeStyle={{
           borderRadius: 0,
-          backgroundColor: 'white',
+          paddingHorizontal: 0,
+          paddingVertical: 0
         }}
         badgeTextStyle={{
           color: COLORS.foreground.primary,
+          backgroundColor: COLORS.background.seperator,
+          paddingHorizontal: 10,
+          paddingVertical: 5
         }}
         badgeSeparatorStyle={{
-          backgroundColor: 'white',
+
         }}
+        theme={isDarkTheme ? "DARK" : "LIGHT"}
       />
     </View>
   )

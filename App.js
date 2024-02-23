@@ -1,8 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet } from 'react-native';
 import SetupScreen from './screens/setup/SetupScreen';
 import { NavigationContainer } from '@react-navigation/native';
-import { COLORS } from './constants/colors';
+import { COLORS, isDarkTheme } from './constants/colors';
 import { useContext, useEffect } from 'react';
 import UserPreferencesContextProvider, { UserPreferencesContext } from './store/userPreferencesContext.js';
 import { SPINNER_STYLE } from './constants/globalStyles.js';
@@ -46,11 +45,8 @@ export default function App() {
   );
 }
 
-const styles = StyleSheet.create({
-});
-
 const navigationTheme = {
-  dark: false,
+  dark: isDarkTheme,
   colors: {
     primary: COLORS.foreground.primary,
     background: COLORS.background.primary,

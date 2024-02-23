@@ -33,7 +33,7 @@ function TimeTableScreen({ navigation, route }) {
         return <IconButton name='calendar-clear-outline' style={{backgroundColor: COLORS.background.secondary}} onPress={openDatePicker} />
       }
     },)
-    const scrollPadding = isWeekView ? 50 : 5
+    const scrollPadding = isWeekView ? 45 : -5
     scrollRef.current?.scrollTo({ // we scroll to 'now line'
       y: calculateNowLineOffset(scrollPadding),
       animated: true
@@ -93,7 +93,6 @@ function TimeTableScreen({ navigation, route }) {
   return (
     <>
       <LectureDetails modalVisible={modalVisible} lecture={modalLecture} onRequestClose={() => {setModelVisible(false)}} />
-      <SafeAreaView style={{ flex: 1}}>
         <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} ref={scrollRef}>
           <Timetable items={lectures} renderItem={props => <HourSlice {...props} onPress={lecturePressed}/>} 
             date={isWeekView ? undefined : date}
@@ -130,7 +129,6 @@ function TimeTableScreen({ navigation, route }) {
         iconContainer={{marginHorizontal: 5, backgroundColor: COLORS.foreground.accent, borderRadius: 30, height: 30, width: 30}}
         daySelectionAnimation={{type: 'background', duration: '200', highlightColor: COLORS.foreground.accentDisabled}}
       />
-      </SafeAreaView>
     </>
   )
 }
@@ -139,11 +137,13 @@ export default TimeTableScreen
 
 const timetableStyles = StyleSheet.create({
   container: {
-    backgroundColor: COLORS.background.primary,
-    marginVertical: 10
+    marginBottom: 50
+  },
+  timeContainer: {
+    backgroundColor: COLORS.background.primary
   },
   time: {
-    color: COLORS.foreground.secondary
+    color: COLORS.foreground.secondary,
   },
   lines: {
     borderColor: COLORS.foreground.secondary

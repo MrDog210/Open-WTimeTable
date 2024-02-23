@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons'
 function IconButton({title, onPress, name, style}) {
   return (
   <Pressable onPress={onPress} style={[styles.container, style]} android_ripple={{color: COLORS.foreground.accentPressed}}>
-    <Ionicons name={name} size={18} />
+    <Ionicons name={name} size={18} color={COLORS.foreground.primary} />
     {title && <Text style={styles.text}>{title}</Text>}
   </Pressable>
   )
