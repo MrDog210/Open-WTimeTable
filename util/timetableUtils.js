@@ -1,9 +1,17 @@
 import { useWindowDimensions } from "react-native";
-import { insertCourse, insertExecutionType, insertGroup, insertLecture, insertLecturer, insertRoom } from "./database";
-import { fetchLecturesForGroups } from "./http";
+import { deleteLecturesBetweenDates, insertCourse, insertExecutionType, insertGroup, insertLecture, insertLecturer, insertRoom } from "./database";
+import { fetchGroupsForBranch, fetchLecturesForGroups } from "./http";
+import { getAllUniqueGroups } from "./groupUtil";
+import { getAllStoredBranchGroups, getSchoolInfo, setAllBranchGroups } from "../store/schoolInfo";
 
-export async function fillUpDatabase(schoolCode, allGroups) { // allGroups should be an array of all available groups
-  const allLectures = await fetchLecturesForGroups(schoolCode, allGroups)
+export async function getAndSetAllDistinctBranchGroups(schoolCode, chosenBranchID) {
+  const groups = getAllUniqueGroups(await fetchGroupsForBranch(schoolCode, chosenBranchID))
+  setAllBranchGroups(groups)
+  return groups
+}
+
+export async function fetchAndInsertLectures(schoolCode, allGroups, startDate, endDate) { // allGroups should be an array of all available groups
+  const allLectures = await fetchLecturesForGroups(schoolCode, allGroups, startDate, endDate)
   console.log("Number of lectures: " + allLectures.length)
   await allLectures.forEach(async ({rooms, groups, lecturers, executionTypeId, executionType, course, courseId}) => {
     // each will be inserted ONLY IF ITS UNIQUE
@@ -20,6 +28,15 @@ export async function fillUpDatabase(schoolCode, allGroups) { // allGroups shoul
   for (const lecture of allLectures){
     await insertLecture(lecture)
   }
+}
+
+export async function updateLectures(startDate, endDate) {
+  const schoolInfo = await getSchoolInfo()
+  const schoolCode = schoolInfo.schoolCode
+  const allGroups = await getAllStoredBranchGroups()
+  console.log(startDate, allGroups)
+  await deleteLecturesBetweenDates(startDate, endDate)
+  return fetchAndInsertLectures(schoolCode, allGroups, startDate, endDate)
 }
 
 export function formatArray(array, key) {
@@ -41,9 +58,9 @@ export function getColumnWidth(isWeekView) { // https://github.com/dorkyboi/reac
     return Math.max(Math.round(columnWidth/5), 150)
 }
 
-export function calculateNowLineOffset() { // TODO: should make these global constants
+export function calculateNowLineOffset(snapToHour = true) { // TODO: should make these global constants
   const d = new Date();
   console.log(d)
   const fromHour = 6, minuteHeight = 80 / 60, linesTopOffset = 18
-  return (Math.max((d.getHours() - fromHour), 0) * 60 + d.getMinutes()) * minuteHeight + linesTopOffset;
+  return (Math.max((d.getHours() - fromHour), 0) * 60 + (snapToHour ? 0 : d.getMinutes())) * minuteHeight + linesTopOffset;
 }

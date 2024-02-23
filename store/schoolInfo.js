@@ -27,7 +27,7 @@ export async function getSchoolInfo() {
 }
 
 export async function setSchoolInfo(value) {
-  await setKey('schoolInfo', value.toString())
+  return setKey('schoolInfo', JSON.stringify(value))
 }
 
 export async function getServerUrl() {
@@ -35,7 +35,7 @@ export async function getServerUrl() {
 }
 
 export async function setServerUrl(value) {
-  await setKey('serverUrl', value)
+  return setKey('serverUrl', value)
 }
 
 export async function getAllStoredBranchGroups() {
@@ -44,7 +44,16 @@ export async function getAllStoredBranchGroups() {
 }
 
 export async function setAllBranchGroups(value) {
-  await setKey('groups', JSON.stringify(value))
+  return setKey('groups', JSON.stringify(value))
+}
+
+export async function getChosenBranch() {
+  const json = await getKey('chosenBranch')
+  return JSON.parse(json)
+}
+
+export async function setChosenBranch(value) {
+  return setKey('chosenBranch', JSON.stringify(value))
 }
 
 /* schoolInfo = { // example
@@ -54,3 +63,10 @@ export async function setAllBranchGroups(value) {
   schoolCode: 'wtt_um_feri',
   schoolName: 'UM FERI'
 } */
+
+/*
+branch = {
+  id: "10",
+  branchName: "Nekaj"
+}
+*/

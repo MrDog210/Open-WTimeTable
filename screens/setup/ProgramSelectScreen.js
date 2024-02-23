@@ -3,14 +3,15 @@ import { Alert, ScrollView, StyleSheet, View } from "react-native"
 import { fetchBranchesForProgramm, fetchGroupsForBranch, getBasicProgrammes } from "../../util/http"
 import StyledButton from "../../components/ui/StyledButton"
 import Spinner from "react-native-loading-spinner-overlay"
-import { fillUpDatabase } from "../../util/timetableUtils"
+import { fetchAndInsertLectures, getAndSetAllDistinctBranchGroups } from "../../util/timetableUtils"
 import { getAllUniqueGroups } from "../../util/groupUtil"
 import { truncateDatabase } from "../../util/database"
 import { SPINNER_STYLE } from "../../constants/globalStyles"
 import DropDownWithTitle from "../../components/ui/DropDownWithTitle"
 import Title from "../../components/ui/Title"
 import Line from "../../components/ui/Line"
-import { setAllBranchGroups } from "../../store/schoolInfo"
+import { setAllBranchGroups, setChosenBranch } from "../../store/schoolInfo"
+import { getSchoolYearDates } from "../../util/dateUtils"
 
 
 function generateYearsOfProgram(program) {
@@ -92,14 +93,20 @@ function ProgramSelectScreen({route, navigation}) {
   async function proceedToGroupSelect() {
     setIsFetchingData(true)
     setFetchingDataMessage('Fetching lectures')
-    const program = programms.find((item) => item.id === chosenProgrammID)
+    //const program = programms.find((item) => item.id === chosenProgrammID)
+    const chosenBranch = branches.find(b => b.id == chosenBranchID)
+    setChosenBranch(chosenBranch) // we store the chosen branch, for future use
     try {
       truncateDatabase()
       console.log('Fetchig groups')
-      const groups = getAllUniqueGroups(await fetchGroupsForBranch(schoolInfo.schoolCode, chosenBranchID))
-      setAllBranchGroups(groups)
+
+      const groups = await getAndSetAllDistinctBranchGroups(schoolInfo.schoolCode, chosenBranchID)
+
       setFetchingDataMessage('Inserting lectures into database, this WILL take a while')
-      await fillUpDatabase(schoolInfo.schoolCode, groups)
+      let {startDate, endDate} = getSchoolYearDates()
+      console.log(startDate,endDate)
+      await fetchAndInsertLectures(schoolInfo.schoolCode, groups, startDate, endDate)
+
       navigation.navigate('SelectGroups', { isEditing: false })
     } catch (error) {
       Alert.alert('Error', error.message)
@@ -109,7 +116,7 @@ function ProgramSelectScreen({route, navigation}) {
 
   return (
     <>
-    <Spinner visible={isFetchingData} {...SPINNER_STYLE} />
+    <Spinner visible={isFetchingData} {...SPINNER_STYLE} textContent={fetchingDataMessage} />
     <ScrollView style={styles.container}>
       <Title>Select your program, year and group</Title>
       <Line />

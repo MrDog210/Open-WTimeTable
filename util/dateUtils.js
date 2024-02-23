@@ -70,3 +70,8 @@ export function getSchoolYearDates() {
 
   return {startDate, endDate}
 }
+
+export function dateFromNow(daysToAdd) {
+  let date = new Date()
+  return new Date(date.setDate(date.getDate()+daysToAdd));
+}

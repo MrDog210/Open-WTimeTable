@@ -97,8 +97,8 @@ export async function fetchNotifications() { // ?????????
   return json
 }
 
-export async function fetchLecturesForGroups(schoolCode, groups) { // groups is array { id, name }
-  const url = await getServerUrl()
+export async function fetchLecturesForGroups(schoolCode, groups, startDate, endDate) { // groups is array { id, name }
+  const url = await getServerUrl()                                                     // also it seems to be inclusive of dates
 
   let allGroupsId = ''
   
@@ -107,7 +107,6 @@ export async function fetchLecturesForGroups(schoolCode, groups) { // groups is 
   });
   allGroupsId = allGroupsId.slice(0, -1);
 
-  let {startDate, endDate} = getSchoolYearDates()
   startDate = getISODateNoTimestamp(startDate)
   endDate = getISODateNoTimestamp(endDate)
   const json = await fetchWithToken(url + `scheduleByGroups?schoolCode=${schoolCode}&dateFrom=${startDate}&dateTo=${endDate}&language=slo&groupsId=${allGroupsId}`)

@@ -1,5 +1,6 @@
 import * as SQLite from 'expo-sqlite/next';
 import { CREATE_DATABASE, DELETE_COMMANDS } from '../constants/database';
+import { getISODateNoTimestamp } from './dateUtils';
 
 const database = SQLite.openDatabaseSync('lectures.db')
 
@@ -138,4 +139,10 @@ export function getLecturesForDate(date) { // pazi če je execution type prazen
 
 export function querryNumOFSelectedGroups(courses_id, groups_id) {
   return database.getFirstSync(`SELECT COUNT(*) AS 'num' FROM selected_groups WHERE courses_id = ? AND groups_id = ?`, [courses_id, groups_id])
+}
+
+export async function deleteLecturesBetweenDates(start_time, end_time) { // this function is INLCUSIVE for start and end date
+  start_time = getISODateNoTimestamp(start_time)
+  end_time = getISODateNoTimestamp(end_time)
+  return database.runAsync(`DELETE FROM lectures WHERE DATE(start_time) BETWEEN '${start_time}' AND '${end_time}'`)
 }

@@ -3,13 +3,13 @@ import { RefreshControl, ScrollView, StyleSheet } from "react-native";
 import Timetable from "react-native-calendar-timetable";
 import { getLecturesForDate } from "../../util/database";
 import HourSlice from "../../components/TimeTable/HourSlice";
-import { formatDate, formatWeekDate, getDates, getISODateNoTimestamp, getWeekDates, subtrackSeconds } from "../../util/dateUtils";
+import { dateFromNow, formatDate, formatWeekDate, getDates, getISODateNoTimestamp, getWeekDates, subtrackSeconds } from "../../util/dateUtils";
 import LectureDetails from "../../components/TimeTable/LectureDetails";
 import CalendarStrip from 'react-native-calendar-strip';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS } from "../../constants/colors";
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
-import { calculateNowLineOffset, getColumnWidth } from "../../util/timetableUtils";
+import { calculateNowLineOffset, getColumnWidth, updateLectures } from "../../util/timetableUtils";
 import IconButton from "../../components/ui/IconButton";
 import TimeTableHeader from "../../components/TimeTable/TimeTableHeader";
 
@@ -79,8 +79,11 @@ function TimeTableScreen({ navigation, route }) {
     });
   }
 
-  function onRefresh() {
+  async function onRefresh() { // TODO: set date from now based on preferences
     setRefreshing(true)
+    await updateLectures(new Date(), dateFromNow(5))
+    setRefreshing(false)
+    setDate(new Date(date)) // we refresh the page
   }
 
   return (
