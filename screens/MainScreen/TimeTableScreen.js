@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { RefreshControl, ScrollView, StyleSheet } from "react-native";
 import Timetable from "react-native-calendar-timetable";
 import { getLecturesForDate } from "../../util/database";
@@ -12,8 +12,10 @@ import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { calculateNowLineOffset, getColumnWidth, updateLectures } from "../../util/timetableUtils";
 import IconButton from "../../components/ui/IconButton";
 import TimeTableHeader from "../../components/TimeTable/TimeTableHeader";
+import { UserPreferencesContext } from "../../store/userPreferencesContext";
 
 function TimeTableScreen({ navigation, route }) {
+  const userPreferencesCtx = useContext(UserPreferencesContext)
   const [isFetchingData, setIsFetchingData] = useState(false)
   const [refreshing, setRefreshing] = useState(false);
   const [modalVisible, setModelVisible] = useState(false)
@@ -31,8 +33,9 @@ function TimeTableScreen({ navigation, route }) {
         return <IconButton name='calendar-clear-outline' style={{backgroundColor: COLORS.background.secondary}} onPress={openDatePicker} />
       }
     },)
-    scrollRef.current?.scrollTo({
-      y: calculateNowLineOffset(),
+    const scrollPadding = isWeekView ? 50 : 5
+    scrollRef.current?.scrollTo({ // we scroll to 'now line'
+      y: calculateNowLineOffset(scrollPadding),
       animated: true
     })
   }, [])
@@ -79,9 +82,10 @@ function TimeTableScreen({ navigation, route }) {
     });
   }
 
-  async function onRefresh() { // TODO: set date from now based on preferences
+  async function onRefresh() {
     setRefreshing(true)
-    await updateLectures(new Date(), dateFromNow(5))
+    const updateSpan = userPreferencesCtx.getKey('timetableUpdateSpan')
+    await updateLectures(new Date(), dateFromNow(updateSpan))
     setRefreshing(false)
     setDate(new Date(date)) // we refresh the page
   }

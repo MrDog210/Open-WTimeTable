@@ -34,7 +34,6 @@ export async function updateLectures(startDate, endDate) {
   const schoolInfo = await getSchoolInfo()
   const schoolCode = schoolInfo.schoolCode
   const allGroups = await getAllStoredBranchGroups()
-  console.log(startDate, allGroups)
   await deleteLecturesBetweenDates(startDate, endDate)
   return fetchAndInsertLectures(schoolCode, allGroups, startDate, endDate)
 }
@@ -58,9 +57,8 @@ export function getColumnWidth(isWeekView) { // https://github.com/dorkyboi/reac
     return Math.max(Math.round(columnWidth/5), 150)
 }
 
-export function calculateNowLineOffset(snapToHour = true) { // TODO: should make these global constants
+export function calculateNowLineOffset(padding = 0,snapToHour = true) { // TODO: should make these global constants
   const d = new Date();
-  console.log(d)
   const fromHour = 6, minuteHeight = 80 / 60, linesTopOffset = 18
-  return (Math.max((d.getHours() - fromHour), 0) * 60 + (snapToHour ? 0 : d.getMinutes())) * minuteHeight + linesTopOffset;
+  return (Math.max((d.getHours() - fromHour), 0) * 60 + (snapToHour ? 0 : d.getMinutes())) * minuteHeight + linesTopOffset + padding;
 }

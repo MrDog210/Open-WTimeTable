@@ -14,7 +14,9 @@ const userPreferences = {
 export const UserPreferencesContext = createContext({
   preferences: userPreferences,
   setPreferences: async (value) => {},
-  loadPreferences: async () => {}
+  loadPreferences: async () => {},
+  setKey: async (key, value) => {},
+  getKey: (key) => {}
 })
 
 function UserPreferencesContextProvider({children}) {
@@ -24,6 +26,22 @@ function UserPreferencesContextProvider({children}) {
     const newValue = { ...preferences, ...value };
     setPreferences(newValue)
     await AsyncStorage.setItem('preferences', JSON.stringify(newValue))
+  }
+
+  async function setKey(key, value) {
+    let p = preferences
+    p[key] = value
+    return savePreferences(p)
+  }
+
+  function getKey(key) {
+    if(preferences === null)
+      return null
+    if (preferences[key]){
+      return preferences[key]
+    } else {
+      return userPreferences[key]
+    }
   }
 
   async function loadPreferences() {
@@ -48,7 +66,9 @@ function UserPreferencesContextProvider({children}) {
   const value = {
     preferences: preferences,
     setPreferences: savePreferences,
-    loadPreferences: loadPreferences
+    loadPreferences: loadPreferences,
+    setKey: setKey,
+    getKey: getKey
   }
 
   return <UserPreferencesContext.Provider value={value}>{children}</UserPreferencesContext.Provider>
