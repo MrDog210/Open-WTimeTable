@@ -26,3 +26,4 @@ Main advantage of this app over the official one is, that you can pick a separat
 [Ky](https://github.com/sindresorhus/ky)  
 [React native async storage](https://react-native-async-storage.github.io/async-storage/)  
 [Datetimepicker](https://github.com/react-native-datetimepicker/datetimepicker)  
+[react-native-netinfo](https://github.com/react-native-netinfo/react-native-netinfo)  
