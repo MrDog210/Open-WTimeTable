@@ -3,16 +3,15 @@ import { RefreshControl, ScrollView, StyleSheet } from "react-native";
 import Timetable from "react-native-calendar-timetable";
 import { getLecturesForDate } from "../../util/database";
 import HourSlice from "../../components/TimeTable/HourSlice";
-import { dateFromNow, formatDate, formatWeekDate, getDates, getElapsedSecondsFromDate, getISODateNoTimestamp, getWeekDates, subtrackSeconds } from "../../util/dateUtils";
+import { dateFromNow, formatDate, formatWeekDate, getDates, getISODateNoTimestamp, getWeekDates, subtrackSeconds } from "../../util/dateUtils";
 import LectureDetails from "../../components/TimeTable/LectureDetails";
 import CalendarStrip from 'react-native-calendar-strip';
-import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS } from "../../constants/colors";
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { calculateNowLineOffset, getColumnWidth, hasTimetableUpdated, updateLectures } from "../../util/timetableUtils";
 import IconButton from "../../components/ui/IconButton";
 import TimeTableHeader from "../../components/TimeTable/TimeTableHeader";
-import { PREF_KEYS, UserPreferencesContext } from "../../store/userPreferencesContext";
+import { UserPreferencesContext } from "../../store/userPreferencesContext";
 import { hasInternetConnection } from "../../util/http";
 
 function TimeTableScreen({ navigation, route }) {
