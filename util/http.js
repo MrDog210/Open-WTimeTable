@@ -3,6 +3,7 @@ import { fetchToken, getToken, storeToken } from "./token.js";
 import { getServerUrl, setSchoolInfo, setServerUrl } from "../store/schoolInfo.js";
 import { URL } from '../constants/http.js'
 import { getISODateNoTimestamp, getSchoolYearDates } from "./dateUtils.js";
+import NetInfo from '@react-native-community/netinfo';
 
 function handleError(error) {
   console.log(error)
@@ -114,6 +115,15 @@ export async function fetchLecturesForGroups(schoolCode, groups, startDate, endD
   //console.log(JSON.stringify(json, null, '\t'));
 
   return json
+}
+
+export async function hasInternetConnection() {
+  return NetInfo.fetch().then(state => {
+    //console.log('Connection type', state.type);
+    //console.log('Is connected?', state.isConnected);
+    return state.isConnected
+  });
+  
 }
 
 /*const basicPrograms = [

@@ -3,16 +3,17 @@ import { RefreshControl, ScrollView, StyleSheet } from "react-native";
 import Timetable from "react-native-calendar-timetable";
 import { getLecturesForDate } from "../../util/database";
 import HourSlice from "../../components/TimeTable/HourSlice";
-import { dateFromNow, formatDate, formatWeekDate, getDates, getISODateNoTimestamp, getWeekDates, subtrackSeconds } from "../../util/dateUtils";
+import { dateFromNow, formatDate, formatWeekDate, getDates, getElapsedSecondsFromDate, getISODateNoTimestamp, getWeekDates, subtrackSeconds } from "../../util/dateUtils";
 import LectureDetails from "../../components/TimeTable/LectureDetails";
 import CalendarStrip from 'react-native-calendar-strip';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS } from "../../constants/colors";
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
-import { calculateNowLineOffset, getColumnWidth, updateLectures } from "../../util/timetableUtils";
+import { calculateNowLineOffset, getColumnWidth, hasTimetableUpdated, updateLectures } from "../../util/timetableUtils";
 import IconButton from "../../components/ui/IconButton";
 import TimeTableHeader from "../../components/TimeTable/TimeTableHeader";
-import { UserPreferencesContext } from "../../store/userPreferencesContext";
+import { PREF_KEYS, UserPreferencesContext } from "../../store/userPreferencesContext";
+import { hasInternetConnection } from "../../util/http";
 
 function TimeTableScreen({ navigation, route }) {
   const userPreferencesCtx = useContext(UserPreferencesContext)
@@ -33,12 +34,27 @@ function TimeTableScreen({ navigation, route }) {
         return <IconButton name='calendar-clear-outline' style={{backgroundColor: COLORS.background.secondary}} onPress={openDatePicker} />
       }
     },)
+  }, [])
+
+  useEffect(() => {
     const scrollPadding = isWeekView ? 45 : -5
     scrollRef.current?.scrollTo({ // we scroll to 'now line'
       y: calculateNowLineOffset(scrollPadding),
       animated: true
     })
+    checkForTimetableUpdate()
   }, [])
+
+  async function checkForTimetableUpdate() {
+    const hasInternet = await hasInternetConnection()
+    if(!hasInternet) return
+    setRefreshing(true)
+    const hasUpdated = await hasTimetableUpdated() // we check if the timetable has been updated
+    if(hasUpdated)
+      onRefresh()
+    else
+      setRefreshing(false)
+  }
 
   useEffect(() =>{
     navigation.setOptions({
@@ -84,8 +100,9 @@ function TimeTableScreen({ navigation, route }) {
 
   async function onRefresh() {
     setRefreshing(true)
-    const updateSpan = userPreferencesCtx.getKey('timetableUpdateSpan')
-    await updateLectures(new Date(), dateFromNow(updateSpan))
+    //const updateSpan = userPreferencesCtx.getKey('timetableUpdateSpan')
+    await updateLectures(new Date(), dateFromNow(200))
+    //userPreferencesCtx.setKey('timetableLastUpdate', (new Date()).toISOString()) // we set last update time
     setRefreshing(false)
     setDate(new Date(date)) // we refresh the page
   }

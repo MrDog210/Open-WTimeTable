@@ -1,8 +1,8 @@
 import { useWindowDimensions } from "react-native";
 import { deleteLecturesBetweenDates, insertCourse, insertExecutionType, insertGroup, insertLecture, insertLecturer, insertRoom } from "./database";
-import { fetchGroupsForBranch, fetchLecturesForGroups } from "./http";
+import { fetchGroupsForBranch, fetchLecturesForGroups, getSchoolInfo } from "./http";
 import { getAllUniqueGroups } from "./groupUtil";
-import { getAllStoredBranchGroups, getSchoolInfo, setAllBranchGroups } from "../store/schoolInfo";
+import { getAllStoredBranchGroups, getSchoolInfo as getStoredSchoolInfo, setAllBranchGroups, getUrlSchoolCode } from "../store/schoolInfo";
 
 export async function getAndSetAllDistinctBranchGroups(schoolCode, chosenBranchID) {
   const groups = getAllUniqueGroups(await fetchGroupsForBranch(schoolCode, chosenBranchID))
@@ -31,7 +31,7 @@ export async function fetchAndInsertLectures(schoolCode, allGroups, startDate, e
 }
 
 export async function updateLectures(startDate, endDate) {
-  const schoolInfo = await getSchoolInfo()
+  const schoolInfo = await getStoredSchoolInfo()
   const schoolCode = schoolInfo.schoolCode
   const allGroups = await getAllStoredBranchGroups()
   await deleteLecturesBetweenDates(startDate, endDate)
@@ -61,4 +61,12 @@ export function calculateNowLineOffset(padding = 0,snapToHour = true) { // TODO:
   const d = new Date(); //'2020-02-02T09:00:00'
   const fromHour = 6, minuteHeight = 80 / 60, linesTopOffset = 18
   return (Math.max((d.getHours() - fromHour), 0) * 60 + (snapToHour ? 0 : d.getMinutes())) * minuteHeight + linesTopOffset + padding;
+}
+
+export async function hasTimetableUpdated() {
+  const storedinfo = await getStoredSchoolInfo()
+  const json = await getSchoolInfo(await getUrlSchoolCode())
+  console.log('has updated: ' + storedinfo.lastChangeDate === json.lastChangeDate)
+  //return storedinfo.lastChangeDate === json.lastChangeDate
+  return false
 }

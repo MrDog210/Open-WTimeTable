@@ -21,6 +21,14 @@ async function getKey(key) {
   return null
 }
 
+export async function getUrlSchoolCode() {
+  return await getKey('UrlSchoolCode')
+}
+
+export async function setUrlSchoolCode(value) {
+  return setKey('UrlSchoolCode', value)
+}
+
 export async function getSchoolInfo() {
   const jsonString = await getKey('schoolInfo')
   return JSON.parse(jsonString)

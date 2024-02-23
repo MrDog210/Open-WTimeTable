@@ -7,6 +7,7 @@ import { getSchoolInfo } from "../../util/http"
 import Spinner from 'react-native-loading-spinner-overlay';
 import { SPINNER_STYLE } from "../../constants/globalStyles"
 import { UserPreferencesContext } from "../../store/userPreferencesContext"
+import { setUrlSchoolCode } from "../../store/schoolInfo"
 
 function SchoolCodeInputScreen({navigation}) {
   const [code, setCode] = useState('')
@@ -20,6 +21,7 @@ function SchoolCodeInputScreen({navigation}) {
     try {
       setIsFetchingData(true)
       const schoolInfo = await getSchoolInfo(code)
+      setUrlSchoolCode(code)
       navigation.navigate('ProgramSelect', { schoolInfo: schoolInfo })
     } catch (error) {
       Alert.alert('An error ocurred', error.message)

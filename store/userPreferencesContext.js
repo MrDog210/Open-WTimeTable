@@ -1,13 +1,25 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, useState } from "react";
 
+export const PREF_KEYS = {
+  hasCompletedSetup: 'hasCompletedSetup',
+  defaultView: 'defaultView',
+  language: 'language',
+  darkMode: 'darkMode',
+  /*timetableUpdateInterval: 'timetableUpdateInterval',
+  timetableLastUpdate: 'timetableLastUpdate',
+  timetableUpdateSpan: 'timetableUpdateSpan',*/
+  timetableAutoScroll: 'timetableAutoScroll'
+}
+
 const userPreferences = {
   hasCompletedSetup: false,
   defaultView: 'DayView',
   language: 'en',
-  darkMode: 'auto',
-  timetableUpdateInterval: 'appStartup',
-  timetableUpdateSpan: 30, // in days
+  //darkMode: 'auto',
+  /*timetableUpdateInterval: 0, // seconds since last update
+  timetableLastUpdate: (new Date()).toISOString(),
+  timetableUpdateSpan: 30, // in days*/
   timetableAutoScroll: true
 }
 
