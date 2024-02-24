@@ -3,23 +3,28 @@ import SetupScreen from './screens/setup/SetupScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import { COLORS, isDarkTheme } from './constants/colors';
 import { useContext, useEffect } from 'react';
-import UserPreferencesContextProvider, { UserPreferencesContext } from './store/userPreferencesContext.js';
+import UserPreferencesContextProvider, { PREF_KEYS, UserPreferencesContext } from './store/userPreferencesContext.js';
 import { SPINNER_STYLE } from './constants/globalStyles.js';
 import MainScreen from './screens/MainScreen/MainScreen.js';
 import Spinner from 'react-native-loading-spinner-overlay';
+import { Appearance } from 'react-native';
 
 function Navigation() {
   const userPreferencesCtx = useContext(UserPreferencesContext)
+
+  useEffect(() => {
+    const selectedTheme = userPreferencesCtx.getKey(PREF_KEYS.darkMode)
+    if(selectedTheme === 'auto')
+      Appearance.setColorScheme(null)
+    else
+      Appearance.setColorScheme(selectedTheme)
+  }, [userPreferencesCtx.preferences[PREF_KEYS.darkMode]])
   
-  if(userPreferencesCtx.preferences) {
-    console.log('Loading screen ' + userPreferencesCtx.preferences.hasCompletedSetup)
-    return (
+  return (
     <NavigationContainer theme={navigationTheme}>
       {userPreferencesCtx.preferences.hasCompletedSetup ? <MainScreen /> : <SetupScreen />}
-    </NavigationContainer>)
-  } else {
-    return <Spinner visible={true} {...SPINNER_STYLE} />
-  }
+    </NavigationContainer>
+  )
 }
 
 function Root() {
@@ -31,7 +36,10 @@ function Root() {
     loadPreferences()
   }, []) 
 
-  return <Navigation />
+  if(userPreferencesCtx.preferences)
+    return <Navigation />
+  else
+    return <Spinner visible={true} {...SPINNER_STYLE} />
 }
 
 export default function App() {

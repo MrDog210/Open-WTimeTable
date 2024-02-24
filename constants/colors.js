@@ -1,9 +1,9 @@
 import { Appearance } from "react-native";
 
 const colorScheme = Appearance.getColorScheme();
-export const isDarkTheme = colorScheme === 'dark'
+const isDarkTheme = colorScheme === 'dark'
 
-export const COLORS = {
+export var COLORS = {
   foreground: {
     primary: isDarkTheme ? '#F0F0F0' : '#554d56',
     secondary: isDarkTheme ? '#CBCBCB' : '#979197',

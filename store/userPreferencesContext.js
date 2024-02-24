@@ -16,7 +16,7 @@ const userPreferences = {
   hasCompletedSetup: false,
   defaultView: 'DayView',
   language: 'en',
-  //darkMode: 'auto',
+  darkMode: 'auto',
   /*timetableUpdateInterval: 0, // seconds since last update
   timetableLastUpdate: (new Date()).toISOString(),
   timetableUpdateSpan: 30, // in days*/
