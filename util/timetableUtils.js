@@ -66,7 +66,7 @@ export function calculateNowLineOffset(padding = 0,snapToHour = true) { // TODO:
 export async function hasTimetableUpdated() {
   const storedinfo = await getStoredSchoolInfo()
   const json = await getSchoolInfo(await getUrlSchoolCode())
-  console.log('has updated: ' + storedinfo.lastChangeDate === json.lastChangeDate)
-  //return storedinfo.lastChangeDate === json.lastChangeDate
-  return false
+  const hasUpdated = storedinfo.lastChangeDate !== json.lastChangeDate
+  console.log('has updated: ' + hasUpdated)
+  return hasUpdated
 }

@@ -1,30 +1,14 @@
-import DropDownPicker from "react-native-dropdown-picker"
 import { COLORS } from "../../../constants/colors"
-import { StyleSheet } from "react-native"
 import { useState } from "react"
-import { OPTIONS_CONTAINER_STYLE, OPTIONS_TEXT_STYLE } from "../../../constants/globalStyles"
+import DropDownWithTitle from "../DropDownWithTitle"
 
 function OptionsDropdown(props) {
   const [open, setOpen] = useState(false)
   return (
-    <DropDownPicker {...props} open={open} setOpen={setOpen} listMode='MODAL'
-      style={[OPTIONS_CONTAINER_STYLE, styles.main]} 
-      textStyle={OPTIONS_TEXT_STYLE}
-      containerStyle={styles.containerStyle}
+    <DropDownWithTitle {...props} open={open} setOpen={setOpen} listMode='MODAL'
+      style={{borderRadius: 0, borderWidth: 0, borderBottomWidth: 1, borderColor: COLORS.foreground.secondary, backgroundColor: COLORS.background.primary}} 
     />
   )
 }
 
 export default OptionsDropdown
-
-const styles = StyleSheet.create({
-  main: {
-
-  },
-  text: {
-    
-  },
-  containerStyle: {
-    backgroundColor: COLORS.background.secondary
-  }
-})

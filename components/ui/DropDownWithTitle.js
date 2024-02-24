@@ -8,8 +8,6 @@ function DropDownWithTitle({title, ...props}) {
     <View style={styles.container}>
       <StyledText style={styles.title}>{title}</StyledText>
       <DropDownPicker
-        {...props}
-
         modalTitle={title}
         listMode="MODAL"
         style={{borderRadius: 0, borderWidth: 1, borderColor: COLORS.foreground.secondary, backgroundColor: COLORS.background.primary}}
@@ -37,6 +35,7 @@ function DropDownWithTitle({title, ...props}) {
 
         }}
         theme={isDarkTheme ? "DARK" : "LIGHT"}
+        {...props}
       />
     </View>
   )
