@@ -76,7 +76,7 @@ function TimeTableScreen({ navigation, route }) {
     dates.forEach((d) => {
       const data = getLecturesForDate(getISODateNoTimestamp(d))
       data.forEach(lecture => {
-        lec.push({lecture: lecture, startDate: lecture.start_time, endDate: subtrackSeconds(lecture.end_time, 1)})
+        lec.push({lecture: lecture, startDate: subtrackSeconds(lecture.start_time, -60), endDate: subtrackSeconds(lecture.end_time, 60)})
       })
     })
     setLectures([...lec])

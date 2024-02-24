@@ -39,8 +39,7 @@ function OptionsScreen({ navigation }) {
     <ScrollView>
       <OptionsButton title='Restart setup' onPress={restartSetup}/>
       <OptionsButton title='Change selected groups' onPress={changeSelectedGroups} />
-      <StyledText style={styles.text}>Default timetable view:</StyledText>
-      <OptionsDropdown items={defaultView} setItems={setDefaultView} value={selectedView} setValue={setSelectedView} />
+      <OptionsDropdown title='Default timetable view:' items={defaultView} setItems={setDefaultView} value={selectedView} setValue={setSelectedView} />
     </ScrollView>
   )
 }
