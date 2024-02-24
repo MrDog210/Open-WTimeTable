@@ -31,7 +31,7 @@ function SchoolCodeInputScreen({navigation}) {
 
   const userPreferencesCtx = useContext(UserPreferencesContext)
   console.log(userPreferencesCtx.preferences)
-  function sraje() {
+  function changeView() {
     const pref = userPreferencesCtx.preferences // should find better way of doing this
     pref.hasCompletedSetup = true
     userPreferencesCtx.setPreferences(pref)
@@ -46,7 +46,6 @@ function SchoolCodeInputScreen({navigation}) {
         placeholder: 'FERI', autoCapitalize: 'none', autoComplete: 'off', autoCorrect: false, onChangeText: onCodeChange, value: code
         }}/>
       <StyledButton title="OK" onPress={onConfirm}/>
-      <StyledButton title='test' onPress={sraje} />
     </View>
   )
 }

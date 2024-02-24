@@ -1,25 +1,37 @@
-import { Modal, StyleSheet, Text, View } from "react-native";
+import { Modal, StyleSheet, View } from "react-native";
 import { COLORS } from "../../constants/colors";
 import StyledButton from "../ui/StyledButton";
 import { getTimeFromDate } from "../../util/dateUtils";
 import { formatArray } from "../../util/timetableUtils";
 import ContentCard from "../ui/ContentCard";
+import StyledText from "../ui/StyledText";
+import Line from "../ui/Line";
+import Animated, { Easing, useSharedValue, withSpring, withTiming } from "react-native-reanimated";
+import { useEffect } from "react";
 
 function LectureDetails({modalVisible, onRequestClose, lecture}) {
   if(lecture === null)
     return
+  const opacity = useSharedValue(0)
+  const top = useSharedValue(50)
+  useEffect(() => {
+    const isVisible = modalVisible ? 1 : 0
+    opacity.value = withTiming(isVisible, {duration: 300})
+    top.value =  withTiming(isVisible ? 0 : 50, {duration: 300, easing: Easing.inOut(Easing.poly(2))})
+  }, [modalVisible])
   const {course, eventType, start_time, end_time, note, showLink, color, colorText, rooms, groups, lecturers, executionType} = lecture
   return (
-    <Modal visible={modalVisible} transparent={true} animationType="fade">
-      <View style={styles.container}>
-        <View style={styles.centeredContainer}>
+    <Modal visible={modalVisible} transparent={true} animationType="none">
+      <Animated.View style={[styles.container, {opacity}]}>
+        <Animated.View style={[styles.centeredContainer, {top}]}>
           <View style={styles.titleContainer}>
-            <Text style={styles.title}>{course ? course : eventType}</Text>
+            <StyledText style={styles.title}>{course ? course : eventType}</StyledText>
           </View>
+          <Line style={styles.line}/>
           <View style={styles.contentsContainer}>
             <View style={styles.subtitle}>
-              <Text>{`${getTimeFromDate(start_time)} - ${getTimeFromDate(end_time)}`}</Text>
-              {executionType && <Text>{executionType}</Text>}
+              <StyledText>{`${getTimeFromDate(start_time)} - ${getTimeFromDate(end_time)}`}</StyledText>
+              {executionType && <StyledText>{executionType}</StyledText>}
             </View>
             <ContentCard title='Rooms:' contents={formatArray(rooms, 'name')} />
             <ContentCard title='Groups:' contents={formatArray(groups, 'name')} />
@@ -29,8 +41,8 @@ function LectureDetails({modalVisible, onRequestClose, lecture}) {
             <ContentCard title='Note:' contents={note} />
           </View>
           <StyledButton title='Close' onPress={onRequestClose}/>
-        </View>
-      </View>
+        </Animated.View>
+      </Animated.View>
     </Modal>
   )
 }
@@ -47,11 +59,12 @@ const styles = StyleSheet.create({
   centeredContainer: {
     width: '85%',
     minWidth: 200,
+    maxWidth: 650,
     minHeight: 200,
     backgroundColor: COLORS.background.primary,
     borderWidth: 1,
     borderColor: COLORS.background.seperator,
-    elevation: 4,
+    //elevation: 4,
   },
   titleContainer: {
     backgroundColor: COLORS.background.secondary
@@ -61,6 +74,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     paddingVertical: 10,
     fontSize: 18
+  },
+  line: {
+    marginVertical: 0
   },
   contentsContainer: {
     padding: 5,

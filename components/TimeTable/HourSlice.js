@@ -20,7 +20,7 @@ function HourSlice({style, item, dayIndex, daysTotal, onPress}) {
   useEffect(() => {
     const delay = getDelayBasedOnPosition(style.top, style.left)
     top.value = withDelay(delay , withSpring(0))
-    opacity.value = withDelay(delay , withTiming(1))
+    opacity.value = withDelay(delay , withTiming(1, {duration: 500}))
   }, [])
 
   return (
@@ -39,9 +39,8 @@ function HourSlice({style, item, dayIndex, daysTotal, onPress}) {
             <StyledText style={{color: hexColor, textAlign:'right'}}>{colorText}</StyledText>
           </View>
       </Animated.View>
-    </Pressable>
-    
-);
+    </Pressable> 
+  );
 }
 
 export default HourSlice

@@ -1,13 +1,13 @@
-import { StyleSheet, View, Text } from "react-native"
-import { COLORS } from "../../constants/colors"
+import { StyleSheet, View } from "react-native"
+import StyledText from "./StyledText"
 
 function ContentCard({title, contents}){
   if(contents === null || contents === '')
     return
   return (
     <View>
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.content}>{contents}</Text>
+      <StyledText style={styles.title}>{title}</StyledText>
+      <StyledText style={styles.content}>{contents}</StyledText>
     </View>
   )
 }
@@ -18,7 +18,4 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: 'bold'
   },
-  content: {
-    //color: COLORS.foreground.secondary
-  }
 })
