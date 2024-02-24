@@ -10,7 +10,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 
 function Navigation() {
   const userPreferencesCtx = useContext(UserPreferencesContext)
-  
+
   return (
     <NavigationContainer theme={navigationTheme}>
       {userPreferencesCtx.preferences.hasCompletedSetup ? <MainScreen /> : <SetupScreen />}
@@ -19,6 +19,7 @@ function Navigation() {
 }
 
 function Root() {
+  console.log('test' + process.env.TEST)
   const userPreferencesCtx = useContext(UserPreferencesContext)
   useEffect(() => {
     async function loadPreferences() {
