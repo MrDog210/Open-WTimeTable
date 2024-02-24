@@ -43,7 +43,7 @@ function SchoolCodeInputScreen({navigation}) {
       <Spinner visible={isFetchingData} {...SPINNER_STYLE} />
       <Title>Please write your school code</Title>
       <StyledTextInput label='School code' textInputOptions={{
-        placeholder: 'FERI', autoCapitalize: 'none', autoComplete: 'off', autoCorrect: false, onChangeText: onCodeChange, value: code
+          placeholder: `Example: 'FERI'`, autoCapitalize: 'none', autoComplete: 'off', autoCorrect: false, onChangeText: onCodeChange, value: code
         }}/>
       <StyledButton title="OK" onPress={onConfirm}/>
     </View>

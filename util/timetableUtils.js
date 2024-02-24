@@ -1,6 +1,6 @@
 import { useWindowDimensions } from "react-native";
 import { deleteLecturesBetweenDates, insertCourse, insertExecutionType, insertGroup, insertLecture, insertLecturer, insertRoom } from "./database";
-import { fetchGroupsForBranch, fetchLecturesForGroups, getSchoolInfo } from "./http";
+import { fetchGroupsForBranch, fetchLecturesForGroups, getSchoolInfo, hasInternetConnection } from "./http";
 import { getAllUniqueGroups } from "./groupUtil";
 import { getAllStoredBranchGroups, getSchoolInfo as getStoredSchoolInfo, setAllBranchGroups, getUrlSchoolCode } from "../store/schoolInfo";
 
@@ -12,6 +12,7 @@ export async function getAndSetAllDistinctBranchGroups(schoolCode, chosenBranchI
 
 export async function fetchAndInsertLectures(schoolCode, allGroups, startDate, endDate) { // allGroups should be an array of all available groups
   const allLectures = await fetchLecturesForGroups(schoolCode, allGroups, startDate, endDate)
+  await deleteLecturesBetweenDates(startDate, endDate)
   console.log("Number of lectures: " + allLectures.length)
   await allLectures.forEach(async ({rooms, groups, lecturers, executionTypeId, executionType, course, courseId}) => {
     // each will be inserted ONLY IF ITS UNIQUE
@@ -31,10 +32,12 @@ export async function fetchAndInsertLectures(schoolCode, allGroups, startDate, e
 }
 
 export async function updateLectures(startDate, endDate) {
+  const hasInternet = await hasInternetConnection()
+  if(!hasInternet) return
   const schoolInfo = await getStoredSchoolInfo()
   const schoolCode = schoolInfo.schoolCode
   const allGroups = await getAllStoredBranchGroups()
-  await deleteLecturesBetweenDates(startDate, endDate)
+  //await deleteLecturesBetweenDates(startDate, endDate)
   return fetchAndInsertLectures(schoolCode, allGroups, startDate, endDate)
 }
 
