@@ -10,9 +10,9 @@ Main advantage of this app over the official one is, that you can pick a separat
 ## Installation
 
 1. Clone the repo
-2. run  ``` npm install ```
+2. run  ``` yarn install ```
 3. Rename loginCredentials to loginCredentials.js in constants folder and enter your credentials
-4. ``` npm run ```
+4. ``` npx expo start ```
 
 ## Packages Used:
 
