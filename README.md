@@ -7,7 +7,7 @@ Main advantage of this app over the official one is, that you can pick a separat
 - Separate selectable groups for each course
 - Supports tablets
 
-## Installation
+## Setup instructions
 
 1. Clone the repo
 2. run  ``` yarn install ```
