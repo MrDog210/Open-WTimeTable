@@ -7,6 +7,9 @@ import UserPreferencesContextProvider, { UserPreferencesContext } from './store/
 import { SPINNER_STYLE } from './constants/globalStyles.js';
 import MainScreen from './screens/MainScreen/MainScreen.js';
 import Spinner from 'react-native-loading-spinner-overlay';
+import * as SplashScreen from 'expo-splash-screen';
+
+SplashScreen.preventAutoHideAsync()
 
 function Navigation() {
   const userPreferencesCtx = useContext(UserPreferencesContext)
@@ -24,6 +27,7 @@ function Root() {
   useEffect(() => {
     async function loadPreferences() {
       await userPreferencesCtx.loadPreferences()
+      SplashScreen.hideAsync();
     }
     loadPreferences()
   }, []) 

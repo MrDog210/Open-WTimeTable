@@ -6,7 +6,7 @@ import HourSlice from "../../components/TimeTable/HourSlice";
 import { dateFromNow, formatDate, formatWeekDate, getDates, getISODateNoTimestamp, getWeekDates, subtrackSeconds } from "../../util/dateUtils";
 import LectureDetails from "../../components/TimeTable/LectureDetails";
 import CalendarStrip from 'react-native-calendar-strip';
-import { COLORS } from "../../constants/colors";
+import { COLORS, isDarkTheme } from "../../constants/colors";
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { calculateNowLineOffset, getColumnWidth, hasTimetableUpdated, updateLectures } from "../../util/timetableUtils";
 import IconButton from "../../components/ui/IconButton";
@@ -106,6 +106,8 @@ function TimeTableScreen({ navigation, route }) {
     setDate(new Date(date)) // we refresh the page
   }
 
+  const fontColor = isDarkTheme ? COLORS.foreground.primary : COLORS.background.primary
+
   return (
     <>
       <LectureDetails modalVisible={modalVisible} lecture={modalLecture} onRequestClose={() => {setModelVisible(false)}} />
@@ -132,16 +134,16 @@ function TimeTableScreen({ navigation, route }) {
         scrollerPaging
         style={{height:90, paddingTop: 10, paddingBottom: 10}}
         calendarColor={COLORS.foreground.accentPressed}
-        calendarHeaderStyle={{color: COLORS.background.primary, fontSize: 14}}
-        dateNumberStyle={{color: COLORS.background.primary, fontSize: 14}}
-        dateNameStyle={{color: COLORS.background.primary, fontSize: 8}}
+        calendarHeaderStyle={{color: fontColor, fontSize: 14}}
+        dateNumberStyle={{color: fontColor, fontSize: 14}}
+        dateNameStyle={{color: fontColor, fontSize: 8}}
         markedDatesStyle={{color: COLORS.foreground.accentPressed}}
         
-        highlightDateNumberStyle={{color: COLORS.background.primary, fontSize: 14}}
-        highlightDateNameStyle={{color: COLORS.background.primary, fontSize: 8}}
+        highlightDateNumberStyle={{color: fontColor, fontSize: 14}}
+        highlightDateNameStyle={{color: fontColor, fontSize: 8}}
         highlightDateContainerStyle={{}}
 
-        iconStyle={{tintColor: COLORS.background.primary, height: 20}}
+        iconStyle={{tintColor: fontColor, height: 20}}
         iconContainer={{marginHorizontal: 5, backgroundColor: COLORS.foreground.accent, borderRadius: 30, height: 30, width: 30}}
         daySelectionAnimation={{type: 'background', duration: '200', highlightColor: COLORS.foreground.accentDisabled}}
       />

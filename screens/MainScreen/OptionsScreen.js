@@ -37,6 +37,7 @@ function OptionsScreen({ navigation }) {
 
   return (
     <ScrollView>
+      <StyledText style={styles.note}>Note: this is required to do every semester</StyledText>
       <OptionsButton title='Restart setup' onPress={restartSetup}/>
       <OptionsButton title='Change selected groups' onPress={changeSelectedGroups} />
       <OptionsDropdown title='Default timetable view:' items={defaultView} setItems={setDefaultView} value={selectedView} setValue={setSelectedView} />
@@ -47,9 +48,9 @@ function OptionsScreen({ navigation }) {
 export default OptionsScreen
 
 const styles = StyleSheet.create({
-  text: {
+  note: {
     paddingLeft: 10,
     paddingTop: 10,
-    fontWeight: '500'
+    fontSize: 10
   }
 })

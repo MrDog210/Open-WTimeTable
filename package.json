@@ -18,6 +18,7 @@
     "base-64": "^1.0.0",
     "expo": "^50.0.7",
     "expo-linking": "~6.2.2",
+    "expo-splash-screen": "~0.26.4",
     "expo-sqlite": "~13.2.2",
     "expo-status-bar": "~1.11.1",
     "ky": "^1.2.0",
