@@ -1,8 +1,8 @@
 import ky from "ky";
 import { fetchToken, getToken, storeToken } from "./token.js";
-import { getServerUrl, setSchoolInfo, setServerUrl } from "../store/schoolInfo.js";
+import { getServerUrl, setServerUrl } from "../store/schoolInfo.js";
 import { URL } from '../constants/http.js'
-import { getISODateNoTimestamp, getSchoolYearDates } from "./dateUtils.js";
+import { getISODateNoTimestamp } from "./dateUtils.js";
 import NetInfo from '@react-native-community/netinfo';
 
 function handleError(error) {
@@ -60,7 +60,6 @@ export async function getSchoolInfo(schoolCode) {
   setServerUrl(serverURL)
 
   let schoolInfo = await fetchWithToken(serverURL + `schoolCode?schoolCode=${schoolCode}&language=slo`)
-  await setSchoolInfo(schoolInfo)
 
   return schoolInfo
 }

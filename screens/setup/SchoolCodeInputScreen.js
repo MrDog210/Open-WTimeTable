@@ -1,13 +1,12 @@
-import { Alert, StyleSheet, Text, View } from "react-native"
+import { Alert, StyleSheet,  View } from "react-native"
 import StyledTextInput from "../../components/ui/StyledTextInput"
 import StyledButton from "../../components/ui/StyledButton"
 import Title from "../../components/ui/Title"
-import { useContext, useState } from "react"
+import {  useState } from "react"
 import { getSchoolInfo } from "../../util/http"
 import Spinner from 'react-native-loading-spinner-overlay';
 import { SPINNER_STYLE } from "../../constants/globalStyles"
-import { UserPreferencesContext } from "../../store/userPreferencesContext"
-import { setUrlSchoolCode } from "../../store/schoolInfo"
+import { setSchoolInfo, setUrlSchoolCode } from "../../store/schoolInfo"
 
 function SchoolCodeInputScreen({navigation}) {
   const [code, setCode] = useState('')
@@ -21,21 +20,13 @@ function SchoolCodeInputScreen({navigation}) {
     try {
       setIsFetchingData(true)
       const schoolInfo = await getSchoolInfo(code)
+      setSchoolInfo(schoolInfo)
       setUrlSchoolCode(code)
       navigation.navigate('ProgramSelect', { schoolInfo: schoolInfo })
     } catch (error) {
       Alert.alert('An error ocurred', error.message)
     }
     setIsFetchingData(false)
-  }
-
-  const userPreferencesCtx = useContext(UserPreferencesContext)
-  console.log(userPreferencesCtx.preferences)
-  function changeView() {
-    const pref = userPreferencesCtx.preferences // should find better way of doing this
-    pref.hasCompletedSetup = true
-    userPreferencesCtx.setPreferences(pref)
-    console.log(pref)
   }
 
   return (

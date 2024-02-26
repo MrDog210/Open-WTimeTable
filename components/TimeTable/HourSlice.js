@@ -7,7 +7,7 @@ import Animated, { useSharedValue, withDelay, withSpring, withTiming } from "rea
 import { useEffect } from "react";
 import { getDelayBasedOnPosition } from "../../util/animationUtil";
 
-function HourSlice({style, item, dayIndex, daysTotal, onPress}) {
+function HourSlice({style, item, dayIndex, daysTotal, onPress, smallMode=false}) {
   const {course, eventType, start_time, end_time, note, showLink, color, colorText, rooms, groups, lecturers, executionType} = item.lecture
   const hexColor = (color === null || color === '') ? COLORS.foreground.primary : `#${color}`
   const top = useSharedValue(50)
@@ -23,20 +23,22 @@ function HourSlice({style, item, dayIndex, daysTotal, onPress}) {
     opacity.value = withDelay(delay , withTiming(1, {duration: 500}))
   }, [])
 
+  const textSize = { fontSize: smallMode ? 12 : 14}
+
   return (
     <Pressable style={style} onPress={onPressed}>
       <Animated.View style={[styles.container, {top, opacity}]}>
           <View style={styles.titleContainer}>
-            <StyledText style={styles.courseName}>{course ? course : eventType}</StyledText>
-            <StyledText>{executionType}</StyledText>
+            <StyledText style={[styles.courseName, textSize]}>{course ? course : eventType}</StyledText>
+            <StyledText style={textSize}>{executionType}</StyledText>
           </View>
           <View style={styles.detailsContainer}>
             <StyledText style={styles.timeText}>{`${getTimeFromDate(start_time)} - ${getTimeFromDate(end_time)}`}</StyledText>
-            <StyledText>{formatArray(rooms, 'name')}</StyledText>
-            <StyledText>{formatArray(lecturers, 'name')}</StyledText>
+            <StyledText style={textSize}>{formatArray(rooms, 'name')}</StyledText>
+            <StyledText style={textSize}>{formatArray(lecturers, 'name')}</StyledText>
           </View>
           <View>
-            <StyledText style={{color: hexColor, textAlign:'right'}}>{colorText}</StyledText>
+            <StyledText style={[{color: hexColor, textAlign:'right'}, textSize]}>{colorText}</StyledText>
           </View>
       </Animated.View>
     </Pressable> 
@@ -64,7 +66,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   timeText: {
-    fontSize: 13
+    fontSize: 12
   },
   detailsContainer: {
     flex: 1

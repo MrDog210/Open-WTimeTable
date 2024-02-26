@@ -47,6 +47,7 @@ function TimeTableScreen({ navigation, route }) {
   async function checkForTimetableUpdate() {
     const hasInternet = await hasInternetConnection()
     if(!hasInternet) return
+    
     setRefreshing(true)
     const hasUpdated = await hasTimetableUpdated() // we check if the timetable has been updated
     if(hasUpdated)
@@ -112,13 +113,14 @@ function TimeTableScreen({ navigation, route }) {
     <>
       <LectureDetails modalVisible={modalVisible} lecture={modalLecture} onRequestClose={() => {setModelVisible(false)}} />
         <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} ref={scrollRef}>
-          <Timetable items={lectures} renderItem={props => <HourSlice {...props} onPress={lecturePressed}/>} 
+          <Timetable items={lectures} 
+            renderItem={props => <HourSlice {...props} onPress={lecturePressed} smallMode={isWeekView}/>} 
             date={isWeekView ? undefined : date}
             range={isWeekView ? week : undefined}
 
             fromHour={6}
             toHour={22}
-            hourHeight={80}
+            hourHeight={isWeekView ? 65 : 80}
             style={timetableStyles}
 
             renderHeader={isWeekView ? props => <TimeTableHeader {...props} /> : undefined}
@@ -168,10 +170,10 @@ const timetableStyles = StyleSheet.create({
   },
   nowLine: {
     dot: {
-      backgroundColor: COLORS.foreground.primary
+      backgroundColor: COLORS.foreground.secondary
     },
     line: {
-      backgroundColor: COLORS.foreground.primary
+      backgroundColor: COLORS.foreground.secondary
     },
   }
 })

@@ -2,7 +2,7 @@ import { useWindowDimensions } from "react-native";
 import { deleteLecturesBetweenDates, insertCourse, insertExecutionType, insertGroup, insertLecture, insertLecturer, insertRoom } from "./database";
 import { fetchGroupsForBranch, fetchLecturesForGroups, getSchoolInfo, hasInternetConnection } from "./http";
 import { getAllUniqueGroups } from "./groupUtil";
-import { getAllStoredBranchGroups, getSchoolInfo as getStoredSchoolInfo, setAllBranchGroups, getUrlSchoolCode } from "../store/schoolInfo";
+import { getAllStoredBranchGroups, getSchoolInfo as getStoredSchoolInfo, setAllBranchGroups, getUrlSchoolCode, setSchoolInfo } from "../store/schoolInfo";
 
 export async function getAndSetAllDistinctBranchGroups(schoolCode, chosenBranchID) {
   const groups = getAllUniqueGroups(await fetchGroupsForBranch(schoolCode, chosenBranchID))
@@ -68,8 +68,10 @@ export function calculateNowLineOffset(padding = 0,snapToHour = true) { // TODO:
 
 export async function hasTimetableUpdated() {
   const storedinfo = await getStoredSchoolInfo()
-  const json = await getSchoolInfo(await getUrlSchoolCode())
-  const hasUpdated = storedinfo.lastChangeDate !== json.lastChangeDate
+  const schoolInfo = await getSchoolInfo(await getUrlSchoolCode())
+  const hasUpdated = storedinfo.lastChangeDate !== schoolInfo.lastChangeDate
   console.log('has updated: ' + hasUpdated)
+  if(hasUpdated)
+    setSchoolInfo(schoolInfo)
   return hasUpdated
 }
