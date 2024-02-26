@@ -41,7 +41,7 @@ function Root() {
 export default function App() {
   return (
     <>
-      <StatusBar style="auto" />
+      <StatusBar style={isDarkTheme ? 'light' : 'dark'} />
       <UserPreferencesContextProvider>
           <Root />
       </UserPreferencesContextProvider>
