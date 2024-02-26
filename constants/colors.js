@@ -10,7 +10,8 @@ export const COLORS = {
     warning: isDarkTheme ? '#ee6723' : '#ee6723',
     accent: isDarkTheme ? '#419bf9' : '#419bf9',
     accentDisabled: isDarkTheme ? '#8CC3FC' : '#8CC3FC',
-    accentPressed: isDarkTheme ? '#4684C8' : '#4684C8' 
+    accentPressed: isDarkTheme ? '#4684C8' : '#4684C8',
+    primaryOpaque: isDarkTheme ? '#F0F0F040' : '#554d5640'
   },
   background: {
     primary: isDarkTheme ? '#1A1A1A' : 'white' ,

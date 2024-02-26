@@ -2,8 +2,9 @@ import { ScrollView, StyleSheet } from "react-native"
 import OptionsButton from "../../components/ui/options/OptionsButton"
 import OptionsDropdown from "../../components/ui/options/OptionsDropDown"
 import { useContext, useEffect, useState } from "react"
-import { UserPreferencesContext } from "../../store/userPreferencesContext"
+import { PREF_KEYS, UserPreferencesContext } from "../../store/userPreferencesContext"
 import StyledText from "../../components/ui/StyledText"
+import OptionsSwitch from "../../components/ui/options/OptionsSwitch"
 
 function OptionsScreen({ navigation }) {
   const userPreferencesCtx = useContext(UserPreferencesContext)
@@ -25,6 +26,8 @@ function OptionsScreen({ navigation }) {
     userPreferencesCtx.setPreferences(preferences)
   },[selectedView])
 
+  const [timetableAnimations, setTimetableAnimations] = useState(userPreferencesCtx.getKey(PREF_KEYS.timetableAnimations))
+
   function restartSetup() {
     const pref = userPreferencesCtx.preferences // should find better way of doing this
     pref.hasCompletedSetup = false
@@ -35,12 +38,17 @@ function OptionsScreen({ navigation }) {
     navigation.navigate('GroupSelect', {isEditing: true})
   }
 
+  useEffect(() => {
+    userPreferencesCtx.setKey(PREF_KEYS.timetableAnimations, timetableAnimations)
+  }, [timetableAnimations])
+
   return (
     <ScrollView>
       <StyledText style={styles.note}>Note: this is required to do every semester</StyledText>
       <OptionsButton title='Restart setup' onPress={restartSetup}/>
       <OptionsButton title='Change selected groups' onPress={changeSelectedGroups} />
       <OptionsDropdown title='Default timetable view:' items={defaultView} setItems={setDefaultView} value={selectedView} setValue={setSelectedView} />
+      <OptionsSwitch value={timetableAnimations} onValueChange={setTimetableAnimations} title='Timetable animations' />
     </ScrollView>
   )
 }

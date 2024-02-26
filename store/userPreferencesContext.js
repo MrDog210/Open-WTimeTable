@@ -9,7 +9,8 @@ export const PREF_KEYS = {
   /*timetableUpdateInterval: 'timetableUpdateInterval',
   timetableLastUpdate: 'timetableLastUpdate',
   timetableUpdateSpan: 'timetableUpdateSpan',*/
-  timetableAutoScroll: 'timetableAutoScroll'
+  timetableAutoScroll: 'timetableAutoScroll',
+  timetableAnimations: 'timetableAnimations'
 }
 
 const userPreferences = {
@@ -20,7 +21,8 @@ const userPreferences = {
   /*timetableUpdateInterval: 0, // seconds since last update
   timetableLastUpdate: (new Date()).toISOString(),
   timetableUpdateSpan: 30, // in days*/
-  timetableAutoScroll: true
+  timetableAutoScroll: true,
+  timetableAnimations: false
 }
 
 export const UserPreferencesContext = createContext({

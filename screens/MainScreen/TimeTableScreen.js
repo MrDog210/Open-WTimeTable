@@ -1,5 +1,5 @@
 import { useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { RefreshControl, ScrollView, StyleSheet } from "react-native";
+import { Alert, RefreshControl, ScrollView, StyleSheet } from "react-native";
 import Timetable from "react-native-calendar-timetable";
 import { getLecturesForDate } from "../../util/database";
 import HourSlice from "../../components/TimeTable/HourSlice";
@@ -11,7 +11,7 @@ import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { calculateNowLineOffset, getColumnWidth, hasTimetableUpdated, updateLectures } from "../../util/timetableUtils";
 import IconButton from "../../components/ui/IconButton";
 import TimeTableHeader from "../../components/TimeTable/TimeTableHeader";
-import { UserPreferencesContext } from "../../store/userPreferencesContext";
+import { PREF_KEYS, UserPreferencesContext } from "../../store/userPreferencesContext";
 import { hasInternetConnection } from "../../util/http";
 
 function TimeTableScreen({ navigation, route }) {
@@ -26,6 +26,7 @@ function TimeTableScreen({ navigation, route }) {
   const scrollRef = useRef();
 
   const { isWeekView } = route.params
+  const animationsEnabled = userPreferencesCtx.getKey(PREF_KEYS.timetableAnimations)
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -100,9 +101,12 @@ function TimeTableScreen({ navigation, route }) {
 
   async function onRefresh() {
     setRefreshing(true)
-    //const updateSpan = userPreferencesCtx.getKey('timetableUpdateSpan')
-    await updateLectures(new Date(), dateFromNow(200))
-    //userPreferencesCtx.setKey('timetableLastUpdate', (new Date()).toISOString()) // we set last update time
+    console.log('Updating databse')
+    try {
+      await updateLectures(new Date(), dateFromNow(200))
+    } catch (error) {
+      Alert.alert('Error', error.message)
+    }
     setRefreshing(false)
     setDate(new Date(date)) // we refresh the page
   }
@@ -114,7 +118,7 @@ function TimeTableScreen({ navigation, route }) {
       <LectureDetails modalVisible={modalVisible} lecture={modalLecture} onRequestClose={() => {setModelVisible(false)}} />
         <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} ref={scrollRef}>
           <Timetable items={lectures} 
-            renderItem={props => <HourSlice {...props} onPress={lecturePressed} smallMode={isWeekView}/>} 
+            renderItem={props => <HourSlice {...props} onPress={lecturePressed} smallMode={isWeekView} animationsDisabled={!animationsEnabled}/>} 
             date={isWeekView ? undefined : date}
             range={isWeekView ? week : undefined}
 
@@ -170,10 +174,10 @@ const timetableStyles = StyleSheet.create({
   },
   nowLine: {
     dot: {
-      backgroundColor: COLORS.foreground.secondary
+      backgroundColor: COLORS.foreground.primaryOpaque
     },
     line: {
-      backgroundColor: COLORS.foreground.secondary
+      backgroundColor: COLORS.foreground.primaryOpaque
     },
   }
 })
