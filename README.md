@@ -1,6 +1,9 @@
 # Open Wise TimeTable
 This is a mobile app made with react native and expo, to view the timetable.
 
+|                               |                               |                               |                               |                               |
+|-------------------------------|-------------------------------|-------------------------------|-------------------------------|-------------------------------|
+| ![](other/preview/image1.png) | ![](other/preview/image2.png) | ![](other/preview/image3.png) | ![](other/preview/image4.png) | ![](other/preview/image5.png) |
 ## Features:
 Main advantage of this app over the official one is, that you can pick a separate group for each course.
 - Dark/light mode
