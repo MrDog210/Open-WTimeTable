@@ -8,12 +8,15 @@ import { SPINNER_STYLE } from './constants/globalStyles.js';
 import MainScreen from './screens/MainScreen/MainScreen.js';
 import Spinner from 'react-native-loading-spinner-overlay';
 import * as SplashScreen from 'expo-splash-screen';
+import PullupTestScreen from './screens/tests/PullupTestScreen.js';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 SplashScreen.preventAutoHideAsync()
 
 function Navigation() {
   const userPreferencesCtx = useContext(UserPreferencesContext)
 
+  return <PullupTestScreen />
   return (
     <NavigationContainer theme={navigationTheme}>
       {userPreferencesCtx.preferences.hasCompletedSetup ? <MainScreen /> : <SetupScreen />}
@@ -43,7 +46,9 @@ export default function App() {
     <>
       <StatusBar style={isDarkTheme ? 'light' : 'dark'} />
       <UserPreferencesContextProvider>
+        <GestureHandlerRootView style={{ flex: 1 }}>
           <Root />
+        </GestureHandlerRootView>
       </UserPreferencesContextProvider>
     </>
   );

@@ -9,6 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@gorhom/bottom-sheet": "4",
     "@react-native-async-storage/async-storage": "1.21.0",
     "@react-native-community/datetimepicker": "7.6.1",
     "@react-native-community/netinfo": "11.1.0",
@@ -16,6 +17,7 @@
     "@react-navigation/native": "^6.1.10",
     "@react-navigation/native-stack": "^6.9.18",
     "base-64": "^1.0.0",
+    "date-fns": "^3.3.1",
     "expo": "^50.0.7",
     "expo-linking": "~6.2.2",
     "expo-splash-screen": "~0.26.4",
@@ -24,6 +26,7 @@
     "ky": "^1.2.0",
     "react": "18.2.0",
     "react-native": "0.73.4",
+    "react-native-calendar-picker": "^8.0.1",
     "react-native-calendar-strip": "^2.2.6",
     "react-native-calendar-timetable": "^1.0.6",
     "react-native-dropdown-picker": "^5.4.6",
