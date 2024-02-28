@@ -3010,6 +3010,11 @@ dag-map@~1.0.0:
   resolved "https://registry.yarnpkg.com/dag-map/-/dag-map-1.0.2.tgz#e8379f041000ed561fc515475c1ed2c85eece8d7"
   integrity sha512-+LSAiGFwQ9dRnRdOeaj7g47ZFJcOUPukAP8J3A3fuZ1g9Y44BG+P1sgApjLXTQPOzC4+7S9Wr8kXsfpINM4jpw==
 
+date-fns@^3.3.1:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-3.3.1.tgz#7581daca0892d139736697717a168afbb908cfed"
+  integrity sha512-y8e109LYGgoQDveiEBD3DYXKba1jWf5BA8YU1FL5Tvm0BTdEfy54WLCwnuYWZNnzzvALy/QQ4Hov+Q9RVRv+Zw==
+
 dayjs@^1.8.15:
   version "1.11.10"
   resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.11.10.tgz#68acea85317a6e164457d6d6947564029a6a16a0"
@@ -5497,6 +5502,11 @@ react-native-screens@~3.29.0:
   dependencies:
     react-freeze "^1.0.0"
     warn-once "^0.1.0"
+
+react-native-week-month-date-picker@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/react-native-week-month-date-picker/-/react-native-week-month-date-picker-0.3.0.tgz#89cff10d529efd9464a5e1d1dc4c8f4dba119f32"
+  integrity sha512-L5qSfZ4bG5v/G8u/FVMTQe0FipM3Vuo1UdInbvQnVO65yMav15W+2idJ6ZVQvMwxrneZxG8iYdeiG79DmAI7Ig==
 
 react-native@0.73.4:
   version "0.73.4"
