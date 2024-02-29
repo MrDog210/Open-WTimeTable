@@ -13,6 +13,7 @@ import IconButton from "../../components/ui/IconButton";
 import TimeTableHeader from "../../components/TimeTable/TimeTableHeader";
 import { PREF_KEYS, UserPreferencesContext } from "../../store/userPreferencesContext";
 import { hasInternetConnection } from "../../util/http";
+import PullUpCalendar from "../../components/PullUpCalendar/PullUpCalendar";
 
 function TimeTableScreen({ navigation, route }) {
   const userPreferencesCtx = useContext(UserPreferencesContext)
@@ -50,11 +51,16 @@ function TimeTableScreen({ navigation, route }) {
     if(!hasInternet) return
     
     setRefreshing(true)
-    const hasUpdated = await hasTimetableUpdated() // we check if the timetable has been updated
-    if(hasUpdated)
-      onRefresh()
-    else
+    try {
+      const hasUpdated = await hasTimetableUpdated() // we check if the timetable has been updated
+        if(hasUpdated)
+        onRefresh()
+      else
+        setRefreshing(false)
+    } catch (error) {
       setRefreshing(false)
+    }
+    
   }
 
   useEffect(() =>{
@@ -104,11 +110,11 @@ function TimeTableScreen({ navigation, route }) {
     console.log('Updating databse')
     try {
       await updateLectures(new Date(), dateFromNow(200))
+      setDate(new Date(date)) // we refresh the page
     } catch (error) {
       Alert.alert('Error', error.message)
     }
     setRefreshing(false)
-    setDate(new Date(date)) // we refresh the page
   }
 
   const fontColor = isDarkTheme ? COLORS.foreground.primary : COLORS.background.primary
@@ -132,27 +138,7 @@ function TimeTableScreen({ navigation, route }) {
             columnWidth={isWeekView ? getColumnWidth(isWeekView) : undefined}
           />
         </ScrollView>
-        <CalendarStrip
-        selectedDate={date}
-        onDateSelected={setDate}
-
-        scrollable
-        scrollerPaging
-        style={{height:90, paddingTop: 10, paddingBottom: 10}}
-        calendarColor={COLORS.foreground.accentPressed}
-        calendarHeaderStyle={{color: fontColor, fontSize: 14}}
-        dateNumberStyle={{color: fontColor, fontSize: 14}}
-        dateNameStyle={{color: fontColor, fontSize: 8}}
-        markedDatesStyle={{color: COLORS.foreground.accentPressed}}
-        
-        highlightDateNumberStyle={{color: fontColor, fontSize: 14}}
-        highlightDateNameStyle={{color: fontColor, fontSize: 8}}
-        highlightDateContainerStyle={{}}
-
-        iconStyle={{tintColor: fontColor, height: 20}}
-        iconContainer={{marginHorizontal: 5, backgroundColor: COLORS.foreground.accent, borderRadius: 30, height: 30, width: 30}}
-        daySelectionAnimation={{type: 'background', duration: '200', highlightColor: COLORS.foreground.accentDisabled}}
-      />
+        <PullUpCalendar date={date} setDate={setDate} />
     </>
   )
 }

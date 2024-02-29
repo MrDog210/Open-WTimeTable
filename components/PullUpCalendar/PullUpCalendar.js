@@ -3,6 +3,8 @@ import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { StyleSheet, Text } from "react-native";
 import CalendarPicker from "react-native-calendar-picker";
 import { useFocusEffect } from "@react-navigation/native";
+import WeekStrip from "@mrdog210/react-native-week-strip";
+
 
 function PullUpCalendar({date, setDate}) {
   const [sheetPosition, setSheetPosition] = useState(0)
@@ -24,10 +26,17 @@ function PullUpCalendar({date, setDate}) {
     <BottomSheet 
       ref={bottomSheetRef}
       onChange={handleSheetChanges}
-      snapPoints={[150, 500]}>
+      snapPoints={[120, 400]}>
       <BottomSheetView style={styles.contentContainer} focusable>
-        
-        {sheetPosition === 1 &&<CalendarPicker 
+        {sheetPosition === 0 && <WeekStrip 
+          startDate={new Date('2024-01-01')}
+          endDate={new Date('2024-04-01')}
+          date={date}
+          onDateChange={setDate}
+          allowSelectingFuture
+          weekRowStyle
+        /> }
+        {sheetPosition === 1 && <CalendarPicker 
           initialDate={date}
           selectedStartDate={date}
           onDateChange={onCalanderDateSelected}

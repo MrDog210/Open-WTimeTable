@@ -1,6 +1,5 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import SchoolCodeInputScreen from "./SchoolCodeInputScreen"
-import { COLORS } from "../../constants/colors"
 import ProgramSelectScreen from "./ProgramSelectScreen"
 import GroupSelectScreen from "./GroupSelectScreen"
 import { useEffect } from 'react';

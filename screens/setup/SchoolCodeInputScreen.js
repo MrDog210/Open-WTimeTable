@@ -2,11 +2,12 @@ import { Alert, StyleSheet,  View } from "react-native"
 import StyledTextInput from "../../components/ui/StyledTextInput"
 import StyledButton from "../../components/ui/StyledButton"
 import Title from "../../components/ui/Title"
-import {  useState } from "react"
+import {  useState, useContext } from "react"
 import { getSchoolInfo } from "../../util/http"
 import Spinner from 'react-native-loading-spinner-overlay';
 import { SPINNER_STYLE } from "../../constants/globalStyles"
 import { setSchoolInfo, setUrlSchoolCode } from "../../store/schoolInfo"
+import { UserPreferencesContext } from "../../store/userPreferencesContext"
 
 function SchoolCodeInputScreen({navigation}) {
   const [code, setCode] = useState('')
@@ -29,6 +30,13 @@ function SchoolCodeInputScreen({navigation}) {
     setIsFetchingData(false)
   }
 
+  const userPreferencesCtx = useContext(UserPreferencesContext)
+  function changeView() {
+    const pref = userPreferencesCtx.preferences // should find better way of doing this
+    pref.hasCompletedSetup = true
+    userPreferencesCtx.setPreferences(pref)
+  }
+
   return (
     <View style={style.container}>
       <Spinner visible={isFetchingData} {...SPINNER_STYLE} />
@@ -37,6 +45,7 @@ function SchoolCodeInputScreen({navigation}) {
           placeholder: `Example: 'FERI'`, autoCapitalize: 'none', autoComplete: 'off', autoCorrect: false, onChangeText: onCodeChange, value: code
         }}/>
       <StyledButton title="OK" onPress={onConfirm}/>
+      {__DEV__ && <StyledButton title="change view" onPress={changeView}/>}
     </View>
   )
 }
