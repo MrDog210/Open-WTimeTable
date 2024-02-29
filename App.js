@@ -16,7 +16,7 @@ SplashScreen.preventAutoHideAsync()
 function Navigation() {
   const userPreferencesCtx = useContext(UserPreferencesContext)
 
-  //return <PullupTestScreen />
+  return <PullupTestScreen />
   return (
     <NavigationContainer theme={navigationTheme}>
       {userPreferencesCtx.preferences.hasCompletedSetup ? <MainScreen /> : <SetupScreen />}
