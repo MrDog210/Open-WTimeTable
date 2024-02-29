@@ -50,13 +50,16 @@ function TimeTableScreen({ navigation, route }) {
     if(!hasInternet) return
     
     setRefreshing(true)
-    const hasUpdated = await hasTimetableUpdated() // we check if the timetable has been updated
-    if(hasUpdated)
-      onRefresh()
-    else
+    try {
+      const hasUpdated = await hasTimetableUpdated() // we check if the timetable has been updated
+        if(hasUpdated)
+        onRefresh()
+      else
+        setRefreshing(false)
+    } catch (error) {
       setRefreshing(false)
+    }
   }
-
   useEffect(() =>{
     navigation.setOptions({
       title: isWeekView ? formatWeekDate(week.from, week.till) : formatDate(date)
@@ -104,11 +107,11 @@ function TimeTableScreen({ navigation, route }) {
     console.log('Updating databse')
     try {
       await updateLectures(new Date(), dateFromNow(200))
+      setDate(new Date(date)) // we refresh the page
     } catch (error) {
       Alert.alert('Error', error.message)
     }
     setRefreshing(false)
-    setDate(new Date(date)) // we refresh the page
   }
 
   const fontColor = isDarkTheme ? COLORS.foreground.primary : COLORS.background.primary
@@ -139,19 +142,19 @@ function TimeTableScreen({ navigation, route }) {
         scrollable
         scrollerPaging
         style={{height:90, paddingTop: 10, paddingBottom: 10}}
-        calendarColor={COLORS.foreground.accentPressed}
+        calendarColor={isDarkTheme ? COLORS.background.secondary : COLORS.foreground.primary}
         calendarHeaderStyle={{color: fontColor, fontSize: 14}}
         dateNumberStyle={{color: fontColor, fontSize: 14}}
         dateNameStyle={{color: fontColor, fontSize: 8}}
-        markedDatesStyle={{color: COLORS.foreground.accentPressed}}
+        markedDatesStyle={{color: COLORS.background.primary}}
         
         highlightDateNumberStyle={{color: fontColor, fontSize: 14}}
         highlightDateNameStyle={{color: fontColor, fontSize: 8}}
         highlightDateContainerStyle={{}}
 
         iconStyle={{tintColor: fontColor, height: 20}}
-        iconContainer={{marginHorizontal: 5, backgroundColor: COLORS.foreground.accent, borderRadius: 30, height: 30, width: 30}}
-        daySelectionAnimation={{type: 'background', duration: '200', highlightColor: COLORS.foreground.accentDisabled}}
+        iconContainer={{marginHorizontal: 5, height: 30, width: 30}}
+        daySelectionAnimation={{type: 'background', duration: '200', highlightColor: isDarkTheme ? COLORS.background.primary : COLORS.foreground.secondary}}
       />
     </>
   )
