@@ -39,6 +39,7 @@ function TimeTableScreen({ navigation, route }) {
   useEffect(() => {
     const scrollPadding = isWeekView ? 45 : -5
     scrollRef.current?.scrollTo({ // we scroll to 'now line'
+      //x: getColumnWidth(isWeekView),
       y: calculateNowLineOffset(scrollPadding),
       animated: true
     })
