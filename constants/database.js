@@ -2,6 +2,7 @@ export const CREATE_DATABASE = [/*`DROP TABLE IF EXISTS lectures_has_groups`,
 `DROP TABLE IF EXISTS lectures_has_lecturers`,
 `DROP TABLE IF EXISTS lectures_has_rooms`,
 `DROP TABLE IF EXISTS selected_groups`,
+`DROP TABLE IF EXISTS notes`,
 `DROP TABLE IF EXISTS groups`,
 `DROP TABLE IF EXISTS rooms`,
 `DROP TABLE IF EXISTS courses`,
@@ -69,9 +70,18 @@ export const CREATE_DATABASE = [/*`DROP TABLE IF EXISTS lectures_has_groups`,
   groups_id INTEGER NOT NULL,
   FOREIGN KEY (courses_id) REFERENCES courses (id),
   FOREIGN KEY (groups_id) REFERENCES groups (id)
+)`,
+`CREATE TABLE notes (
+	id INTEGER PRIMARY KEY UNIQUE NOT NULL AUTOINCREMENT,
+	note TEXT NOT NULL,
+	lectures_id INTEGER NOT NULL,
+	executionType_id INTEGER NOT NULL,
+	FOREIGN KEY (executionType_id) REFERENCES executionTypes (id),
+	FOREIGN KEY (lectures_id) REFERENCES lectures (id)
 )`]
 
-export const DELETE_COMMANDS = [`DELETE FROM lectures_has_lecturers;`,
+export const DELETE_COMMANDS = [
+`DELETE FROM lectures_has_lecturers;`,
 `DELETE FROM lectures_has_rooms;`,
 `DELETE FROM lectures_has_groups;`,
 `DELETE FROM selected_groups`,
@@ -80,4 +90,5 @@ export const DELETE_COMMANDS = [`DELETE FROM lectures_has_lecturers;`,
 `DELETE FROM courses`,
 `DELETE FROM executionTypes`,
 `DELETE FROM lecturers`,
-`DELETE FROM lectures`]
+`DELETE FROM lectures`,
+`DELETE FROM notes`]
