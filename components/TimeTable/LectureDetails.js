@@ -19,7 +19,7 @@ function LectureDetails({modalVisible, onRequestClose, lecture}) {
     opacity.value = withTiming(isVisible, {duration: 300})
     top.value =  withTiming(isVisible ? 0 : 50, {duration: 300, easing: Easing.inOut(Easing.poly(2))})
   }, [modalVisible])
-  const {course, eventType, start_time, end_time, note, showLink, color, colorText, rooms, groups, lecturers, executionType} = lecture
+  const {course, eventType, start_time, end_time, note, showLink, color, colorText, rooms, groups, lecturers, executionType, usersNote} = lecture
   return (
     <Modal visible={modalVisible} transparent={true} animationType="none">
       <Animated.View style={[styles.container, {opacity}]}>
@@ -39,8 +39,13 @@ function LectureDetails({modalVisible, onRequestClose, lecture}) {
             <ContentCard title='Note:' contents={note} />
             <ContentCard title='Show link:' contents={showLink} />
             <ContentCard title='Note:' contents={note} />
+            <ContentCard title='' contents={usersNote} />
           </View>
-          <StyledButton title='Close' onPress={onRequestClose}/>
+          <View style={styles.buttonContainer}>
+            <StyledButton containerStyle={styles.button} title='Edit note' onPress={onRequestClose}/>
+            <View style={{width: 2, backgroundColor: COLORS.background.seperator}}/>
+            <StyledButton containerStyle={styles.button} title='Close' onPress={onRequestClose}/>
+          </View>
         </Animated.View>
       </Animated.View>
     </Modal>
@@ -86,5 +91,11 @@ const styles = StyleSheet.create({
   subtitle: {
     flexDirection: 'row',
     justifyContent: 'space-evenly'
+  },
+  buttonContainer: {
+    flexDirection: 'row'
+  },
+  button: {
+    flex: 1
   }
 })

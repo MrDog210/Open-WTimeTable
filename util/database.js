@@ -130,8 +130,10 @@ export function getLecturesForDate(date) { // pazi če je execution type prazen
     lecture.groups = getGroupsForLecture(lecture.id)
     lecture.rooms = getRoomsForLecture(lecture.id)
     lecture.lecturers = getLecturersForLecture(lecture.id)
-    if(lecture.executionType_id)
+    if(lecture.executionType_id){
       lecture.executionType = getExecutionType(lecture.executionType_id).executionType
+      lecture.usersNote = querryNoteForLecture(lecture.id, lecture.executionType.id)
+    }
   })
 
   return lectures
@@ -145,4 +147,17 @@ export async function deleteLecturesBetweenDates(start_time, end_time) { // this
   start_time = getISODateNoTimestamp(start_time)
   end_time = getISODateNoTimestamp(end_time)
   return database.runAsync(`DELETE FROM lectures WHERE DATE(start_time) BETWEEN '${start_time}' AND '${end_time}'`)
+}
+
+export function querryNoteForLecture(lectureId, executionTypeId) {
+  return database.getFirstSync(`SELECT * FROM notes WHERE lectures_id = ? AND executionType_id = ?`, [lectureId, executionTypeId])
+}
+
+export async function deleteNoteForLecture(lectureId, executionTypeId) {
+  return database.getFirstAsync(`DELETE FROM notes WHERE lectures_id = ? AND executionType_id = ?`, [lectureId, executionTypeId])
+}
+
+export async function setNoteForLecture(note, lectureId, executionTypeId) {
+  await deleteNoteForLecture(lectureId, executionTypeId)
+  return database.getFirstAsync(`INSERT INTO notes (note, lectures_id, executionType_id) VALUES (?, ?, ?)`, [note, lectureId, executionTypeId])
 }

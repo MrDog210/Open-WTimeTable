@@ -2,7 +2,7 @@ import { StyleSheet, View } from "react-native"
 import StyledText from "./StyledText"
 
 function ContentCard({title, contents}){
-  if(contents === null || contents === '')
+  if(contents === null || contents === undefined || contents === '')
     return
   return (
     <View>
