@@ -150,14 +150,14 @@ export async function deleteLecturesBetweenDates(start_time, end_time) { // this
 }
 
 export function querryNoteForLecture(lectureId, executionTypeId) {
-  return database.getFirstSync(`SELECT * FROM notes WHERE lectures_id = ? AND executionType_id = ?`, [lectureId, executionTypeId])
+  return database.getFirstSync(`SELECT * FROM notes WHERE courses_id = ? AND executionType_id = ?`, [courseId, executionTypeId])
 }
 
-export async function deleteNoteForLecture(lectureId, executionTypeId) {
-  return database.getFirstAsync(`DELETE FROM notes WHERE lectures_id = ? AND executionType_id = ?`, [lectureId, executionTypeId])
+export async function deleteNoteForLecture(courseId, executionTypeId) {
+  return database.getFirstAsync(`DELETE FROM notes WHERE courses_id = ? AND executionType_id = ?`, [courseId, executionTypeId])
 }
 
-export async function setNoteForLecture(note, lectureId, executionTypeId) {
+export async function setNoteForLecture(note, courseId, executionTypeId) {
   await deleteNoteForLecture(lectureId, executionTypeId)
-  return database.getFirstAsync(`INSERT INTO notes (note, lectures_id, executionType_id) VALUES (?, ?, ?)`, [note, lectureId, executionTypeId])
+  return database.getFirstAsync(`INSERT INTO notes (note, courses_id, executionType_id) VALUES (?, ?, ?)`, [note, courseId, executionTypeId])
 }
