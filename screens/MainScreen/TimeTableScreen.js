@@ -54,7 +54,7 @@ function TimeTableScreen({ navigation, route }) {
     try {
       const hasUpdated = await hasTimetableUpdated() // we check if the timetable has been updated
         if(hasUpdated)
-        onRefresh()
+          onRefresh()
       else
         setRefreshing(false)
     } catch (error) {
@@ -67,7 +67,7 @@ function TimeTableScreen({ navigation, route }) {
     })
   }, [date, week])
 
-  useEffect(() => {
+  useEffect(() => { // querring timetable data
     setIsFetchingData(true)
 
     let dates = []
@@ -107,7 +107,7 @@ function TimeTableScreen({ navigation, route }) {
     setRefreshing(true)
     console.log('Updating databse')
     try {
-      await updateLectures(new Date(), dateFromNow(200))
+      await updateLectures(new Date(), dateFromNow(200), true)
       setDate(new Date(date)) // we refresh the page
     } catch (error) {
       Alert.alert('Error', error.message)

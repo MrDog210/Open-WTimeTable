@@ -1,5 +1,5 @@
 import { useWindowDimensions } from "react-native";
-import { deleteLecturesBetweenDates, insertCourse, insertExecutionType, insertGroup, insertLecture, insertLecturer, insertRoom } from "./database";
+import { deleteLecturesBetweenDates, getAllDistinctSelectedGroups, insertCourse, insertExecutionType, insertGroup, insertLecture, insertLecturer, insertRoom } from "./database";
 import { fetchGroupsForBranch, fetchLecturesForGroups, getSchoolInfo, hasInternetConnection } from "./http";
 import { getAllUniqueGroups } from "./groupUtil";
 import { getAllStoredBranchGroups, getSchoolInfo as getStoredSchoolInfo, setAllBranchGroups, getUrlSchoolCode, setSchoolInfo } from "../store/schoolInfo";
@@ -13,6 +13,7 @@ export async function getAndSetAllDistinctBranchGroups(schoolCode, chosenBranchI
 export async function fetchAndInsertLectures(schoolCode, allGroups, startDate, endDate) { // allGroups should be an array of all available groups
   const allLectures = await fetchLecturesForGroups(schoolCode, allGroups, startDate, endDate)
   await deleteLecturesBetweenDates(startDate, endDate)
+  
   console.log("Number of lectures: " + allLectures.length)
   await allLectures.forEach(async ({rooms, groups, lecturers, executionTypeId, executionType, course, courseId}) => {
     // each will be inserted ONLY IF ITS UNIQUE
@@ -26,18 +27,21 @@ export async function fetchAndInsertLectures(schoolCode, allGroups, startDate, e
   });
 
   // now we add all lectures
-  for (const lecture of allLectures){
-    await insertLecture(lecture)
-  }
+  const promises = []
+  for (const lecture of allLectures)
+    promises.push(insertLecture(lecture))
+
+  return Promise.all(promises)
 }
 
-export async function updateLectures(startDate, endDate) {
+export async function updateLectures(startDate, endDate, fastRefresh = false) {
   const hasInternet = await hasInternetConnection()
   if(!hasInternet) return
+
   const schoolInfo = await getStoredSchoolInfo()
   const schoolCode = schoolInfo.schoolCode
-  const allGroups = await getAllStoredBranchGroups()
-  //await deleteLecturesBetweenDates(startDate, endDate)
+  const allGroups = fastRefresh ? getAllDistinctSelectedGroups() : await getAllStoredBranchGroups()
+  
   return fetchAndInsertLectures(schoolCode, allGroups, startDate, endDate)
 }
 
