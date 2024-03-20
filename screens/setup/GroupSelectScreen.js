@@ -10,7 +10,6 @@ import { UserPreferencesContext } from "../../store/userPreferencesContext"
 import Line from "../../components/ui/Line"
 import { getAllStoredBranchGroups } from "../../store/schoolInfo"
 import { getGroupsIntersection } from "../../util/groupUtil"
-import { COLORS } from "../../constants/colors"
 
 function GroupSelectScreen({route, navigation}) {
   const [isFetchingData, setIsFetchingData] = useState(false)
@@ -58,7 +57,7 @@ function GroupSelectScreen({route, navigation}) {
         const courseId = course.id
         groups.forEach(async group => {
           if(group.selected)
-            insertSelectedGroups(courseId, group.id)
+            await insertSelectedGroups(courseId, group.id)
         })
       })
       if (isEditing) {

@@ -38,7 +38,7 @@ export async function insertCourse(id, course) {
 }
 
 export async function insertLecturesHasGroups(lecturesId, groupsId) {
-  return database.runAsync('INSERT INTO lectures_has_groups (lectures_id, groups_id) VALUES (?,?);', [lecturesId, groupsId])
+  return database.execAsync(`INSERT INTO lectures_has_groups (lectures_id, groups_id) VALUES (${lecturesId},${groupsId});`,)
 }
 
 export async function insertLecturesHasLecturers(lecturesId, lecturersId) {
@@ -61,13 +61,15 @@ export async function insertLecture({start_time, end_time, eventType, note, show
   const result = database.runSync('INSERT INTO lectures (start_time, end_time, eventType, note, showLink, color, colorText, executionType_id, course_id) VALUES (?,?,?,?,?,?,?,?,?);', 
       [start_time, end_time, eventType, note, showLink, color, colorText, executionTypeId, courseId]) 
 
-    //console.log('result: ' + resultSet.insertId)
-    let lectureId = result.lastInsertRowId
-    rooms.forEach(async room => { insertLecturesHasRooms(lectureId, Number(room.id))})
-    lecturers.forEach(async lecturer => { insertLecturesHasLecturers(lectureId, Number(lecturer.id))})
-    for( const group of groups) {
-      await insertLecturesHasGroups(lectureId, Number(group.id))
-    }
+  //console.log('result: ' + resultSet.insertId)
+  let lectureId = result.lastInsertRowId
+  rooms.forEach(async room => { insertLecturesHasRooms(lectureId, Number(room.id))})
+  lecturers.forEach(async lecturer => { insertLecturesHasLecturers(lectureId, Number(lecturer.id))})
+  const promises = []
+  for( const group of groups)
+    promises.push(insertLecturesHasGroups(lectureId, Number(group.id)))
+
+  return Promise.all(promises)
 }
 
 export async function getAllDistinctGroupsOfCourse(courseId) {
@@ -141,6 +143,13 @@ export function getLecturesForDate(date) { // pazi če je execution type prazen
 
 export function querryNumOFSelectedGroups(courses_id, groups_id) {
   return database.getFirstSync(`SELECT COUNT(*) AS 'num' FROM selected_groups WHERE courses_id = ? AND groups_id = ?`, [courses_id, groups_id])
+}
+
+export function getAllDistinctSelectedGroups() {
+  const groupsIds = []
+  for (const row of database.getEachSync(`SELECT DISTINCT groups_id FROM selected_groups`))
+    groupsIds.push({ id: row.groups_id})
+  return groupsIds
 }
 
 export async function deleteLecturesBetweenDates(start_time, end_time) { // this function is INLCUSIVE for start and end date
