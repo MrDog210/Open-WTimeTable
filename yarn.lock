@@ -5454,6 +5454,11 @@ react-native-calendar-timetable@^1.0.6:
   resolved "https://registry.yarnpkg.com/react-native-calendar-timetable/-/react-native-calendar-timetable-1.0.6.tgz#79290a20b0bde39b04c1527fc3a1b68a680cbd5b"
   integrity sha512-gSdOLPfOAc0xSAHti29vC7z+HTX0U/3jFMhQ6TYXXsbAtBAJ1ye+20KxIDwyraASWuNHUt+pJ9y8lac0vctnJA==
 
+react-native-dialog@^9.3.0:
+  version "9.3.0"
+  resolved "https://registry.yarnpkg.com/react-native-dialog/-/react-native-dialog-9.3.0.tgz#9d745cc51653a1e2ae08076b46f11d99723c47f6"
+  integrity sha512-JEOJY/0AzTM9grIl0BL8o/IJPIJru7k5MPj9POTE9RRezUEtgn0YSvCpTlBtG0obWgOdzg2otMz1OQvMXS0wMQ==
+
 react-native-dropdown-picker@^5.4.6:
   version "5.4.6"
   resolved "https://registry.yarnpkg.com/react-native-dropdown-picker/-/react-native-dropdown-picker-5.4.6.tgz#3736fc468de4a295e4df8d1f65ed2eadaf9b445f"

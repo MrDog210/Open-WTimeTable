@@ -115,7 +115,7 @@ function getLecturesForDateWithNoCurses(date) { //edge case, when there is no co
 
 export function getLecturesForDate(date) { // pazi če je execution type prazen
   let lectures = database.getAllSync(
-  `SELECT DISTINCT lectures.id, lectures.start_time, lectures.end_time, courses.course, lectures.executionType_id,
+  `SELECT DISTINCT lectures.id, lectures.start_time, lectures.end_time, lectures.course_id, courses.course, lectures.executionType_id,
   eventType, note, showLink, color, colorText
   FROM groups JOIN lectures_has_groups ON groups.id = lectures_has_groups.groups_id
   JOIN lectures ON lectures.id = lectures_has_groups.lectures_id
@@ -130,8 +130,10 @@ export function getLecturesForDate(date) { // pazi če je execution type prazen
     lecture.groups = getGroupsForLecture(lecture.id)
     lecture.rooms = getRoomsForLecture(lecture.id)
     lecture.lecturers = getLecturersForLecture(lecture.id)
-    if(lecture.executionType_id)
+    if(lecture.executionType_id){
       lecture.executionType = getExecutionType(lecture.executionType_id).executionType
+      lecture.usersNote = querryNoteForCourse(lecture.course_id, lecture.executionType_id)
+    }
   })
 
   return lectures
@@ -145,4 +147,17 @@ export async function deleteLecturesBetweenDates(start_time, end_time) { // this
   start_time = getISODateNoTimestamp(start_time)
   end_time = getISODateNoTimestamp(end_time)
   return database.runAsync(`DELETE FROM lectures WHERE DATE(start_time) BETWEEN '${start_time}' AND '${end_time}'`)
+}
+
+export function querryNoteForCourse(courseId, executionTypeId) {
+  return database.getFirstSync(`SELECT * FROM notes WHERE courses_id = ? AND executionType_id = ?`, [courseId, executionTypeId])
+}
+
+export async function deleteNoteForCourse(courseId, executionTypeId) {
+  return database.getFirstAsync(`DELETE FROM notes WHERE courses_id = ? AND executionType_id = ?`, [courseId, executionTypeId])
+}
+
+export async function setNoteForCourse(note, courseId, executionTypeId) {
+  await deleteNoteForCourse(courseId, executionTypeId)
+  return database.getFirstAsync(`INSERT INTO notes (note, courses_id, executionType_id) VALUES (?, ?, ?)`, [note, courseId, executionTypeId])
 }
