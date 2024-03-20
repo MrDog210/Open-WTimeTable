@@ -8,6 +8,7 @@ import { UserPreferencesContext } from '../../store/userPreferencesContext';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import GroupSelectScreen from '../setup/GroupSelectScreen';
 import { DarkTheme } from '@react-navigation/native';
+import { COLORS } from '../../constants/colors';
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -25,7 +26,8 @@ function MainScreen() {
   const userPreferencesCtx = useContext(UserPreferencesContext)
   //return <TimeTableScreen />
   return (
-  <Drawer.Navigator initialRouteName={userPreferencesCtx.preferences.defaultView}>
+  <Drawer.Navigator initialRouteName={userPreferencesCtx.preferences.defaultView} 
+  screenOptions={{headerTintColor: COLORS.foreground.primary}}>
     <Drawer.Screen name='DayView' component={TimeTableScreen} 
     options={{
       drawerLabel: 'Day View',
