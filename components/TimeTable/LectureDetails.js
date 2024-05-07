@@ -12,9 +12,6 @@ import InputDialogue from "../ui/InputDialogue";
 import { setNoteForCourse } from "../../util/database";
 
 function LectureDetails({modalVisible, onRequestClose, lecture}) {
-  if(lecture === null)
-    return
-
   // ANIMATIONS
   const opacity = useSharedValue(0)
   const top = useSharedValue(50)
@@ -25,7 +22,7 @@ function LectureDetails({modalVisible, onRequestClose, lecture}) {
   }, [modalVisible])
 
   // OUTPUT
-  const {course, course_id, eventType, start_time, end_time, note, showLink, color, colorText, rooms, groups, lecturers, executionType, executionType_id, usersNote} = lecture
+  const {course, course_id, eventType, start_time, end_time, note, showLink, color, colorText, rooms, groups, lecturers, executionType, executionType_id, usersNote} = lecture ?? {}
   const [customNote, setCustomNote] = useState(usersNote ? usersNote.note : undefined)
 
   function updateCustomNote(newCustomNote) {
@@ -34,11 +31,15 @@ function LectureDetails({modalVisible, onRequestClose, lecture}) {
   }
 
   useEffect(() => {
+    if(!lecture)
+      return
     setCustomNote(usersNote ? usersNote.note : undefined)
   }, [lecture])
 
+  if(lecture === null)
+    return
+
   return (
-    <>
     <Modal visible={modalVisible} transparent={true} animationType="none" onRequestClose={onRequestClose}>
       <Animated.View style={[styles.container, {opacity}]}>
         <Animated.View style={[styles.centeredContainer, {top}]}>
@@ -73,7 +74,6 @@ function LectureDetails({modalVisible, onRequestClose, lecture}) {
         </Animated.View>
       </Animated.View>
     </Modal>
-    </>
   )
 }
 

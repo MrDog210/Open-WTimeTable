@@ -1,6 +1,7 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import Dialog from "react-native-dialog";
 import StyledButton from "./StyledButton";
+import { COLORS } from "../../constants/colors";
 
 function InputDialogue({onRequestConfirm, title, label, toggleVisibility, buttonContainerStyle, input}) {
   const [isVisible, setIsVisible] = useState()
@@ -18,7 +19,7 @@ function InputDialogue({onRequestConfirm, title, label, toggleVisibility, button
   return (
     <>
       <StyledButton containerStyle={buttonContainerStyle} title={title} onPress={toggleVisibility}/>
-      <Dialog.Container visible={isVisible} onRequestClose={toggleVisibility}>
+      <Dialog.Container contentStyle={{backgroundColor: COLORS.background.primary}} visible={isVisible} onRequestClose={toggleVisibility}>
         <Dialog.Title>{title}</Dialog.Title>
         <Dialog.Input label={label} value={inputContents} onChangeText={setInputContents}/>
         <Dialog.Button label="Cancel" onPress={toggleVisibility}/>
