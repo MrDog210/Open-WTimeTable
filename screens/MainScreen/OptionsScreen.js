@@ -1,13 +1,21 @@
-import { ScrollView, StyleSheet } from "react-native"
+import { Alert, ScrollView, StyleSheet } from "react-native"
 import OptionsButton from "../../components/ui/options/OptionsButton"
 import OptionsDropdown from "../../components/ui/options/OptionsDropDown"
 import { useContext, useEffect, useState } from "react"
 import { PREF_KEYS, UserPreferencesContext } from "../../store/userPreferencesContext"
 import StyledText from "../../components/ui/StyledText"
 import OptionsSwitch from "../../components/ui/options/OptionsSwitch"
+import { fetchAndInsertLectures } from "../../util/timetableUtils"
+import { getSchoolYearDates } from "../../util/dateUtils"
+import Spinner from "react-native-loading-spinner-overlay"
+import { SPINNER_STYLE } from "../../constants/globalStyles"
+import { hasInternetConnection } from "../../util/http"
+import { getAllStoredBranchGroups, getSchoolInfo } from "../../store/schoolInfo"
 
 function OptionsScreen({ navigation }) {
   const userPreferencesCtx = useContext(UserPreferencesContext)
+  const [isFetchingData, setIsFetchingData] = useState(false)
+  const [fetchingDataMessage, setFetchingDataMessage] = useState('')
   /*const [darkModeSettings, setDarkModeSettings] = useState([
     {label: 'Auto', value: 'auto'},
     {label: 'Light', value: 'light'},
@@ -34,8 +42,21 @@ function OptionsScreen({ navigation }) {
     userPreferencesCtx.setPreferences(pref)
   }
 
-  function changeSelectedGroups() {
+  async function changeSelectedGroups() {
+    setFetchingDataMessage('Updating timetable, this may take a while')
+    setIsFetchingData(true)
+    const hasInternet = await hasInternetConnection()
+    if(!hasInternet){ 
+      Alert.alert('Error', 'No internet connection')
+      return
+    }
+    let {startDate, endDate} = getSchoolYearDates()
+    console.log("Semester dates: " + startDate,endDate)
+    const schoolInfo = await getSchoolInfo()
+    const groups = await getAllStoredBranchGroups()
+    await fetchAndInsertLectures(schoolInfo.schoolCode, groups, startDate, endDate)
     navigation.navigate('GroupSelect', {isEditing: true})
+    setIsFetchingData(false)
   }
 
   useEffect(() => {
@@ -43,14 +64,16 @@ function OptionsScreen({ navigation }) {
   }, [timetableAnimations])
 
   return (
+    <>
+    <Spinner visible={isFetchingData} {...SPINNER_STYLE} textContent={fetchingDataMessage} />
     <ScrollView>
       <StyledText style={styles.note}>Note: this is required to do every semester</StyledText>
       <OptionsButton title='Restart setup' onPress={restartSetup}/>
-      <StyledText style={styles.note}>Note: update timetables after change</StyledText>
       <OptionsButton title='Change selected groups' onPress={changeSelectedGroups} />
       <OptionsDropdown title='Default timetable view:' items={defaultView} setItems={setDefaultView} value={selectedView} setValue={setSelectedView} />
       <OptionsSwitch value={timetableAnimations} onValueChange={setTimetableAnimations} title='Timetable animations' />
     </ScrollView>
+    </>
   )
 }
 
