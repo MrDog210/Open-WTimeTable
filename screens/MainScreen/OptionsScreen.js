@@ -5,12 +5,11 @@ import { useContext, useEffect, useState } from "react"
 import { PREF_KEYS, UserPreferencesContext } from "../../store/userPreferencesContext"
 import StyledText from "../../components/ui/StyledText"
 import OptionsSwitch from "../../components/ui/options/OptionsSwitch"
-import { fetchAndInsertLectures } from "../../util/timetableUtils"
+import { updateLectures } from "../../util/timetableUtils"
 import { getSchoolYearDates } from "../../util/dateUtils"
 import Spinner from "react-native-loading-spinner-overlay"
 import { SPINNER_STYLE } from "../../constants/globalStyles"
 import { hasInternetConnection } from "../../util/http"
-import { getAllStoredBranchGroups, getSchoolInfo } from "../../store/schoolInfo"
 
 function OptionsScreen({ navigation }) {
   const userPreferencesCtx = useContext(UserPreferencesContext)
@@ -52,9 +51,7 @@ function OptionsScreen({ navigation }) {
     }
     let {startDate, endDate} = getSchoolYearDates()
     console.log("Semester dates: " + startDate,endDate)
-    const schoolInfo = await getSchoolInfo()
-    const groups = await getAllStoredBranchGroups()
-    await fetchAndInsertLectures(schoolInfo.schoolCode, groups, startDate, endDate)
+    await updateLectures(startDate, endDate)
     navigation.navigate('GroupSelect', {isEditing: true})
     setIsFetchingData(false)
   }
