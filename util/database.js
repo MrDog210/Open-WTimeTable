@@ -1,4 +1,4 @@
-import * as SQLite from 'expo-sqlite/next';
+import * as SQLite from 'expo-sqlite';
 import { CREATE_DATABASE, DELETE_COMMANDS } from '../constants/database';
 import { getISODateNoTimestamp } from './dateUtils';
 
