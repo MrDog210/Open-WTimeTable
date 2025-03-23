@@ -9,7 +9,7 @@ const DEFAULT_VALUES = {
   course: "",
   start_time: new Date(),
   end_time: new Date(),
-  days_of_week: [],
+  days_of_week: [false, false, false, false, false, false, false],
   groups: [""],
   lecturers: [""],
   rooms: [""]
