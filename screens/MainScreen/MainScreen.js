@@ -9,6 +9,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import GroupSelectScreen from '../setup/GroupSelectScreen';
 import { DarkTheme } from '@react-navigation/native';
 import { COLORS } from '../../constants/colors';
+import EditCustomCoursesScreen from './EditCustomCoursesScreen';
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();

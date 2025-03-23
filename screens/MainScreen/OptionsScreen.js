@@ -1,4 +1,4 @@
-import { Alert, ScrollView, StyleSheet } from "react-native"
+import { Alert, Modal, ScrollView, StyleSheet } from "react-native"
 import OptionsButton from "../../components/ui/options/OptionsButton"
 import OptionsDropdown from "../../components/ui/options/OptionsDropDown"
 import { useContext, useEffect, useState } from "react"
@@ -10,11 +10,14 @@ import { getSchoolYearDates } from "../../util/dateUtils"
 import Spinner from "react-native-loading-spinner-overlay"
 import { SPINNER_STYLE } from "../../constants/globalStyles"
 import { hasInternetConnection } from "../../util/http"
+import EditCustomCoursesScreen from "./EditCustomCoursesScreen"
 
 function OptionsScreen({ navigation }) {
   const userPreferencesCtx = useContext(UserPreferencesContext)
   const [isFetchingData, setIsFetchingData] = useState(false)
   const [fetchingDataMessage, setFetchingDataMessage] = useState('')
+  const [isEditCustomCoursesVisible, setIsEditCustomCoursesVisible] = useState(false)
+
   /*const [darkModeSettings, setDarkModeSettings] = useState([
     {label: 'Auto', value: 'auto'},
     {label: 'Light', value: 'light'},
@@ -56,12 +59,19 @@ function OptionsScreen({ navigation }) {
     setIsFetchingData(false)
   }
 
+  function onEditCustomCoursesPressed() {
+    setIsEditCustomCoursesVisible(true)
+  }
+
   useEffect(() => {
     userPreferencesCtx.setKey(PREF_KEYS.timetableAnimations, timetableAnimations)
   }, [timetableAnimations])
 
   return (
     <>
+    <Modal visible={isEditCustomCoursesVisible} onRequestClose={() => setIsEditCustomCoursesVisible(false)}>
+      <EditCustomCoursesScreen />
+    </Modal>
     <Spinner visible={isFetchingData} {...SPINNER_STYLE} textContent={fetchingDataMessage} />
     <ScrollView>
       <StyledText style={styles.note}>Note: this is required to do every semester</StyledText>
@@ -69,6 +79,7 @@ function OptionsScreen({ navigation }) {
       <OptionsButton title='Change selected groups' onPress={changeSelectedGroups} />
       <OptionsDropdown title='Default timetable view:' items={defaultView} setItems={setDefaultView} value={selectedView} setValue={setSelectedView} />
       <OptionsSwitch value={timetableAnimations} onValueChange={setTimetableAnimations} title='Timetable animations' />
+      <OptionsButton title='Edit custom courses' onPress={onEditCustomCoursesPressed} />
     </ScrollView>
     </>
   )
