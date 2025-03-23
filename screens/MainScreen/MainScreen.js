@@ -19,6 +19,7 @@ function OptionsNavigaton() {
     <Stack.Navigator screenOptions={{headerShown: false}}>
       <Drawer.Screen name='OptionsMain' component={OptionsScreen} />
       <Stack.Screen name='GroupSelect' component={GroupSelectScreen} />
+      <Stack.Screen name='EditCustomCourses' component={EditCustomCoursesScreen} />
     </Stack.Navigator>
   )
 }

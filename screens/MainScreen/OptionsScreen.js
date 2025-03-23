@@ -1,4 +1,4 @@
-import { Alert, Modal, ScrollView, StyleSheet } from "react-native"
+import { Alert, ScrollView, StyleSheet } from "react-native"
 import OptionsButton from "../../components/ui/options/OptionsButton"
 import OptionsDropdown from "../../components/ui/options/OptionsDropDown"
 import { useContext, useEffect, useState } from "react"
@@ -10,13 +10,11 @@ import { getSchoolYearDates } from "../../util/dateUtils"
 import Spinner from "react-native-loading-spinner-overlay"
 import { SPINNER_STYLE } from "../../constants/globalStyles"
 import { hasInternetConnection } from "../../util/http"
-import EditCustomCoursesScreen from "./EditCustomCoursesScreen"
 
 function OptionsScreen({ navigation }) {
   const userPreferencesCtx = useContext(UserPreferencesContext)
   const [isFetchingData, setIsFetchingData] = useState(false)
   const [fetchingDataMessage, setFetchingDataMessage] = useState('')
-  const [isEditCustomCoursesVisible, setIsEditCustomCoursesVisible] = useState(false)
 
   /*const [darkModeSettings, setDarkModeSettings] = useState([
     {label: 'Auto', value: 'auto'},
@@ -60,7 +58,7 @@ function OptionsScreen({ navigation }) {
   }
 
   function onEditCustomCoursesPressed() {
-    setIsEditCustomCoursesVisible(true)
+    navigation.navigate('EditCustomCourses')
   }
 
   useEffect(() => {
@@ -69,9 +67,6 @@ function OptionsScreen({ navigation }) {
 
   return (
     <>
-    <Modal visible={isEditCustomCoursesVisible} onRequestClose={() => setIsEditCustomCoursesVisible(false)}>
-      <EditCustomCoursesScreen />
-    </Modal>
     <Spinner visible={isFetchingData} {...SPINNER_STYLE} textContent={fetchingDataMessage} />
     <ScrollView>
       <StyledText style={styles.note}>Note: this is required to do every semester</StyledText>
