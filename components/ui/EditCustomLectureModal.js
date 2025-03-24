@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import Dialog from "react-native-dialog";
 import { COLORS } from "../../constants/colors";
 import { View, ScrollView, StyleSheet } from "react-native";
 import StyledButton from "./StyledButton";
@@ -8,7 +7,7 @@ import StyledCheckbox from "./StyledCheckbox";
 import StyledText from "./StyledText";
 import {DateTimePickerAndroid} from '@react-native-community/datetimepicker';
 import { getTimeFromDate } from "../../util/dateUtils";
-import { v4 as uuidv4 } from 'uuid';
+import uuid from 'react-native-uuid';
 
 const DEFAULT_VALUES = {
   id: undefined,
@@ -33,7 +32,7 @@ function EditCustomLectureModal({customCourse = undefined, onCancelPressed, onCo
 
   const showStartTime = () => {
     DateTimePickerAndroid.open({
-      value: course.start_time,
+      value: new Date(course.start_time),
       onChange: (_, d) => setCourse({...course, start_time: d}),
       mode: "time",
       is24Hour: true,
@@ -42,7 +41,7 @@ function EditCustomLectureModal({customCourse = undefined, onCancelPressed, onCo
 
   const showEndTime = () => {
     DateTimePickerAndroid.open({
-      value: course.end_time,
+      value: new Date(course.end_time),
       onChange: (_, d) => setCourse({...course, end_time: d}),
       mode: "time",
       is24Hour: true,
@@ -109,7 +108,7 @@ function EditCustomLectureModal({customCourse = undefined, onCancelPressed, onCo
       </ScrollView>
       <View style={{flexDirection: 'row'}}>
         <StyledButton containerStyle={{flex: 1}} title="Cancel" onPress={() => onCancelPressed()} isWarning />
-        <StyledButton containerStyle={{flex: 1}} title="Confirm" onPress={() => onConfirmPressed(!course.id ? {...course, id: uuidv4()} : course)} />
+        <StyledButton containerStyle={{flex: 1}} title="Confirm" onPress={() => onConfirmPressed(!course.id ? {...course, id: uuid.v4()} : course)} />
       </View>
     </View>
   )

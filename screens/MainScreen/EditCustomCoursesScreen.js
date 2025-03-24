@@ -24,13 +24,19 @@ function EditCustomCoursesScreen() {
   function onAddOrEditCourse(course) {
     console.log(course)
     setModalVisible(false)
-    const newData = editingCourse === -1 ? [...customCourses, course] : customCourses
+    const newData = editingCourse === -1 ? [...customCourses, course] : customCourses.map((c, index) => index === editingCourse ? course : c)
     setCustomCourses(newData)
     setCustomLectures(newData)
+    setEditingCourse(-1)
   }
 
   function onCollumnPressed(index) {
+    setEditingCourse(index)
+    setModalVisible(true)
+  }
 
+  function onCollumnLongPressed(index) {
+    
   }
 
   if(!customCourses)
@@ -42,6 +48,7 @@ function EditCustomCoursesScreen() {
         <EditCustomLectureModal 
           onCancelPressed={() => setModalVisible(false)} 
           onConfirmPressed={onAddOrEditCourse}
+          customCourse={editingCourse !== -1 ? customCourses[editingCourse] : undefined}
         />
       </Modal>
       <View style={{flex: 1}}> 
