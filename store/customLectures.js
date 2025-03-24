@@ -4,10 +4,10 @@ export async function getCustomLectures() {
   const data = await AsyncStorage.getItem('customLectures')
 
   if(data)
-    return data
+    return JSON.parse(data)
   return []
 }
 
 export async function setCustomLectures(customLectures) {
-  return AsyncStorage.setItem('customLectures', customLectures)
+  return AsyncStorage.setItem('customLectures', JSON.stringify(customLectures))
 }

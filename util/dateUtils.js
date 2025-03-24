@@ -14,7 +14,7 @@ export function getTimeFromDate(dateString) {
   const date = new Date(dateString)
   let minutes = date.getMinutes().toString()
   if(minutes.length === 1)
-    minutes += '0'
+    minutes = '0' + minutes
   return `${date.getHours()}:${minutes}`
 }
 
