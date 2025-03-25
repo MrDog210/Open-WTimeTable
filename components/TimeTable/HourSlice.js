@@ -10,6 +10,8 @@ import { getDelayBasedOnPosition } from "../../util/animationUtil";
 function HourSlice({style, item, dayIndex, daysTotal, onPress, smallMode=false, animationsDisabled = false}) {
   const {course, eventType, start_time, end_time, note, showLink, color, colorText, rooms, groups, lecturers, executionType, usersNote} = item.lecture
  
+  //console.log(item.lecture)
+
   const hexColor = (color === null || color === '') ? COLORS.foreground.primary : `#${color}`
   const top = useSharedValue(animationsDisabled ? 0 : 50)
   const opacity = useSharedValue(animationsDisabled ? 1 : 0)
@@ -56,7 +58,8 @@ const styles = StyleSheet.create({
     backgroundColor: isDarkTheme ? COLORS.background.secondary : COLORS.background.primary,
     borderWidth: 1,
     borderColor: COLORS.background.seperator,
-    padding: 5,
+    paddingHorizontal: 5,
+    paddingTop: 5,
     overflow: 'hidden'
   },
   titleContainer: {

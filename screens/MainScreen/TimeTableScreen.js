@@ -13,6 +13,7 @@ import IconButton from "../../components/ui/IconButton";
 import TimeTableHeader from "../../components/TimeTable/TimeTableHeader";
 import { PREF_KEYS, UserPreferencesContext } from "../../store/userPreferencesContext";
 import { hasInternetConnection } from "../../util/http";
+import { getCustomLecturesForDates } from "../../store/customLectures"
 
 function TimeTableScreen({ navigation, route }) {
   const userPreferencesCtx = useContext(UserPreferencesContext)
@@ -68,27 +69,38 @@ function TimeTableScreen({ navigation, route }) {
   }, [date, week])
 
   useEffect(() => { // querring timetable data
-    setIsFetchingData(true)
+    async function getLectures() {
+      setIsFetchingData(true)
 
-    let dates = []
-    if(isWeekView) {
-      const WEEK = getWeekDates(date)
-      dates = getDates(WEEK.from, WEEK.till)
-      console.log(dates)
-    } else {
-      dates.push(date)
-    }
-    const lec = []
-    dates.forEach((d) => {
-      const data = getLecturesForDate(getISODateNoTimestamp(d))
-      data.forEach(lecture => {
-        lec.push({lecture: lecture, startDate: subtrackSeconds(lecture.start_time, -60), endDate: subtrackSeconds(lecture.end_time, 60)})
+      let dates = []
+      if(isWeekView) {
+        const WEEK = getWeekDates(date)
+        dates = getDates(WEEK.from, WEEK.till)
+        console.log(dates)
+      } else {
+        dates.push(date)
+      }
+      const lec = []
+      dates.forEach((d) => {
+        const data = getLecturesForDate(getISODateNoTimestamp(d))
+        data.forEach(lecture => {
+          lec.push({lecture: lecture, startDate: subtrackSeconds(lecture.start_time, -60), endDate: subtrackSeconds(lecture.end_time, 60)})
+        })
       })
-    })
-    setLectures([...lec])
-    setIsFetchingData(false)
-    setWeek(getWeekDates(date)) // stupid
+
+      const customLectures = await getCustomLecturesForDates(dates)
+      console.log("CUSTOM LECTURES: ", customLectures)
+
+      setLectures([...lec, ...customLectures])
+      setIsFetchingData(false)
+      setWeek(getWeekDates(date)) // stupid
+    }
+    getLectures()
   }, [date])
+
+  useEffect(() => {
+    console.log(JSON.stringify(lectures))
+  }, [lectures])
 
   function lecturePressed(lecture) {
     setModalLecture(lecture)

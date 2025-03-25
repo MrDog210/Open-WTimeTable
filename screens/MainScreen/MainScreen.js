@@ -9,6 +9,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import GroupSelectScreen from '../setup/GroupSelectScreen';
 import { DarkTheme } from '@react-navigation/native';
 import { COLORS } from '../../constants/colors';
+import EditCustomCoursesScreen from './EditCustomCoursesScreen';
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -18,6 +19,7 @@ function OptionsNavigaton() {
     <Stack.Navigator screenOptions={{headerShown: false}}>
       <Drawer.Screen name='OptionsMain' component={OptionsScreen} />
       <Stack.Screen name='GroupSelect' component={GroupSelectScreen} />
+      <Stack.Screen name='EditCustomCourses' component={EditCustomCoursesScreen} />
     </Stack.Navigator>
   )
 }

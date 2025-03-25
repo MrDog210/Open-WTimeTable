@@ -15,6 +15,7 @@ function OptionsScreen({ navigation }) {
   const userPreferencesCtx = useContext(UserPreferencesContext)
   const [isFetchingData, setIsFetchingData] = useState(false)
   const [fetchingDataMessage, setFetchingDataMessage] = useState('')
+
   /*const [darkModeSettings, setDarkModeSettings] = useState([
     {label: 'Auto', value: 'auto'},
     {label: 'Light', value: 'light'},
@@ -56,6 +57,10 @@ function OptionsScreen({ navigation }) {
     setIsFetchingData(false)
   }
 
+  function onEditCustomCoursesPressed() {
+    navigation.navigate('EditCustomCourses')
+  }
+
   useEffect(() => {
     userPreferencesCtx.setKey(PREF_KEYS.timetableAnimations, timetableAnimations)
   }, [timetableAnimations])
@@ -69,6 +74,7 @@ function OptionsScreen({ navigation }) {
       <OptionsButton title='Change selected groups' onPress={changeSelectedGroups} />
       <OptionsDropdown title='Default timetable view:' items={defaultView} setItems={setDefaultView} value={selectedView} setValue={setSelectedView} />
       <OptionsSwitch value={timetableAnimations} onValueChange={setTimetableAnimations} title='Timetable animations' />
+      <OptionsButton title='Edit custom courses' onPress={onEditCustomCoursesPressed} />
     </ScrollView>
     </>
   )

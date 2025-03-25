@@ -57,7 +57,6 @@ function LectureDetails({modalVisible, onRequestClose, lecture}) {
             <ContentCard title='Lecturers:' contents={formatArray(lecturers, 'name')} />
             <ContentCard title='Note:' contents={note} />
             <ContentCard title='Show link:' contents={showLink} />
-            <ContentCard title='Note:' contents={note} />
             <ContentCard title='Custom note:' contents={customNote} />
           </ScrollView>
           <View style={styles.buttonContainer}>
