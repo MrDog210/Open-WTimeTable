@@ -26,7 +26,7 @@ export function formatDate(date) {
 export function formatWeekDate(fromDate, toDate) {
   fromDate = new Date(fromDate)
   toDate = new Date(toDate)
-  return `${fromDate.getDate()}.${fromDate.getMonth()} - ${toDate.getDate()}.${toDate.getMonth()}`
+  return `${fromDate.getDate()}.${fromDate.getMonth() + 1} - ${toDate.getDate()}.${toDate.getMonth() + 1}`
 }
 
 export function getMonday(d) {
