@@ -19,14 +19,21 @@ export async function getCustomLecturesForDates(dates = []) {
   for (const d of dates) {
     const date = new Date(d)
     const dayIndex = date.getDay() - 1 < 0 ? 6 : date.getDay() - 1 // monday - 0
+    console.log("processing day: ", date)
 
     for(const lecture of lectures) {
       if (!lecture.days_of_week[dayIndex])
         continue
+
       const startTime = new Date(date);
-      startTime.setTime((new Date(lecture.start_time).getTime()))
+      const lectureStart = new Date(lecture.start_time);
+      startTime.setHours(lectureStart.getHours(), lectureStart.getMinutes(), lectureStart.getSeconds(), lectureStart.getMilliseconds());
+
       const endTime = new Date(date);
-      endTime.setTime((new Date(lecture.end_time).getTime()))
+      const lectureEnd = new Date(lecture.end_time);
+      endTime.setHours(lectureEnd.getHours(), lectureEnd.getMinutes(), lectureEnd.getSeconds(), lectureEnd.getMilliseconds());
+
+
       final.push({
         lecture: {
           ...lecture,
@@ -34,7 +41,8 @@ export async function getCustomLecturesForDates(dates = []) {
           end_time: endTime,
           lecturers: lecture.lecturers.map((l, index) => ({name: l, id: index})),
           groups: lecture.groups.map((l, index) => ({name: l, id: index})),
-          rooms: lecture.rooms.map((l, index) => ({name: l, id: index}))
+          rooms: lecture.rooms.map((l, index) => ({name: l, id: index})),
+          usersNote: { id: -1, note: lecture.usersNote}
         },
         startDate: startTime,
         endDate: endTime

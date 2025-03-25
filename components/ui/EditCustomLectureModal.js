@@ -13,6 +13,7 @@ const DEFAULT_VALUES = {
   id: undefined,
   course: "",
   note: "",
+  usersNote: "",
   start_time: new Date(),
   end_time: new Date(),
   days_of_week: [false, false, false, false, false, false, false],
@@ -75,7 +76,12 @@ function EditCustomLectureModal({customCourse = undefined, onCancelPressed, onCo
           onChangeText: (value) => setCourse({...course, note: value}),
           placeholder: "..."
         }} />
-        <StyledButton title={`Set start time: ${getTimeFromDate(course.start_time)}`} containerStyle={{marginVertical: 4}} onPress={showStartTime}/>
+        <StyledTextInput label="Users note" textInputOptions={{
+          value: course.usersNote,
+          onChangeText: (value) => setCourse({...course, usersNote: value}),
+          placeholder: "..."
+        }} />
+        <StyledButton title={`Set start time: ${getTimeFromDate(course.start_time)}`} containerStyle={{marginVertical: 4, marginTop: 8}} onPress={showStartTime}/>
         <StyledButton title={`Set end time: ${getTimeFromDate(course.end_time)}`} containerStyle={{marginVertical: 4}}  onPress={showEndTime}/>
         <View style={styles.daysContainer}>
           <StyledText>Select the occuring days: </StyledText>

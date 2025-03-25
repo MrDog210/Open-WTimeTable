@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Modal, StyleSheet, View } from "react-native"
+import { Modal, StyleSheet, View, Alert } from "react-native"
 import { getCustomLectures, setCustomLectures } from "../../store/customLectures"
 import Spinner from "react-native-loading-spinner-overlay"
 import { SPINNER_STYLE } from "../../constants/globalStyles"
@@ -30,13 +30,32 @@ function EditCustomCoursesScreen() {
     setEditingCourse(-1)
   }
 
+  function deleteCoures(index) {
+    const newData = customCourses.filter((_, i) => i !== index)
+    setCustomCourses(newData)
+    setCustomLectures(newData)
+  }
+
   function onCollumnPressed(index) {
     setEditingCourse(index)
     setModalVisible(true)
   }
 
+  useEffect(() => {
+    console.log(editingCourse)
+  }, [editingCourse])
+
   function onCollumnLongPressed(index) {
-    
+    Alert.alert('Delete course', `Are you sure you want to delete: ${customCourses[index].course}?`, [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'OK', 
+        onPress: () => deleteCoures(index)
+      },
+    ]);
   }
 
   if(!customCourses)
@@ -44,9 +63,9 @@ function EditCustomCoursesScreen() {
 
   return (
     <>
-      <Modal animationType="slide" visible={visibleModal} onRequestClose={() => setModalVisible(false)}>
-        <EditCustomLectureModal 
-          onCancelPressed={() => setModalVisible(false)} 
+      <Modal animationType="slide" visible={visibleModal} onRequestClose={() => {setModalVisible(false); setEditingCourse(-1)}}>
+        <EditCustomLectureModal
+          onCancelPressed={() => {setModalVisible(false); setEditingCourse(-1)}} 
           onConfirmPressed={onAddOrEditCourse}
           customCourse={editingCourse !== -1 ? customCourses[editingCourse] : undefined}
         />
@@ -54,8 +73,8 @@ function EditCustomCoursesScreen() {
       <View style={{flex: 1}}> 
         <FlatList 
           data={customCourses} 
-          renderItem={({item, index}) => <CustomCourseRow customCourse={item} onPress={() => onCollumnPressed(index)} />} 
-          keyExtractor={(i) => JSON.stringify(i)} />
+          renderItem={({item, index}) => <CustomCourseRow customCourse={item} onPress={() => onCollumnPressed(index)} onLongPress={() => onCollumnLongPressed(index)}/>} 
+          keyExtractor={(i) => i.id} />
         <View style={styles.addButtonContainer}>
           <IconButton name='add-outline' style={styles.addButton} onPress={() => setModalVisible(true)}/>
         </View>
