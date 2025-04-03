@@ -14,6 +14,7 @@ This is a mobile app made with react native and expo, to view the timetable.
 Main advantage of this app over the official one is, that you can pick a separate group for each course.
 - Dark/light mode
 - Separate selectable groups for each course
+- Add and edit custom lectures
 - Tablet support
 - Add custom notes to lectures
 
