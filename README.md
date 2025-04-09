@@ -22,7 +22,7 @@ Main advantage of this app over the official one is, that you can pick a separat
 
 1. Clone the repo
 2. run  ``` yarn install ```
-3. Rename loginCredentials to loginCredentials.js in constants folder and enter your credentials
+3. Duplicate ```example.env``` and rename it to ```.env``` in the root folder and enter your credentials
 4. ``` npx expo start ```
 
 ## Packages Used:
