@@ -134,7 +134,7 @@ function TimeTableScreen({ navigation, route }) {
       <LectureDetails modalVisible={modalVisible} lecture={modalLecture} onRequestClose={() => {setModelVisible(false)}} />
         <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} ref={scrollRef}>
           <Timetable items={lectures} 
-            renderItem={props => <HourSlice {...props} onPress={lecturePressed} smallMode={isWeekView} animationsDisabled={!animationsEnabled}/>} 
+            renderItem={({key, ...props}) => <HourSlice key={key} {...props} onPress={lecturePressed} smallMode={isWeekView} animationsDisabled={!animationsEnabled}/>} 
             date={isWeekView ? undefined : date}
             range={isWeekView ? week : undefined}
 
