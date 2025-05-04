@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import SetupScreen from './screens/setup/SetupScreen';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { COLORS, isDarkTheme } from './constants/colors';
 import { useContext, useEffect } from 'react';
 import UserPreferencesContextProvider, { UserPreferencesContext } from './store/userPreferencesContext.js';
@@ -22,7 +22,6 @@ function Navigation() {
 }
 
 function Root() {
-  console.log('test' + process.env.TEST)
   const userPreferencesCtx = useContext(UserPreferencesContext)
   useEffect(() => {
     async function loadPreferences() {
@@ -52,11 +51,15 @@ export default function App() {
 const navigationTheme = {
   dark: isDarkTheme,
   colors: {
+    ...DefaultTheme.colors,
     primary: COLORS.foreground.primary,
     background: COLORS.background.primary,
     card: COLORS.background.secondary,
     text: COLORS.foreground.primary,
     border: COLORS.background.seperator,
     notification: COLORS.foreground.primary
+  },
+  fonts: {
+    ...DefaultTheme.fonts,
   }
 }
