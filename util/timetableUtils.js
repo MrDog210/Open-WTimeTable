@@ -46,7 +46,6 @@ export async function updateLectures(startDate, endDate, fastRefresh = false) {
 }
 
 export function formatArray(array, key) {
-  console.log("format array, ", array, key)
   let string = ''
   for(let i = 0; i<array.length; i++)
     string += array[i][key] +((i !== array.length -1) ? ', ' : '')

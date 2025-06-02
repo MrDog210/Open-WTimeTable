@@ -94,6 +94,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background.primary,
     borderWidth: 1,
     borderColor: COLORS.background.seperator,
+    borderRadius: 10,
+    overflow: 'hidden'
     //elevation: 4,
   },
   titleContainer: {
