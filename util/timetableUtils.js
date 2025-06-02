@@ -40,12 +40,13 @@ export async function updateLectures(startDate, endDate, fastRefresh = false) {
 
   const schoolInfo = await getStoredSchoolInfo()
   const schoolCode = schoolInfo.schoolCode
-  const allGroups = fastRefresh ? getAllDistinctSelectedGroups() : await getAllStoredBranchGroups()
+  const allGroups = fastRefresh ? await getAllDistinctSelectedGroups() : await getAllStoredBranchGroups()
   
   return fetchAndInsertLectures(schoolCode, allGroups, startDate, endDate)
 }
 
 export function formatArray(array, key) {
+  console.log("format array, ", array, key)
   let string = ''
   for(let i = 0; i<array.length; i++)
     string += array[i][key] +((i !== array.length -1) ? ', ' : '')

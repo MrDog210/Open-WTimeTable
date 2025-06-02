@@ -31,10 +31,10 @@ function GroupSelectScreen({route, navigation}) {
         for (const course of allCourses) { // if in editing mode, we find set all the preselected groups
           let courseGroups = await getAllDistinctGroupsOfCourse(course.id)
           courseGroups = getGroupsIntersection(courseGroups, branchGroups) // we keep only the relevant groups
-          courseGroups.forEach(group => {
-            const data = querryNumOFSelectedGroups(course.id, group.id)
+          for(const group of courseGroups) {
+            const data = await querryNumOFSelectedGroups(course.id, group.id)
             group.selected = data.num >= 1
-          })
+          }
           console.log('Course groups: ' + JSON.stringify(courseGroups, null, '\t'));
           setCoursesAndTheirGroups(current => [...current, {course: course, groups: courseGroups}])
         }

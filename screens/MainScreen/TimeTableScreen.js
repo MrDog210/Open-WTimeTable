@@ -81,12 +81,12 @@ function TimeTableScreen({ navigation, route }) {
         dates.push(date)
       }
       const lec = []
-      dates.forEach((d) => {
-        const data = getLecturesForDate(getISODateNoTimestamp(d))
+      for(const d of dates) {
+        const data = await getLecturesForDate(getISODateNoTimestamp(d))
         data.forEach(lecture => {
           lec.push({lecture: lecture, startDate: subtrackSeconds(lecture.start_time, -60), endDate: subtrackSeconds(lecture.end_time, 60)})
         })
-      })
+      }
 
       const customLectures = await getCustomLecturesForDates(dates)
       console.log("CUSTOM LECTURES: ", customLectures)

@@ -91,13 +91,14 @@ function ProgramSelectScreen({route, navigation}) {
   }, [chosenYear])
 
   async function proceedToGroupSelect() {
+    console.log("clicked")
     setIsFetchingData(true)
     setFetchingDataMessage('Fetching lectures')
     //const program = programms.find((item) => item.id === chosenProgrammID)
     const chosenBranch = branches.find(b => b.id == chosenBranchID)
     setChosenBranch(chosenBranch) // we store the chosen branch, for future use
     try {
-      truncateDatabase()
+      await truncateDatabase()
       console.log('Fetchig groups')
 
       const groups = await getAndSetAllDistinctBranchGroups(schoolInfo.schoolCode, chosenBranchID)
@@ -110,6 +111,7 @@ function ProgramSelectScreen({route, navigation}) {
       navigation.navigate('SelectGroups', { isEditing: false })
     } catch (error) {
       Alert.alert('Error', error.message)
+      console.error(error)
     }
     setIsFetchingData(false)
   }

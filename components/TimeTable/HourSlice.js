@@ -9,8 +9,6 @@ import { getDelayBasedOnPosition } from "../../util/animationUtil";
 
 function HourSlice({style, item, dayIndex, daysTotal, onPress, smallMode=false, animationsDisabled = false}) {
   const {course, eventType, start_time, end_time, note, showLink, color, colorText, rooms, groups, lecturers, executionType, usersNote} = item.lecture
- 
-  //console.log(item.lecture)
 
   const hexColor = (color === null || color === '') ? COLORS.foreground.primary : `#${color}`
   const top = useSharedValue(animationsDisabled ? 0 : 50)
