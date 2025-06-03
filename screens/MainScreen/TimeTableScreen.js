@@ -132,23 +132,23 @@ function TimeTableScreen({ navigation, route }) {
   return (
     <>
       <LectureDetails modalVisible={modalVisible} lecture={modalLecture} onRequestClose={() => {setModelVisible(false)}} />
-        <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} ref={scrollRef}>
-          <Timetable items={lectures} 
-            renderItem={({key, ...props}) => <HourSlice key={key} {...props} onPress={lecturePressed} smallMode={isWeekView} animationsDisabled={!animationsEnabled}/>} 
-            date={isWeekView ? undefined : date}
-            range={isWeekView ? week : undefined}
+      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} ref={scrollRef}>
+        <Timetable items={lectures} 
+          renderItem={({key, ...props}) => <HourSlice key={key} {...props} onPress={lecturePressed} smallMode={isWeekView} animationsDisabled={!animationsEnabled}/>} 
+          date={isWeekView ? undefined : date}
+          range={isWeekView ? week : undefined}
 
-            fromHour={6}
-            toHour={22}
-            hourHeight={isWeekView ? 65 : 80}
-            style={timetableStyles}
+          fromHour={6}
+          toHour={22}
+          hourHeight={isWeekView ? 65 : 80}
+          style={timetableStyles}
 
-            renderHeader={isWeekView ? props => <TimeTableHeader {...props} /> : undefined}
+          renderHeader={isWeekView ? props => <TimeTableHeader {...props} /> : undefined}
 
-            columnWidth={isWeekView ? getColumnWidth(isWeekView) : undefined}
-          />
-        </ScrollView>
-        <CalendarStrip
+          columnWidth={isWeekView ? getColumnWidth(isWeekView) : undefined}
+        />
+      </ScrollView>
+      <CalendarStrip
         selectedDate={date}
         onDateSelected={setDate}
 
