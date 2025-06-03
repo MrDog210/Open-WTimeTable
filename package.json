@@ -9,10 +9,22 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo/metro-runtime": "~5.0.4",
+    "@react-navigation/drawer": "^7.4.1",
+    "@react-navigation/native": "^7.1.10",
+    "@react-navigation/native-stack": "^7.3.14",
+    "@tanstack/react-query": "^5.80.2",
     "expo": "~53.0.9",
+    "expo-jwt": "^1.8.2",
     "expo-status-bar": "~2.2.3",
     "react": "19.0.0",
-    "react-native": "0.79.2"
+    "react-dom": "19.0.0",
+    "react-native": "0.79.2",
+    "react-native-dropdown-picker": "^5.4.6",
+    "react-native-safe-area-context": "5.4.0",
+    "react-native-screens": "~4.11.1",
+    "react-native-web": "^0.20.0",
+    "expo-sqlite": "~15.2.10"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
