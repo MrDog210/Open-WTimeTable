@@ -9,10 +9,9 @@ function Divider({style}: DividerProps) {
   const {colors} = useTheme()
 
   return <View style={[{
-      width: '100%', 
-      borderBottomWidth: 1, 
-      borderBottomColor: COLORS.background.seperator,
-      marginVertical: 10
+      width: '100%',
+      borderBottomWidth: 1,
+      borderBottomColor: colors.onBackground
     }, style]}></View>
 }
 
