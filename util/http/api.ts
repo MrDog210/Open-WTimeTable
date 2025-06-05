@@ -1,4 +1,4 @@
-import { Branch, Group, GroupBranchMain, Lecture, Programme, SchoolInfo } from "../../types/types"
+import { Branch, Group, GroupBranchMain, LectureWise, Programme, SchoolInfo } from "../../types/types"
 import { API_URL } from "../constants"
 import { getISODateNoTimestamp } from "../dateUtils"
 import { getServerUrl, setServerUrl } from "../store/schoolData"
@@ -36,7 +36,7 @@ export async function fetchBranchesForProgramm(schoolCode: string, programmeId: 
   return getWithToken<Branch[]>(`${url}branchAllForProgrmmeYear?schoolCode=${schoolCode}&language=slo&programmeId=${programmeId}&year=${year}`)
 }
 
-export async function fetchGroupsForBranch(schoolCode: string, branchId: number) {
+export async function fetchGroupsForBranch(schoolCode: string, branchId: string) {
   const url = await getServerUrl()
 
   return getWithToken<GroupBranchMain[]>(`${url}groupAllForBranch?schoolCode=${schoolCode}&language=slo&branchId=${branchId}`)
@@ -49,7 +49,7 @@ export async function fetchNotifications() { // ?????????
 }
 
 // dates are INCLUSIVE
-export async function fetchLecturesForGroups(schoolCode: string, groups: Group[], startDate: Date, endDate: Date) {
+export async function fetchLecturesForGroups(schoolCode: string, groups: { id: number }[], startDate: Date, endDate: Date) {
   const url = await getServerUrl()                                                     
 
   let allGroupsId = ''
@@ -61,5 +61,5 @@ export async function fetchLecturesForGroups(schoolCode: string, groups: Group[]
 
   const startDateIso = getISODateNoTimestamp(startDate)
   const endDateIso = getISODateNoTimestamp(endDate)
-  return getWithToken<Lecture[]>(`${url}scheduleByGroups?schoolCode=${schoolCode}&dateFrom=${startDateIso}&dateTo=${endDateIso}&language=slo&groupsId=${allGroupsId}`)
+  return getWithToken<LectureWise[]>(`${url}scheduleByGroups?schoolCode=${schoolCode}&dateFrom=${startDateIso}&dateTo=${endDateIso}&language=slo&groupsId=${allGroupsId}`)
 }

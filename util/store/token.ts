@@ -19,7 +19,9 @@ export async function getToken() {
   let token = await Storage.getItem('token');
 
   if(token !== null) {
+    console.log("saved jwt token")
     const jwtTokenValue = JWT.decode(token, '')
+    console.log("decoded jwt token", jwtTokenValue)
     if(Date.now() < jwtTokenValue.exp! - 60000) // check if it expired
       return token
   }

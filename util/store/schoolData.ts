@@ -1,5 +1,5 @@
 import Storage from 'expo-sqlite/kv-store';
-import { Branch, Group, SchoolInfo } from '../../types/types';
+import { Branch, Group, GroupBranchChild, GroupBranchMain, SchoolInfo } from '../../types/types';
 
 export async function getUrlSchoolCode() {
   return Storage.getItem('UrlSchoolCode')
@@ -32,10 +32,10 @@ export async function getAllStoredBranchGroups() {
   const json = await Storage.getItem('groups')
   if(json === null)
     throw new Error("groups is null!")
-  return JSON.parse(json) as Group[]
+  return JSON.parse(json) as GroupBranchChild[]
 }
 
-export async function setAllBranchGroups(groups: Group[]) {
+export async function setAllBranchGroups(groups: GroupBranchChild[]) {
   return Storage.setItem('groups', JSON.stringify(groups))
 }
 
