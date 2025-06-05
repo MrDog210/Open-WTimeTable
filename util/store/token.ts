@@ -1,14 +1,27 @@
-import { API_URL } from "../constants"
-import { get } from "../http/http"
+import { API_URL, PASSWORD, USERNAME } from "../constants"
 import Storage from 'expo-sqlite/kv-store';
 import JWT from 'expo-jwt';
+import { encode, decode } from "base-64";
 
 type FetchTokenResponse = {
   token: string
 }
 
 export async function fetchToken() {
-  return get<FetchTokenResponse>(`${API_URL}login`)
+  const response = await fetch(`${API_URL}login`, {
+    headers:  {
+      'Authorization': 'Basic ' + encode(`${USERNAME}:${PASSWORD}`), 
+    }
+  });
+
+  if(!response.ok) {
+    console.log(JSON.stringify(response))
+    throw new Error('Failed to fetch data')
+  }
+
+  const json = (await response.json()) as FetchTokenResponse
+
+  return json.token
 }
 
 async function storeToken(token: string) {
@@ -19,14 +32,16 @@ export async function getToken() {
   let token = await Storage.getItem('token');
 
   if(token !== null) {
-    console.log("saved jwt token")
-    const jwtTokenValue = JWT.decode(token, '')
-    console.log("decoded jwt token", jwtTokenValue)
-    if(Date.now() < jwtTokenValue.exp! - 60000) // check if it expired
+    const base64Strings = token.split('.')
+    const payload = JSON.parse(decode(base64Strings[1])) as any as { exp: number}
+    const nowInSeconds = Math.floor(Date.now() / 1000);
+
+    if(nowInSeconds < payload.exp - 60) // check if it expired
       return token
+    console.log("TOKEN HAS EXPIRED!")
   }
 
-  const newToken = (await fetchToken()).token
+  const newToken = await fetchToken()
   storeToken(newToken)
-  return token
+  return newToken
 }

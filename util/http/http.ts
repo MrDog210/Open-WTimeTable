@@ -1,4 +1,5 @@
-import { API_URL } from "../constants";
+import { getToken } from "../store/token";
+import NetInfo from '@react-native-community/netinfo';
 
 export async function get<T>(url: string, token?: string) {
   const headers = token ? {
@@ -17,8 +18,8 @@ export async function get<T>(url: string, token?: string) {
   return (await response.json()) as T
 }
 
-export function getWithToken<T>(url: string) {
-  const token = await ;
+export async function getWithToken<T>(url: string) {
+  const token = await getToken();
   return get<T>(url, token)
 }
 

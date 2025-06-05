@@ -28,7 +28,7 @@ export function useSettings() {
   const settingsCtx = useContext(ThemeContext)
 
   if(settingsCtx === null)
-    throw new Error("Theme ctx is null!")
+    throw new Error("Settings ctx is null!")
 
   return settingsCtx
 }
@@ -40,11 +40,12 @@ type SavedSettings = {
 
 export interface SettingsContextType extends SavedSettings {
   isLoading: boolean
+  changeView: () => void
 }
 
 let didInit = false;
 
-function ThemeContextProvider({children}: {children: ReactNode}) {
+function UserSettingsContextProvider({children}: {children: ReactNode}) {
   const [isLoading, setIsLoading] = useState(true)
   const [completedSetup, setCompletedSetup] = useState<boolean>(false)
   const [defaultView, setDefaultView] = useState<DefaultView>(DefaultView.DAY_VIEW)
@@ -65,10 +66,11 @@ function ThemeContextProvider({children}: {children: ReactNode}) {
   const ctx: SettingsContextType = {
     isLoading,
     hasCompletedSetup: completedSetup,
-    defaultView
+    defaultView,
+    changeView: () => setCompletedSetup(true)
   }
 
   return <ThemeContext.Provider value={ctx}>{children}</ThemeContext.Provider>
 }
 
-export default ThemeContextProvider
+export default UserSettingsContextProvider
