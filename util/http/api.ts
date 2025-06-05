@@ -1,69 +1,65 @@
-import { Group } from "../../types/types"
+import { Branch, Group, GroupBranchMain, Lecture, Programme, SchoolInfo } from "../../types/types"
 import { API_URL } from "../constants"
+import { getISODateNoTimestamp } from "../dateUtils"
+import { getServerUrl, setServerUrl } from "../store/schoolData"
 import { getWithToken } from "./http"
 
-async function fetchSchoolUrl(schoolCode: string) {
-  let json = await getWithToken(API_URL + `url?schoolCode=${schoolCode}&language=slo`)
+type FetchSchoolUrlResponse = {
+  server: string
+}
+
+async function fetchSchoolUrl(userSchoolCode: string) {
+  const json = await getWithToken<FetchSchoolUrlResponse>(`${API_URL}url?schoolCode=${userSchoolCode}&language=slo`)
   return json.server.replace('http://', 'https://') // FUNNY WISE
 }
 
-export async function getSchoolInfo(schoolCode: string) {
-  schoolCode = schoolCode.toLowerCase()
+export async function getSchoolInfo(userSchoolCode: string) {
+  userSchoolCode = userSchoolCode.toLowerCase()
 
-  const serverURL = await fetchSchoolUrl(schoolCode)
+  const serverURL = await fetchSchoolUrl(userSchoolCode)
   setServerUrl(serverURL)
 
-  let schoolInfo = await getWithToken(serverURL + `schoolCode?schoolCode=${schoolCode}&language=slo`)
-
-  return schoolInfo
+  return getWithToken<SchoolInfo>(`${serverURL}schoolCode?schoolCode=${userSchoolCode}&language=slo`)
 }
+
+// note from here, you must use the provided school code by the school info fetch function, not the user provided one
 
 export async function getBasicProgrammes(schoolCode: string) {
   const url = await getServerUrl()
 
-  const json = await getWithToken(url + `basicProgrammeAll?schoolCode=${schoolCode}&language=slo`)
-
-  return json
+  return getWithToken<Programme[]>(`${url}basicProgrammeAll?schoolCode=${schoolCode}&language=slo`)
 }
 
-export async function fetchBranchesForProgramm(schoolCode: string, programmeId: number, year: number) {
+export async function fetchBranchesForProgramm(schoolCode: string, programmeId: string, year: number) {
   const url = await getServerUrl()
 
-  const json = await getWithToken(url + `branchAllForProgrmmeYear?schoolCode=${schoolCode}&language=slo&programmeId=${programmeId}&year=${year}`)
-
-  return json
+  return getWithToken<Branch[]>(`${url}branchAllForProgrmmeYear?schoolCode=${schoolCode}&language=slo&programmeId=${programmeId}&year=${year}`)
 }
 
 export async function fetchGroupsForBranch(schoolCode: string, branchId: number) {
   const url = await getServerUrl()
 
-  const json = await getWithToken(url + `groupAllForBranch?schoolCode=${schoolCode}&language=slo&branchId=${branchId}`)
-
-  return json
+  return getWithToken<GroupBranchMain[]>(`${url}groupAllForBranch?schoolCode=${schoolCode}&language=slo&branchId=${branchId}`)
 }
 
 export async function fetchNotifications() { // ?????????
   const url = await getServerUrl()
 
-  const json = await getWithToken(url + `notificationByGroups?schoolCode=wtt_um_feri&language=slo&groupsId=87_231_640`)
-  //console.log(JSON.stringify(json, null, '\t'));
-
-  return json
+  return getWithToken<string[]>(`${url}notificationByGroups?schoolCode=wtt_um_feri&language=slo&groupsId=87_231_640`)
 }
 
-export async function fetchLecturesForGroups(schoolCode: string, groups: Group[], startDate: Date, endDate: Date) { // groups is array { id, name }
-  const url = await getServerUrl()                                                     // also it seems to be inclusive of dates
+// dates are INCLUSIVE
+export async function fetchLecturesForGroups(schoolCode: string, groups: Group[], startDate: Date, endDate: Date) {
+  const url = await getServerUrl()                                                     
 
   let allGroupsId = ''
-  
+
   groups.forEach(group => {
     allGroupsId += group.id.toString() + '_'
   });
   allGroupsId = allGroupsId.slice(0, -1);
 
-  startDate = getISODateNoTimestamp(startDate)
-  endDate = getISODateNoTimestamp(endDate)
-  const json = await getWithToken(url + `scheduleByGroups?schoolCode=${schoolCode}&dateFrom=${startDate}&dateTo=${endDate}&language=slo&groupsId=${allGroupsId}`)
-
-  return json
+  const startDateIso = getISODateNoTimestamp(startDate)
+  const endDateIso = getISODateNoTimestamp(endDate)
+  return getWithToken<Lecture[]>(`${url}scheduleByGroups?schoolCode=${schoolCode}&dateFrom=${startDateIso}&dateTo=${endDateIso}&language=slo&groupsId=${allGroupsId}`)
 }
