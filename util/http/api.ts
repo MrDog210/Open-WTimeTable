@@ -30,7 +30,7 @@ export async function getBasicProgrammes(schoolCode: string) {
   return getWithToken<Programme[]>(`${url}basicProgrammeAll?schoolCode=${schoolCode}&language=slo`)
 }
 
-export async function fetchBranchesForProgramm(schoolCode: string, programmeId: string, year: number) {
+export async function fetchBranchesForProgramm(schoolCode: string, programmeId: string, year: string) {
   const url = await getServerUrl()
 
   return getWithToken<Branch[]>(`${url}branchAllForProgrmmeYear?schoolCode=${schoolCode}&language=slo&programmeId=${programmeId}&year=${year}`)

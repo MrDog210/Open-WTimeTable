@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import ComponentsShowcase from './components/ui/ComponentsShowcase';
-import ThemeContextProvider from './context/ThemeContext';
+import ThemeContextProvider, { useTheme } from './context/ThemeContext';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Container from './components/ui/Container';
 import UserSettingsContextProvider, { useSettings } from './context/UserSettingsContext';
@@ -8,8 +8,9 @@ import { useMemo } from 'react';
 import SchoolCodeInputScreen from './screens/setup/SchoolCodeInputScreen';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TimeTableScreen from './screens/MainScreen/TimeTableScreen';
-import { createStaticNavigation, StaticParamList } from '@react-navigation/native';
+import { createStaticNavigation, DefaultTheme, StaticParamList } from '@react-navigation/native';
 import SetupScreenNavigation from './screens/setup/SetupScreenNavigation';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 function useHasCompletedSetup() {
   const {hasCompletedSetup} = useSettings()
@@ -35,7 +36,7 @@ const RootStack = createNativeStackNavigator({
     },
   },
   screenOptions: {
-    headerShown: false
+    headerShown: false,
   }
 });
 
@@ -50,26 +51,44 @@ declare global {
 const StaticNavigation = createStaticNavigation(RootStack);
 
 function Navigation() {
- const {isLoading} = useSettings()
+  const {isLoading} = useSettings()
+  const {colors, theme} = useTheme()
+  console.log(theme)
+  const myTheme: ReactNavigation.Theme = {
+    ...DefaultTheme,
+    dark: theme === 'dark',
+    colors: {
+      ...DefaultTheme.colors,
+      background: colors.background,
+      primary: colors.onBackground,
+      border: 'transparent',
+      card: 'transparent',
+      text: colors.onBackground
+    }
+  }
 
   if (isLoading)
     return <></>
 
   return (
-    <StaticNavigation />
+    <StaticNavigation theme={myTheme} />
   )
 }
 
+const queryClient = new QueryClient()
+
 export default function App() {
   return (
-    <SafeAreaProvider>
-      <UserSettingsContextProvider>
-        <ThemeContextProvider>
-          <StatusBar style="auto" />
-          <Navigation />
-        </ThemeContextProvider>
-      </UserSettingsContextProvider>
-    </SafeAreaProvider>
+    <QueryClientProvider client={queryClient}>
+      <SafeAreaProvider>
+        <UserSettingsContextProvider>
+          <ThemeContextProvider>
+            <StatusBar style="auto" />
+            <Navigation />
+          </ThemeContextProvider>
+        </UserSettingsContextProvider>
+      </SafeAreaProvider>
+    </QueryClientProvider>
   );
 }
 

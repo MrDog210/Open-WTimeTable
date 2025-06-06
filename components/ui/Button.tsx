@@ -1,4 +1,4 @@
-import { PressableProps, Pressable, type StyleProp, StyleSheet, View, type ViewStyle, ActivityIndicator } from "react-native"
+import { PressableProps, Pressable, type StyleProp, StyleSheet, View, type ViewStyle, ActivityIndicator, GestureResponderEvent } from "react-native"
 import Text from "./Text"
 import { type ReactNode } from "react"
 import { useTheme } from "../../context/ThemeContext"
@@ -8,10 +8,11 @@ interface MyButtonProps extends PressableProps {
   children?: ReactNode,
   style?: StyleProp<ViewStyle>,
   containerStyle?: StyleProp<ViewStyle>,
-  loading?: boolean
+  loading?: boolean,
+  disabled?: boolean
 }
 
-function Button({style, mode = "PRIMARY", children, containerStyle, loading = false, ...props}: MyButtonProps) {
+function Button({style, mode = "PRIMARY", children, containerStyle, loading = false, disabled = false, onPress, ...props}: MyButtonProps) {
   const {colors} = useTheme()
   let bgColor: string
   let fgColor: string
@@ -29,10 +30,15 @@ function Button({style, mode = "PRIMARY", children, containerStyle, loading = fa
     bgColor = "transparent"
     fgColor = colors.onBackground
   }
+
+  function myOnPresss(event: GestureResponderEvent) {
+    if(!disabled && onPress)
+      onPress(event)
+  }
   
   return (
     <View style={[{ backgroundColor: bgColor }, styles.containerStyle, containerStyle]}>
-      <Pressable style={[styles.buttonStyle, style]} {...props} android_ripple={{color: colors.onSurfaceDisabled}}>
+      <Pressable style={[styles.buttonStyle, style]} onPress={myOnPresss} {...props} android_ripple={{color: colors.onSurfaceDisabled}}>
         {
           loading && <ActivityIndicator color={fgColor} />
         }
