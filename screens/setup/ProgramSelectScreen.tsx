@@ -122,7 +122,7 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
 
   return (
     <Container>
-      <Spinner visible={isFetchingData} {...SPINNER_STYLE} textContent={fetchingDataMessage} />
+
       <ScrollView style={styles.container}>
         <Text style={{textAlign: 'center', fontWeight: 'bold'}}>Select your program, year and group</Text>
         <View>
