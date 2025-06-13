@@ -1,6 +1,5 @@
 import { API_URL, PASSWORD, USERNAME } from "../constants"
 import Storage from 'expo-sqlite/kv-store';
-import JWT from 'expo-jwt';
 import { encode, decode } from "base-64";
 
 type FetchTokenResponse = {

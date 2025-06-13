@@ -60,15 +60,15 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
     enabled: !!chosenProgrammID && !!chosenYear
   })
 
-  useEffect(() => {
-    if(!chosenProgrammID || !programms)
+  function onProgrammIdSelected(id: string | null) {
+    if(!id || !programms)
       return
-    const program = programms.find((item) => item.id === chosenProgrammID)
+    const program = programms.find((item) => item.id === id)
     if(!program) return
     setYears(generateYearsOfProgram(program))
     setChosenYear(null)
     setChosenBranchID(null)
-  }, [chosenProgrammID])
+  }
 
   /*useEffect(() => {
     if(chosenYear === null){
@@ -134,6 +134,7 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
               label: 'name',
               value: 'id'
             }}
+            onChangeValue={onProgrammIdSelected}
             zIndex={3000}
             placeholder="Select program"
           />
@@ -168,7 +169,7 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
         </View>
       </ScrollView>
       <View>
-        <Button onPress={proceedToGroupSelect}>Proceed to group selection</Button>
+        <Button disabled={!chosenBranchID} onPress={proceedToGroupSelect}>Proceed to group selection</Button>
       </View>
     </Container>
     </>
