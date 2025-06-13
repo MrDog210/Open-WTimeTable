@@ -1,8 +1,14 @@
 import DDP, { DropDownPickerProps, ValueType } from 'react-native-dropdown-picker';
 
-function DropDownPicker<T extends ValueType>(props: DropDownPickerProps<T>) {
+function DropDownPicker<T extends ValueType>({style, ...props}: DropDownPickerProps<T>) {
 
-  return <DDP {...props}/>
+  return <DDP 
+    listMode='MODAL' 
+    modalAnimationType='slide'
+    style={[{
+
+    }, style]} 
+    {...props} />
 }
 
 export default DropDownPicker

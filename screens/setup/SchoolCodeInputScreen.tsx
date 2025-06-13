@@ -1,14 +1,17 @@
-import { View, StyleSheet, KeyboardAvoidingView, Platform } from "react-native"
+import { StyleSheet, KeyboardAvoidingView, Platform } from "react-native"
 import Button from "../../components/ui/Button"
 import Text from "../../components/ui/Text"
 import TextInput from "../../components/ui/TextInput"
 import { useSettings } from "../../context/UserSettingsContext"
 import { useNavigation } from "@react-navigation/native"
 import { setSchoolInfo, setUrlSchoolCode } from "../../util/store/schoolData"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { getSchoolInfo } from "../../util/http/api"
 import { useMutation } from "@tanstack/react-query"
 import Container from "../../components/ui/Container"
+import { init } from "../../util/store/databse"
+
+let hasCreatedDatabase = false
 
 function SchoolCodeInputScreen() {
   const { changeView } = useSettings()
@@ -23,6 +26,13 @@ function SchoolCodeInputScreen() {
       return schoolInfo
     }
   })
+
+  useEffect(() => {
+    if(!hasCreatedDatabase) {
+      hasCreatedDatabase = true;
+      init()
+    }
+  }, [])
 
   async function onConfirm() {
     //changeView()

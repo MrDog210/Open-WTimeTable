@@ -10,7 +10,9 @@ import { truncateDatabase } from "../../util/store/databse";
 import { fetchAndInsertLectures, getAndSetAllDistinctBranchGroups } from "../../util/timetableUtils";
 import { getSchoolYearDates } from "../../util/dateUtils";
 import Button from "../../components/ui/Button";
-import DropDownPicker from "react-native-dropdown-picker";
+import DropDownPicker from "../../components/ui/DropDownPicker";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import LoadingOverlay from "../../components/ui/LoadingOverlay";
 
 type ProgramSelectScreenProps = StaticScreenProps<{
   schoolInfo: SchoolInfo
@@ -22,25 +24,21 @@ function generateYearsOfProgram(program: Programme) {
   for(let i = 1; i <= numOfYears; i++)
     years.push({id: i, name: i.toString()})
 
-    console.log(years)
   return years
 }
 
 function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
   const { schoolInfo } = route.params
-  const [isFetchingData, setIsFetchingData] = useState(false)
   const [fetchingDataMessage, setFetchingDataMessage] = useState('')
 
   const [programsOpen, setProgramsOpen] = useState(false)
-  const [programms, setProgramms] = useState<Programme[]>([])
   const [chosenProgrammID, setChosenProgrammID] = useState<string | null>(null)
 
-  const [yearopen, setYearOpen] = useState(false)
+  const [yearOpen, setYearOpen] = useState(false)
   const [years, setYears] = useState<{id: number; name: string}[]>([])
   const [chosenYear, setChosenYear] = useState<string | null>(null)
 
   const [branchOpen, setBranchOpen] = useState(false)
-  const [branches, SetBranches] = useState<Branch[]>([])
   const [chosenBranchID, setChosenBranchID] = useState<string | null>(null)
 
   const navigation = useNavigation()
@@ -51,23 +49,19 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
     })
   }, [])
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        setIsFetchingData(true)
-        setFetchingDataMessage('Fetching programs')
-        const prog = await getBasicProgrammes(schoolInfo.schoolCode)
-        setProgramms(prog)
-      } catch (error) {
-        Alert.alert('An error ocurred', error.message)
-      }
-      setIsFetchingData(false)
-    }
-    fetchData()
-  }, [])
+  const { data: programms, ...basicProgrammesQuery} = useQuery({
+    queryFn: () => getBasicProgrammes(schoolInfo.schoolCode),
+    queryKey: [ 'basicProgrammes', { schoolCode: schoolInfo.schoolCode }]
+  })
+
+  const { data: branches} = useQuery({
+    queryFn: () => fetchBranchesForProgramm(schoolInfo.schoolCode, chosenProgrammID!, chosenYear!),
+    queryKey: [ 'branchesForProgamme', { schoolCode: schoolInfo.schoolCode, chosenProgrammID, chosenYear }],
+    enabled: !!chosenProgrammID && !!chosenYear
+  })
 
   useEffect(() => {
-    if(chosenProgrammID === null)
+    if(!chosenProgrammID || !programms)
       return
     const program = programms.find((item) => item.id === chosenProgrammID)
     if(!program) return
@@ -76,9 +70,9 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
     setChosenBranchID(null)
   }, [chosenProgrammID])
 
-  useEffect(() => {
+  /*useEffect(() => {
     if(chosenYear === null){
-      SetBranches([])
+      //SetBranches([])
       return
     }
     async function getBranches() {
@@ -86,43 +80,48 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
         setIsFetchingData(true)
         setFetchingDataMessage('Fetching branches')
         setChosenBranchID(null)
-        SetBranches(await fetchBranchesForProgramm(schoolInfo.schoolCode, chosenProgrammID!, chosenYear!))
+        SetBranches()
       } catch (error) {
         Alert.alert('An error ocurred', error.message)
       }
       setIsFetchingData(false)
     }
-    getBranches()
-  }, [chosenYear])
+    //getBranches()
+  }, [chosenYear])*/
 
-  async function proceedToGroupSelect() {
-    setIsFetchingData(true)
-    setFetchingDataMessage('Fetching lectures')
-    //const program = programms.find((item) => item.id === chosenProgrammID)
-    const chosenBranch = branches.find(b => b.id == chosenBranchID)
-    if(!chosenBranch) return
-    setChosenBranch(chosenBranch) // we store the chosen branch, for future use
-    try {
-      truncateDatabase()
+  const saveAndInsertData = useMutation({
+    mutationFn: async () => {
+      const chosenBranch = branches!.find(b => b.id == chosenBranchID)
+      if(!chosenBranch) return
+      await setChosenBranch(chosenBranch) // we store the chosen branch, for future use
+      await truncateDatabase()
+
       console.log('Fetchig groups')
-
       const groups = await getAndSetAllDistinctBranchGroups(schoolInfo.schoolCode, chosenBranchID!)
 
       setFetchingDataMessage('Inserting lectures into database, this WILL take a while')
       let {startDate, endDate} = getSchoolYearDates()
       console.log(startDate,endDate)
       await fetchAndInsertLectures(schoolInfo.schoolCode, groups, startDate, endDate)
+    }
+  })
 
+  async function proceedToGroupSelect() {
+    setFetchingDataMessage('Fetching lectures')
+    try {
+      await saveAndInsertData.mutateAsync()
       navigation.navigate('Setup', { screen: '', props: {isEditing: false} })
     } catch (error) {
       Alert.alert('Error', error.message)
     }
-    setIsFetchingData(false)
   }
 
-  return (
-    <Container>
+  const isFetching = basicProgrammesQuery.isFetching || saveAndInsertData.isPending
 
+  return (
+    <>
+    <LoadingOverlay visible={isFetching} text={fetchingDataMessage} />
+    <Container>
       <ScrollView style={styles.container}>
         <Text style={{textAlign: 'center', fontWeight: 'bold'}}>Select your program, year and group</Text>
         <View>
@@ -141,7 +140,7 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
         </View>
         <View>
           {chosenProgrammID && <DropDownPicker items={years as any}
-            open={yearopen}
+            open={yearOpen}
             setOpen={setYearOpen}
             value={chosenYear}
             setValue={setChosenYear}
@@ -172,6 +171,7 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
         <Button onPress={proceedToGroupSelect}>Proceed to group selection</Button>
       </View>
     </Container>
+    </>
   )
 }
 
