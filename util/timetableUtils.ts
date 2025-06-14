@@ -14,7 +14,7 @@ export async function getAndSetAllDistinctBranchGroups(schoolCode: string, chose
 export async function fetchAndInsertLectures(schoolCode: string, allGroups: { id: number }[], startDate: Date, endDate: Date) { // allGroups should be an array of all available groups
   const allLectures = await fetchLecturesForGroups(schoolCode, allGroups, startDate, endDate)
   await deleteLecturesBetweenDates(startDate, endDate)
-  
+
   console.log("Number of lectures: " + allLectures.length)
   // TODO: await for all lecutres to 
   allLectures.forEach(async ({ rooms, groups, lecturers, executionTypeId, executionType, course, courseId }) => {
@@ -23,9 +23,10 @@ export async function fetchAndInsertLectures(schoolCode: string, allGroups: { id
       await insertCourse(Number(courseId), course)
     if (executionType !== '')
       await insertExecutionType(Number(executionTypeId), executionType)
-    rooms.forEach(async (room) => { await insertRoom(Number(room.id), room.name) })
-    groups.forEach(async (group) => { await insertGroup(Number(group.id), group.name).catch((error) => console.log(error)) })
-    lecturers.forEach(async (lecturer) => { await insertLecturer(Number(lecturer.id), lecturer.name) })
+    
+    rooms.forEach(async (room) => { await insertRoom(room.id, room.name).catch((error) => console.log("insertRoom error",error)) })
+    groups.forEach(async (group) => { await insertGroup(group.id, group.name).catch((error) => console.log("insertGroup error",error)) })
+    lecturers.forEach(async (lecturer) => { await insertLecturer(lecturer.id, lecturer.name).catch((error) => console.log("insertLecturer error",error)) })
   });
 
   // now we add all lectures

@@ -3,7 +3,9 @@ import { CREATE_DATABASE, DELETE_COMMANDS } from '../constants';
 import { Course, GroupBranchChild, Lecture, LectureWise, Lecturer, Room, UsersNote } from '../../types/types';
 import { getISODateNoTimestamp } from '../dateUtils';
 
-const database = SQLite.openDatabaseAsync('lectures.db')
+const database = SQLite.openDatabaseAsync('lectures.db', {
+    useNewConnection: true
+})
 
 export async function init() {
   const db = await database
@@ -66,7 +68,7 @@ export async function truncateSelectedGroups() {
   return db.execAsync('DELETE FROM selected_groups;')
 }
 
-export async function insertSelectedGroups(courses_id: number, groups_id: number) {
+export async function insertSelectedGroup(courses_id: number, groups_id: number) {
   const db = await database
   return db.runAsync('INSERT INTO selected_groups (courses_id, groups_id) VALUES (?,?);', [courses_id, groups_id])
 }
@@ -175,7 +177,7 @@ export async function getLecturesForDate(date: Date) { // pazi če je execution 
 export async function querryNumOFSelectedGroups(courses_id: number, groups_id: number) {
   const db = await database
   
-  return db.getFirstAsync(`SELECT COUNT(*) AS 'num' FROM selected_groups WHERE courses_id = ? AND groups_id = ?`, [courses_id, groups_id])
+  return db.getFirstAsync<{num: number}>(`SELECT COUNT(*) AS 'num' FROM selected_groups WHERE courses_id = ? AND groups_id = ?`, [courses_id, groups_id])
 }
 
 export async function getAllDistinctSelectedGroups() {

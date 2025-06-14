@@ -1,11 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
-import ComponentsShowcase from './components/ui/ComponentsShowcase';
 import ThemeContextProvider, { useTheme } from './context/ThemeContext';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import Container from './components/ui/Container';
 import UserSettingsContextProvider, { useSettings } from './context/UserSettingsContext';
-import { useMemo } from 'react';
-import SchoolCodeInputScreen from './screens/setup/SchoolCodeInputScreen';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TimeTableScreen from './screens/MainScreen/TimeTableScreen';
 import { createStaticNavigation, DefaultTheme, StaticParamList } from '@react-navigation/native';

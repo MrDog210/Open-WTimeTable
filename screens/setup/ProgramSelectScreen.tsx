@@ -1,9 +1,9 @@
 import { StaticScreenProps, useNavigation } from "@react-navigation/native";
-import { Branch, Programme, SchoolInfo } from "../../types/types";
+import { Programme, SchoolInfo } from "../../types/types";
 import Text from "../../components/ui/Text";
 import Container from "../../components/ui/Container";
 import { ScrollView, StyleSheet, View } from "react-native";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { fetchBranchesForProgramm, getBasicProgrammes } from "../../util/http/api";
 import { setChosenBranch } from "../../util/store/schoolData";
 import { truncateDatabase } from "../../util/store/databse";
@@ -55,7 +55,10 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
   })
 
   const { data: branches} = useQuery({
-    queryFn: () => fetchBranchesForProgramm(schoolInfo.schoolCode, chosenProgrammID!, chosenYear!),
+    queryFn: () => {
+      setChosenBranchID(null)
+      return fetchBranchesForProgramm(schoolInfo.schoolCode, chosenProgrammID!, chosenYear!)
+    },
     queryKey: [ 'branchesForProgamme', { schoolCode: schoolInfo.schoolCode, chosenProgrammID, chosenYear }],
     enabled: !!chosenProgrammID && !!chosenYear
   })
@@ -70,25 +73,6 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
     setChosenBranchID(null)
   }
 
-  /*useEffect(() => {
-    if(chosenYear === null){
-      //SetBranches([])
-      return
-    }
-    async function getBranches() {
-      try {
-        setIsFetchingData(true)
-        setFetchingDataMessage('Fetching branches')
-        setChosenBranchID(null)
-        SetBranches()
-      } catch (error) {
-        Alert.alert('An error ocurred', error.message)
-      }
-      setIsFetchingData(false)
-    }
-    //getBranches()
-  }, [chosenYear])*/
-
   const saveAndInsertData = useMutation({
     mutationFn: async () => {
       const chosenBranch = branches!.find(b => b.id == chosenBranchID)
@@ -98,7 +82,6 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
 
       console.log('Fetchig groups')
       const groups = await getAndSetAllDistinctBranchGroups(schoolInfo.schoolCode, chosenBranchID!)
-
       setFetchingDataMessage('Inserting lectures into database, this WILL take a while')
       let {startDate, endDate} = getSchoolYearDates()
       console.log(startDate,endDate)
@@ -110,9 +93,12 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
     setFetchingDataMessage('Fetching lectures')
     try {
       await saveAndInsertData.mutateAsync()
-      navigation.navigate('Setup', { screen: '', props: {isEditing: false} })
+      navigation.navigate('Setup', { screen: 'GroupSelect', params: { isEditing: false} })
     } catch (error) {
-      Alert.alert('Error', error.message)
+      if(error instanceof Error) {
+        //Alert.alert('Error', error.message)
+        console.error(error.message)
+      }
     }
   }
 

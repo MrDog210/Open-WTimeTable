@@ -14,7 +14,7 @@ import { init } from "../../util/store/databse"
 let hasCreatedDatabase = false
 
 function SchoolCodeInputScreen() {
-  const { changeView } = useSettings()
+  const { setCompletedSetup: changeView } = useSettings()
   const navigation = useNavigation()
   const [code, setCode] = useState('')
   

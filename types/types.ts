@@ -109,3 +109,8 @@ export type UsersNote = {
   courses_id: number,
   executionType_id: number
 }
+
+
+export interface GroupWithSelected extends GroupBranchChild {
+  selected: boolean
+}

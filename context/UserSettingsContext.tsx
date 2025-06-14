@@ -40,34 +40,40 @@ type SavedSettings = {
 
 export interface SettingsContextType extends SavedSettings {
   isLoading: boolean
-  changeView: () => void
+  changeSettings: (settings: Partial<SavedSettings>) => Promise<unknown>
 }
 
 let didInit = false;
 
 function UserSettingsContextProvider({children}: {children: ReactNode}) {
   const [isLoading, setIsLoading] = useState(true)
-  const [completedSetup, setCompletedSetup] = useState<boolean>(false)
-  const [defaultView, setDefaultView] = useState<DefaultView>(DefaultView.DAY_VIEW)
+  const [settings, setSettings] = useState<SavedSettings>(DEFAULT_VALUES)
 
   useEffect(() => {
-    async function setSettings() {
-      const settings = await loadSettings()
-      setCompletedSetup(settings.hasCompletedSetup)
-      setDefaultView(settings.defaultView)
+    async function loadAndSetSettings() {
+      const savedSettings = await loadSettings()
+      setSettings(savedSettings)
       setIsLoading(false)
     }
     if(!didInit) {
       didInit = true
-      setSettings()
+      loadAndSetSettings()
     }
   }, [])
 
+  function changeSettings(nevValues: Partial<SavedSettings>) {
+    const newSettings: SavedSettings = {
+      ...settings,
+      ...nevValues
+    }
+    setSettings(newSettings)
+    return saveSettings(newSettings)
+  }
+
   const ctx: SettingsContextType = {
     isLoading,
-    hasCompletedSetup: completedSetup,
-    defaultView,
-    changeView: () => setCompletedSetup(true)
+    ...settings,
+    changeSettings: changeSettings
   }
 
   return <ThemeContext.Provider value={ctx}>{children}</ThemeContext.Provider>

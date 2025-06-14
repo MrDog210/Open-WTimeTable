@@ -7,7 +7,9 @@ function DropDownPicker<T extends ValueType>({style, ...props}: DropDownPickerPr
     modalAnimationType='slide'
     style={[{
 
-    }, style]} 
+    }, style]}
+    showBadgeDot={false}
+    extendableBadgeContainer={true}
     {...props} />
 }
 
