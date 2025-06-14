@@ -1,16 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
-import ComponentsShowcase from './components/ui/ComponentsShowcase';
-import ThemeContextProvider, { useTheme } from './context/ThemeContext';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import Container from './components/ui/Container';
 import UserSettingsContextProvider, { useSettings } from './context/UserSettingsContext';
-import { useMemo } from 'react';
-import SchoolCodeInputScreen from './screens/setup/SchoolCodeInputScreen';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TimeTableScreen from './screens/MainScreen/TimeTableScreen';
-import { createStaticNavigation, DefaultTheme, StaticParamList } from '@react-navigation/native';
+import { createStaticNavigation, DefaultTheme as DefaultThemeNavigation, StaticParamList } from '@react-navigation/native';
 import SetupScreenNavigation from './screens/setup/SetupScreenNavigation';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { DefaultTheme as DefaultThemePaper, MD3Theme, PaperProvider, useTheme } from 'react-native-paper';
 
 function useHasCompletedSetup() {
   const {hasCompletedSetup} = useSettings()
@@ -37,7 +33,8 @@ const RootStack = createNativeStackNavigator({
   },
   screenOptions: {
     headerShown: false,
-  }
+  },
+  
 });
 
 type RootStackParamList = StaticParamList<typeof RootStack>;
@@ -50,20 +47,27 @@ declare global {
 
 const StaticNavigation = createStaticNavigation(RootStack);
 
+const theme: MD3Theme = {
+  ...DefaultThemePaper,
+  roundness: 10
+}
+
+
 function Navigation() {
   const {isLoading} = useSettings()
-  const {colors, theme} = useTheme()
-  console.log(theme)
+  const {colors} = useTheme()
+
   const myTheme: ReactNavigation.Theme = {
-    ...DefaultTheme,
-    dark: theme === 'dark',
+    ...DefaultThemeNavigation,
+    //dark: theme === 'dark',
     colors: {
-      ...DefaultTheme.colors,
+      ...DefaultThemeNavigation.colors,
       background: colors.background,
       primary: colors.onBackground,
       border: 'transparent',
       card: 'transparent',
-      text: colors.onBackground
+      text: colors.onBackground,
+      
     }
   }
 
@@ -82,10 +86,10 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <SafeAreaProvider>
         <UserSettingsContextProvider>
-          <ThemeContextProvider>
+          <PaperProvider theme={theme}>
             <StatusBar style="auto" />
             <Navigation />
-          </ThemeContextProvider>
+          </PaperProvider>
         </UserSettingsContextProvider>
       </SafeAreaProvider>
     </QueryClientProvider>

@@ -1,18 +1,17 @@
 import { StaticScreenProps, useNavigation } from "@react-navigation/native";
-import { Branch, Programme, SchoolInfo } from "../../types/types";
-import Text from "../../components/ui/Text";
+import { Programme, SchoolInfo } from "../../types/types";
 import Container from "../../components/ui/Container";
 import { ScrollView, StyleSheet, View } from "react-native";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { fetchBranchesForProgramm, getBasicProgrammes } from "../../util/http/api";
 import { setChosenBranch } from "../../util/store/schoolData";
 import { truncateDatabase } from "../../util/store/databse";
 import { fetchAndInsertLectures, getAndSetAllDistinctBranchGroups } from "../../util/timetableUtils";
 import { getSchoolYearDates } from "../../util/dateUtils";
-import Button from "../../components/ui/Button";
 import DropDownPicker from "../../components/ui/DropDownPicker";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import LoadingOverlay from "../../components/ui/LoadingOverlay";
+import { Button, Text } from "react-native-paper";
 
 type ProgramSelectScreenProps = StaticScreenProps<{
   schoolInfo: SchoolInfo

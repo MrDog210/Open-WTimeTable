@@ -1,5 +1,5 @@
 import { type StyleProp, type TextInputProps, View, type ViewStyle } from "react-native";
-import { useTheme } from "../../context/ThemeContext";
+import { useTheme } from "react-native-paper";
 
 interface DividerProps extends TextInputProps {
   style?: StyleProp<ViewStyle>,

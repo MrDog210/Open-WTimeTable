@@ -1,6 +1,4 @@
 import { StyleSheet, KeyboardAvoidingView, Platform } from "react-native"
-import Button from "../../components/ui/Button"
-import Text from "../../components/ui/Text"
 import TextInput from "../../components/ui/TextInput"
 import { useSettings } from "../../context/UserSettingsContext"
 import { useNavigation } from "@react-navigation/native"
@@ -10,6 +8,7 @@ import { getSchoolInfo } from "../../util/http/api"
 import { useMutation } from "@tanstack/react-query"
 import Container from "../../components/ui/Container"
 import { init } from "../../util/store/databse"
+import { Text, Button, HelperText } from "react-native-paper"
 
 let hasCreatedDatabase = false
 
@@ -41,17 +40,20 @@ function SchoolCodeInputScreen() {
       const schoolInfo = await schoolInfoMutation.mutateAsync(code)
       navigation.navigate('Setup', { screen: 'ProgramSelect', params: { schoolInfo } })
     } catch (error) {
-      //Alert.alert('An error ocurred', error.message)
+      if (error instanceof Error) {
+        //Alert.alert('An error ocurred', error.message)
+      }
     }
   }
 
   return (
     <Container style={style.container}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={style.inputContainer}>
-        <Text style={{fontSize: 28, fontWeight: 'bold', textAlign: 'center'}}>Enter your school code</Text>
+        <Text variant="titleLarge" style={{textAlign: 'center', fontWeight: 'bold'}} >Enter your school code</Text>
         <TextInput placeholder="School code (example: 'FERI')" value={code} onChangeText={setCode} autoCapitalize="none" autoComplete="off" />
+        <HelperText type="error" visible={schoolInfoMutation.isError}>Invalid school code</HelperText>
       </KeyboardAvoidingView>
-      <Button loading={schoolInfoMutation.isPending} disabled={schoolInfoMutation.isPending} onPress={onConfirm}>OK</Button>
+      <Button mode="contained" loading={schoolInfoMutation.isPending} disabled={schoolInfoMutation.isPending} onPress={onConfirm}>OK</Button>
     </Container>
   )
 }

@@ -1,5 +1,5 @@
 import { type StaticScreenProps } from "@react-navigation/native";
-import Text from "../../components/ui/Text";
+import { Text } from "react-native-paper";
 
 type TimeTableScreenProps = StaticScreenProps<{
 

@@ -18,7 +18,8 @@ export default createNativeStackNavigator({
     headerTitleAlign: 'center',
     headerTitleStyle: {
       fontWeight: 'bold',
-      fontFamily: 'Inter'
-    }
+      fontFamily: 'Inter',
+    },
+    headerBackground: () => <></>
   }
 })
