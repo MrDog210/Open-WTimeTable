@@ -1,8 +1,8 @@
-import { useNavigation, type StaticScreenProps } from "@react-navigation/native";
+import { CommonActions, useNavigation, useRoute, type StaticScreenProps } from "@react-navigation/native";
 import Text from "../../components/ui/Text";
 import Container from "../../components/ui/Container";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { useSettings } from "../../context/UserSettingsContext";
+import { DefaultView, useSettings } from "../../context/UserSettingsContext";
 import { Lecture, TimetableLecture } from "../../types/types";
 import { dateFromNow, formatDate, formatWeekDate, getDates, getISODateNoTimestamp, getWeekDates, subtrackSeconds } from "../../util/dateUtils";
 import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
@@ -22,8 +22,10 @@ type TimeTableScreenProps = StaticScreenProps<{
   isWeekView: boolean
 }>;
 
+let ranOnce = false
+
 function TimeTableScreen({ route }: TimeTableScreenProps) {
-  const { timetableAnimationsEnabled } = useSettings()
+  const { timetableAnimationsEnabled, defaultView } = useSettings()
   const [isFetchingData, setIsFetchingData] = useState<boolean>(false)
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [modalVisible, setModelVisible] = useState<boolean>(false)
@@ -33,15 +35,23 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
   const [week, setWeek] = useState(getWeekDates(date))
   const scrollRef = useRef<ScrollView>(null);
   const navigation = useNavigation()
-  const isWeekView = false//const { isWeekView } = route.params
+  const { isWeekView } = route.params
   const [showDatePicker, setShowDatePicker] = useState(false)
+  const route2 = useRoute()
 
   useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => {
-        return <IconButton name='calendar-clear-outline' onPress={openDatePicker} />
+    if(!ranOnce) {
+      ranOnce = true,
+      console.log("SETTING NAVIGATION OPTIONS")
+      navigation.setOptions({
+        headerRight: () => {
+          return <IconButton name='calendar-clear-outline' onPress={openDatePicker} />
+        }
+      })
+      if(route2.name === 'DayView' && defaultView === DefaultView.WEEK_VIEW) {
+        navigation.navigate('Home', {screen: 'WeekView', params: {isWeekView: true}})
       }
-    },)
+    }  
   }, [])
 
   useEffect(() => {
@@ -88,10 +98,9 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
         dates.push(date)
       }
       const lec: TimetableLecture[] = []
-      console.log("searched dates: ", dates)
+
       for(const d of dates) {
         const data = await getLecturesForDate(getISODateNoTimestamp(d))
-        console.log("lecture: ", data)
         data.forEach(lecture => {
           lec.push({lecture: lecture, startDate: subtrackSeconds(lecture.start_time, -60), endDate: subtrackSeconds(lecture.end_time, 60)})
         })
@@ -108,7 +117,7 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
   }, [date])
 
   useEffect(() => {
-    console.log(JSON.stringify(lectures))
+    //console.log(JSON.stringify(lectures))
   }, [lectures])
 
   function lecturePressed(lecture: Lecture) {
@@ -142,14 +151,13 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
   }
 
   return (
-    <>
-      <LectureDetails modalVisible={modalVisible} lecture={modalLecture!} onRequestClose={() => {setModelVisible(false)}} />
     <Container>
+      <LectureDetails modalVisible={modalVisible} lecture={modalLecture!} onRequestClose={() => {setModelVisible(false)}} />
       <DatePicker modal open={showDatePicker} date={date} onConfirm={onConfirmDate} onCancel={onCancelDate} mode="date" />
       <CalendarProvider 
         date={getISODateNoTimestamp(date)}
         onDateChanged={(newDate) => {
-          console.log(newDate)
+          setDate(new Date(newDate))
         }}
       >
         <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} ref={scrollRef}>
@@ -178,7 +186,6 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
         />
       </CalendarProvider>
     </Container>
-    </>
   )
 
   /*const fontColor = isDarkTheme ? COLORS.foreground.primary : COLORS.background.primary
@@ -202,27 +209,6 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
           columnWidth={isWeekView ? getColumnWidth(isWeekView) : undefined}
         />
       </ScrollView>
-      <CalendarStrip
-        selectedDate={date}
-        onDateSelected={setDate}
-
-        scrollable
-        scrollerPaging
-        style={{height:90, paddingTop: 10, paddingBottom: 10}}
-        calendarColor={isDarkTheme ? COLORS.background.secondary : COLORS.foreground.primary}
-        calendarHeaderStyle={{color: fontColor, fontSize: 14}}
-        dateNumberStyle={{color: fontColor, fontSize: 14}}
-        dateNameStyle={{color: fontColor, fontSize: 8}}
-        markedDatesStyle={{color: COLORS.background.primary}}
-        
-        highlightDateNumberStyle={{color: fontColor, fontSize: 14}}
-        highlightDateNameStyle={{color: fontColor, fontSize: 8}}
-        highlightDateContainerStyle={{}}
-
-        iconStyle={{tintColor: fontColor, height: 20}}
-        iconContainer={{marginHorizontal: 5, height: 30, width: 30}}
-        daySelectionAnimation={{type: 'background', duration: '200', highlightColor: isDarkTheme ? COLORS.background.primary : COLORS.foreground.secondary}}
-      />
     </Container>
   )*/
 }

@@ -2,12 +2,10 @@ import { StyleSheet, View } from "react-native"
 import Text from "../ui/Text"
 
 type TimeTableHeaderProps = {
-  date: Date,
-  start: string,
-  end: string
+  date: Date
 }
 
-function TimeTableHeader({date, start, end}: TimeTableHeaderProps) {
+function TimeTableHeader({date}: TimeTableHeaderProps) {
   return (
     <View>
       <Text style={styles.title}>{date.toLocaleString('en-us', {  weekday: 'long' })}</Text>

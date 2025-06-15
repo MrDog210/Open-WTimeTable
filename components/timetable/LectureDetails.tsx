@@ -34,6 +34,8 @@ type LectureDetailsProps = {
 }
 
 function LectureDetails({modalVisible, onRequestClose, lecture}: LectureDetailsProps) {
+  // TODO: handle null lectures better
+  
   const { colors } = useTheme()
   // ANIMATIONS
   const opacity = useSharedValue(0)
@@ -69,7 +71,7 @@ function LectureDetails({modalVisible, onRequestClose, lecture}: LectureDetailsP
         position: "absolute",
         backgroundColor: "transparent",
       }}>
-      <Modal visible={modalVisible} transparent={true} animationType="fade" onRequestClose={onRequestClose}>
+      <Modal visible={modalVisible} transparent={true} animationType="none" onRequestClose={onRequestClose}>
         <Animated.View style={[styles.container, {opacity}]}>
           <Animated.View style={[styles.centeredContainer, {top}]}>
             <View style={styles.titleContainer}>

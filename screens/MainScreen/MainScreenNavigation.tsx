@@ -1,13 +1,36 @@
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import TimeTableScreen from "./TimeTableScreen";
+import { Ionicons } from '@expo/vector-icons'
 
 export const MainDrawer = createDrawerNavigator({
   screens: {
     DayView: {
-      screen: TimeTableScreen
+      screen: TimeTableScreen,
+      initialParams: { isWeekView: false },
+      options: {
+        drawerLabel: 'Day View',
+        drawerIcon: ({ focused, color, size }) => <Ionicons name='today-outline' color={color} size={size} />
+      }
     },
     WeekView: {
-      screen: TimeTableScreen
+      screen: TimeTableScreen,
+      initialParams: { isWeekView: true },
+      options: {
+        drawerLabel: 'Week View',
+        drawerIcon: ({ focused, color, size }) => <Ionicons name='calendar-outline' color={color} size={size}/>
+      }
+    },
+    Options: {
+      screen: () => <></>,
+      options: {
+        drawerIcon: ({ focused, color, size }) => <Ionicons name='settings-outline' color={color} size={size}/>
+      }
+    },
+    About: {
+      screen: () => <></>,
+      options: {
+        drawerIcon: ({ focused, color, size }) => <Ionicons name='information-circle-outline' color={color} size={size}/>
+      }
     }
-  }
+  },
 })
