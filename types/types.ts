@@ -110,6 +110,11 @@ export type UsersNote = {
   executionType_id: number
 }
 
+export type TimetableLecture = {
+  lecture: Lecture,
+  startDate: string,
+  endDate: string
+}
 
 export interface GroupWithSelected extends GroupBranchChild {
   selected: boolean

@@ -1,0 +1,29 @@
+import { StyleSheet, View } from "react-native"
+import Text from "../ui/Text"
+
+type TimeTableHeaderProps = {
+  date: Date,
+  start: string,
+  end: string
+}
+
+function TimeTableHeader({date, start, end}: TimeTableHeaderProps) {
+  return (
+    <View>
+      <Text style={styles.title}>{date.toLocaleString('en-us', {  weekday: 'long' })}</Text>
+      <Text style={styles.text}>{`${date.getDate()}.${date.getMonth()}`}</Text>
+    </View>
+  )
+}
+
+export default TimeTableHeader
+
+const styles = StyleSheet.create({
+  text: {
+    textAlign: 'center'
+  },
+  title: {
+    fontWeight: 'bold',
+    textAlign: 'center'
+  }
+})

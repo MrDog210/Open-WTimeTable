@@ -2,7 +2,7 @@ import { useWindowDimensions } from "react-native";
 import { GroupBranchChild, GroupBranchMain } from "../types/types"
 import { fetchGroupsForBranch, fetchLecturesForGroups, getSchoolInfo } from "./http/api"
 import { hasInternetConnection } from "./http/http"
-import { deleteLecturesBetweenDates, getAllDistinctSelectedGroups, insertCourse, insertExecutionType, insertGroup, insertLecture, insertLecturer, insertRoom } from "./store/databse"
+import { deleteLecturesBetweenDates, getAllDistinctSelectedGroups, insertCourse, insertExecutionType, insertGroup, insertLecture, insertLecturer, insertRoom } from "./store/database"
 import { setAllBranchGroups, getSchoolInfo as getStoredSchoolInfo, getAllStoredBranchGroups, getUrlSchoolCode, setSchoolInfo } from "./store/schoolData"
 
 export async function getAndSetAllDistinctBranchGroups(schoolCode: string, chosenBranchID: string) {
@@ -16,7 +16,8 @@ export async function fetchAndInsertLectures(schoolCode: string, allGroups: { id
   await deleteLecturesBetweenDates(startDate, endDate)
 
   console.log("Number of lectures: " + allLectures.length)
-  // TODO: await for all lecutres to 
+  // TODO: await for all lecutres to finish
+  // TODO: delete duplicate values for faster db inserts: https://stackoverflow.com/questions/1960473/get-all-unique-values-in-a-javascript-array-remove-duplicates
   allLectures.forEach(async ({ rooms, groups, lecturers, executionTypeId, executionType, course, courseId }) => {
     // each will be inserted ONLY IF ITS UNIQUE
     if (course !== '')

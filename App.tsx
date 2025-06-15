@@ -7,6 +7,8 @@ import TimeTableScreen from './screens/MainScreen/TimeTableScreen';
 import { createStaticNavigation, DefaultTheme, StaticParamList } from '@react-navigation/native';
 import SetupScreenNavigation from './screens/setup/SetupScreenNavigation';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { MainDrawer } from './screens/MainScreen/MainScreenNavigation';
 
 function useHasCompletedSetup() {
   const {hasCompletedSetup} = useSettings()
@@ -21,14 +23,11 @@ const RootStack = createNativeStackNavigator({
   screens: {
     Home: {
       if: useHasCompletedSetup,
-      screen: TimeTableScreen,
+      screen: MainDrawer,
     },
     Setup: {
       if: useHasNotCompletedSetup,
       screen: SetupScreenNavigation,
-      options: {
-        title: 'Sign in',
-      },
     },
   },
   screenOptions: {
@@ -79,8 +78,10 @@ export default function App() {
       <SafeAreaProvider>
         <UserSettingsContextProvider>
           <ThemeContextProvider>
-            <StatusBar style="auto" />
-            <Navigation />
+            <GestureHandlerRootView>
+              <StatusBar style="auto" />
+              <Navigation />
+            </GestureHandlerRootView>
           </ThemeContextProvider>
         </UserSettingsContextProvider>
       </SafeAreaProvider>

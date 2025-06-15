@@ -136,7 +136,7 @@ async function getExecutionType(executionTypeId: number) {
     WHERE executionTypes.id = ?;`, [executionTypeId])
 }
 
-async function getLecturesForDateWithNoCurses(date: Date) { //edge case, when there is no course attached
+async function getLecturesForDateWithNoCurses(date: string) { //edge case, when there is no course attached
   const db = await database
 
   return db.getAllAsync<Lecture>(
@@ -146,7 +146,7 @@ async function getLecturesForDateWithNoCurses(date: Date) { //edge case, when th
   )
 }
 
-export async function getLecturesForDate(date: Date) { // pazi če je execution type prazen
+export async function getLecturesForDate(date: string) { // pazi če je execution type prazen
   const db = await database
   
   let lecturesNormal = await db.getAllAsync<Lecture>(

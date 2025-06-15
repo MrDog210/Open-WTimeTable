@@ -6,7 +6,7 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import { useLayoutEffect, useState } from "react";
 import { fetchBranchesForProgramm, getBasicProgrammes } from "../../util/http/api";
 import { setChosenBranch } from "../../util/store/schoolData";
-import { truncateDatabase } from "../../util/store/databse";
+import { truncateDatabase } from "../../util/store/database";
 import { fetchAndInsertLectures, getAndSetAllDistinctBranchGroups } from "../../util/timetableUtils";
 import { getSchoolYearDates } from "../../util/dateUtils";
 import Button from "../../components/ui/Button";

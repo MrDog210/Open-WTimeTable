@@ -9,7 +9,7 @@ import { useEffect, useState } from "react"
 import { getSchoolInfo } from "../../util/http/api"
 import { useMutation } from "@tanstack/react-query"
 import Container from "../../components/ui/Container"
-import { init } from "../../util/store/databse"
+import { init } from "../../util/store/database"
 
 let hasCreatedDatabase = false
 

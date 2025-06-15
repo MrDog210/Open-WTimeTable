@@ -9,7 +9,12 @@ async function loadSettings() {
   const json = await Storage.getItem('settings')
   if(!json)
     return DEFAULT_VALUES
-  return JSON.parse(json) as SavedSettings
+  const savedSettings = await JSON.parse(json) as SavedSettings
+
+  return {
+    ...DEFAULT_VALUES,
+    ...savedSettings
+  }
 }
 
 const ThemeContext = createContext<SettingsContextType | null>(null)
@@ -21,7 +26,8 @@ export enum DefaultView {
 
 const DEFAULT_VALUES: SavedSettings = {
   defaultView: DefaultView.DAY_VIEW,
-  hasCompletedSetup: false
+  hasCompletedSetup: false,
+  timetableAnimationsEnabled: false
 }
 
 export function useSettings() {
@@ -36,6 +42,7 @@ export function useSettings() {
 type SavedSettings = {
   hasCompletedSetup: boolean,
   defaultView: DefaultView,
+  timetableAnimationsEnabled: boolean
 }
 
 export interface SettingsContextType extends SavedSettings {
