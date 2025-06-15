@@ -63,69 +63,65 @@ function LectureDetails({modalVisible, onRequestClose, lecture}: LectureDetailsP
     return
 
   return (
-    <Modal visible={modalVisible} transparent={true} animationType="none" onRequestClose={onRequestClose}>
-      <Animated.View style={[styles.container, {opacity}]}>
-        <Animated.View style={[styles.centeredContainer, {top}]}>
-          <View style={styles.titleContainer}>
-            <Text style={styles.title}>{course ? course : eventType}</Text>
-          </View>
-          <Divider style={styles.line}/>
-          <ScrollView style={styles.contentsContainer}>
-            <View style={styles.subtitle}>
-              <Text>{`${getTimeFromDate(start_time)} - ${getTimeFromDate(end_time)}`}</Text>
-              {executionType && <Text>{executionType}</Text>}
+    <View style={{
+        width: "100%",
+        height: "100%",
+        position: "absolute",
+        backgroundColor: "transparent",
+      }}>
+      <Modal visible={modalVisible} transparent={true} animationType="fade" onRequestClose={onRequestClose}>
+        <Animated.View style={[styles.container, {opacity}]}>
+          <Animated.View style={[styles.centeredContainer, {top}]}>
+            <View style={styles.titleContainer}>
+              <Text style={styles.title}>{course ? course : eventType}</Text>
             </View>
-            <ContentCard title='Rooms:' contents={formatArray(rooms, 'name')} />
-            <ContentCard title='Groups:' contents={formatArray(groups, 'name')} />
-            <ContentCard title='Lecturers:' contents={formatArray(lecturers, 'name')} />
-            <ContentCard title='Note:' contents={note} />
-            <ContentCard title='Show link:' contents={showLink} />
-            <ContentCard title='Custom note:' contents={customNote} />
-          </ScrollView>
-          <View style={styles.buttonContainer}>
-            {/*lecture.course_id && executionType_id && <InputDialogue 
-              buttonContainerStyle={styles.button}
-              input={customNote}
-              title="Edit note"
-              onRequestConfirm={updateCustomNote}
-            /> */}
-            {lecture.course_id && executionType_id && <View style={{width: 2, backgroundColor: colors.surface }}/>}
-            
-            <Button containerStyle={styles.button} onPress={onRequestClose}>Close</Button>
-          </View>
+            <Divider style={styles.line}/>
+            <ScrollView style={styles.contentsContainer}>
+              <View style={styles.subtitle}>
+                <Text>{`${getTimeFromDate(start_time)} - ${getTimeFromDate(end_time)}`}</Text>
+                {executionType && <Text>{executionType}</Text>}
+              </View>
+              <ContentCard title='Rooms:' contents={formatArray(rooms, 'name')} />
+              <ContentCard title='Groups:' contents={formatArray(groups, 'name')} />
+              <ContentCard title='Lecturers:' contents={formatArray(lecturers, 'name')} />
+              <ContentCard title='Note:' contents={note} />
+              <ContentCard title='Show link:' contents={showLink} />
+              <ContentCard title='Custom note:' contents={customNote} />
+            </ScrollView>
+            <View style={styles.buttonContainer}>
+              {/*lecture.course_id && executionType_id && <InputDialogue 
+                buttonContainerStyle={styles.button}
+                input={customNote}
+                title="Edit note"
+                onRequestConfirm={updateCustomNote}
+              /> */}
+              {lecture.course_id && executionType_id && <View style={{width: 2, backgroundColor: colors.surface }}/>}
+              
+              <Button containerStyle={styles.button} onPress={onRequestClose}>Close</Button>
+            </View>
+          </Animated.View>
         </Animated.View>
-      </Animated.View>
-    </Modal>
+      </Modal>
+    </View>
   )
 }
 
 export default LectureDetails
 
+
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
-    height: '100%',
-    flex: 1,
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    position: 'absolute',
+    flex: 1, 
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    //backgroundColor: COLORS.background.primaryOpaque,
-    paddingHorizontal: 10
   },
   centeredContainer: {
-    width: 200,
-    height: 100,
-    //rwidth: '85%',
-    //minWidth: 200,
-    //maxWidth: 650,
-    //minHeight: 200,
-    //maxHeight: '90%',
-    //backgroundColor: COLORS.background.primary,
+    width: '85%',
+    minWidth: 200,
+    maxWidth: 650,
+    minHeight: 200,
+    maxHeight: '90%',
     borderWidth: 1,
     //borderColor: COLORS.background.seperator,
     borderRadius: 10,
