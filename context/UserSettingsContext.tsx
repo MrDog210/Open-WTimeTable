@@ -55,7 +55,7 @@ let didInit = false;
 function UserSettingsContextProvider({children}: {children: ReactNode}) {
   const [isLoading, setIsLoading] = useState(true)
   const [settings, setSettings] = useState<SavedSettings>(DEFAULT_VALUES)
-
+  // TODO: move splash screen and loading block here
   useEffect(() => {
     async function loadAndSetSettings() {
       const savedSettings = await loadSettings()

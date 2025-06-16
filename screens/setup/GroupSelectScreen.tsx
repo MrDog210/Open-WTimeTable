@@ -11,6 +11,7 @@ import LoadingOverlay from "../../components/ui/LoadingOverlay"
 import CourseGroupSelect from "../../components/groupSelect/CourseGroupSelect"
 import Container from "../../components/ui/Container"
 import { useMutation, useQuery } from "@tanstack/react-query"
+import { QUERY_COURSES_AND_GROUPS } from "../../util/http/reactQuery"
 
 type ProgramSelectScreenProps = StaticScreenProps<{
   isEditing?: boolean
@@ -51,7 +52,7 @@ function GroupSelectScreen({route}: ProgramSelectScreenProps) {
       }
       return final
     },
-    queryKey: ['coursesAndGroups'],
+    queryKey: [QUERY_COURSES_AND_GROUPS],
     staleTime: 0,
     refetchOnMount: true,
     refetchOnWindowFocus: false,

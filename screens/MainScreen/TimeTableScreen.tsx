@@ -16,7 +16,8 @@ import DatePicker from "react-native-date-picker";
 import IconButton from "../../components/ui/IconButton";
 import LectureDetails from "../../components/timetable/LectureDetails";
 import { MarkedDates } from "react-native-calendars/src/types";
-import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { invalidateLecturesQueries, QUERY_LECTURES, QUERY_MARKED_DATES } from "../../util/http/reactQuery";
 
 type TimeTableScreenProps = StaticScreenProps<{
   isWeekView: boolean
@@ -40,7 +41,7 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
     from: getISODateNoTimestamp(addDaysToDate(getMonday(date), -7)),
     till: getISODateNoTimestamp(addDaysToDate(getFriday(date), 7)) 
   }
-
+  const queryClient = useQueryClient()
   const updateLecturesMutation = useMutation({
     mutationFn: async (forceUpdate: boolean) => {
       const startTime = performance.now()
@@ -59,12 +60,15 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
 
       const endTime = performance.now()
       console.log(`Updating lectures took ${endTime - startTime} milliseconds`)
+    },
+    onSuccess: () => {
+      invalidateLecturesQueries(queryClient)
     }
   })
 
   const { data: lectures } = useQuery<TimetableLecture[]>({
     initialData: [],
-    queryKey: ['lectures', date, isWeekView],
+    queryKey: [QUERY_LECTURES, date, isWeekView],
     queryFn: async () => {
       console.log('querying lectures')
       let dates: Date[] = []
@@ -91,12 +95,13 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
 
       return [...lec, ...customLectures]
     },
-    networkMode: 'always'
+    networkMode: 'always',
+    staleTime: Infinity
   })
 
   const { data: markedDates } = useQuery<MarkedDates>({
     initialData: {},
-    queryKey: ['markedDates', markedDatesSpan],
+    queryKey: [QUERY_MARKED_DATES, markedDatesSpan],
     queryFn: async () => {
       const datesWithLectures = await getDatesWithLectures(
         markedDatesSpan.from, 
@@ -114,7 +119,8 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
       return markedD
     },
     placeholderData: keepPreviousData,
-    networkMode: 'always'
+    networkMode: 'always',
+    staleTime: Infinity
   })
 
   useLayoutEffect(() => {
