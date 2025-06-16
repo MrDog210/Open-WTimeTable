@@ -85,6 +85,7 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
 
       return [...lec, ...customLectures]
     },
+    networkMode: 'always'
   })
 
   const { data: markedDates } = useQuery<MarkedDates>({
@@ -106,7 +107,8 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
       })
       return markedD
     },
-    placeholderData: keepPreviousData //(previousData) => { console.log('PLACEHOALDER FUNCTION', previousData);return previousData},
+    placeholderData: keepPreviousData,
+    networkMode: 'always'
   })
 
   useLayoutEffect(() => {

@@ -54,7 +54,8 @@ function GroupSelectScreen({route}: ProgramSelectScreenProps) {
     queryKey: ['coursesAndGroups'],
     staleTime: 0,
     refetchOnMount: true,
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
+    networkMode: 'always'
   })
 
   const insertSelectedGroups = useMutation({
@@ -73,7 +74,8 @@ function GroupSelectScreen({route}: ProgramSelectScreenProps) {
         await changeSettings({
           hasCompletedSetup: true
         })
-    }
+    },
+    networkMode: 'always'
   })
 
   async function onFinishedPressed() {

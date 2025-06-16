@@ -2,7 +2,6 @@ import { StyleSheet, KeyboardAvoidingView, Platform } from "react-native"
 import Button from "../../components/ui/Button"
 import Text from "../../components/ui/Text"
 import TextInput from "../../components/ui/TextInput"
-import { useSettings } from "../../context/UserSettingsContext"
 import { useNavigation } from "@react-navigation/native"
 import { setSchoolInfo, setUrlSchoolCode } from "../../util/store/schoolData"
 import { useEffect, useState } from "react"
@@ -14,7 +13,6 @@ import { init } from "../../util/store/database"
 let hasCreatedDatabase = false
 
 function SchoolCodeInputScreen() {
-  const { setCompletedSetup: changeView } = useSettings()
   const navigation = useNavigation()
   const [code, setCode] = useState('')
   

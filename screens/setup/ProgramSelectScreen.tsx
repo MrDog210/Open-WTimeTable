@@ -86,7 +86,7 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
       let {startDate, endDate} = getSchoolYearDates()
       console.log(startDate,endDate)
       await fetchAndInsertLectures(schoolInfo.schoolCode, groups, startDate, endDate)
-    }
+    },
   })
 
   async function proceedToGroupSelect() {
