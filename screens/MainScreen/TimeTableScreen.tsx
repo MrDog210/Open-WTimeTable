@@ -56,7 +56,6 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
 
       await updateLectures(new Date('2025-01-01'), dateFromNow(200), true)
       //await updateLectures(new Date(), dateFromNow(200), true)
-      setDate(new Date(date))
 
       const endTime = performance.now()
       console.log(`Updating lectures took ${endTime - startTime} milliseconds`)
@@ -96,7 +95,7 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
       return [...lec, ...customLectures]
     },
     networkMode: 'always',
-    staleTime: Infinity
+    //staleTime: Infinity
   })
 
   const { data: markedDates } = useQuery<MarkedDates>({
@@ -120,7 +119,7 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
     },
     placeholderData: keepPreviousData,
     networkMode: 'always',
-    staleTime: Infinity
+    //staleTime: Infinity
   })
 
   useLayoutEffect(() => {
