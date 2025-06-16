@@ -1,5 +1,4 @@
-import { CommonActions, useNavigation, useRoute, type StaticScreenProps } from "@react-navigation/native";
-import Text from "../../components/ui/Text";
+import { useNavigation, useRoute, type StaticScreenProps } from "@react-navigation/native";
 import Container from "../../components/ui/Container";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { DefaultView, useSettings } from "../../context/UserSettingsContext";
@@ -7,10 +6,9 @@ import { Lecture, TimetableLecture } from "../../types/types";
 import { addDaysToDate, dateFromNow, formatDate, formatWeekDate, getDates, getFriday, getISODateNoTimestamp, getMonday, getWeekDates, subtrackSeconds } from "../../util/dateUtils";
 import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
 import { calculateNowLineOffset, getColumnWidth, hasTimetableUpdated, updateLectures } from "../../util/timetableUtils";
-import { hasInternetConnection } from "../../util/http/http";
 import { getDatesWithLectures, getLecturesForDate } from "../../util/store/database";
 import { getCustomLecturesForDates } from "../../util/store/customLectures";
-import { Agenda, Calendar, CalendarProvider, ExpandableCalendar, TimelineList, WeekCalendar } from "react-native-calendars";
+import { CalendarProvider, WeekCalendar } from "react-native-calendars";
 import Timetable from "react-native-calendar-timetable";
 import HourSlice from "../../components/timetable/HourSlice";
 import TimeTableHeader from "../../components/timetable/TimetableHeader";
@@ -24,16 +22,10 @@ type TimeTableScreenProps = StaticScreenProps<{
   isWeekView: boolean
 }>;
 
-type LectureQuery = {
-  lectures: TimetableLecture[],
-  markedDates: MarkedDates
-}
-
 let ranOnce = false
 
 function TimeTableScreen({ route }: TimeTableScreenProps) {
   const { timetableAnimationsEnabled, defaultView } = useSettings()
-  const [refreshing, setRefreshing] = useState<boolean>(false);
   const [modalVisible, setModelVisible] = useState<boolean>(false)
   const [modalLecture, setModalLecture] = useState<Lecture | null>(null)
   const [date, setDate] = useState<Date>(new Date("2025-05-05"))
@@ -49,9 +41,24 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
     till: getISODateNoTimestamp(addDaysToDate(getFriday(date), 7)) 
   }
 
-  const checkForUpdatesMutation = useMutation({
-    mutationFn: async () => {
-      
+  const updateLecturesMutation = useMutation({
+    mutationFn: async (forceUpdate: boolean) => {
+      const startTime = performance.now()
+
+      if(!forceUpdate) { // if user hasnt swiped down, then this is automaticly checking for updates
+        console.log("checking for timetable updates")
+        const hasUpdated = await hasTimetableUpdated()
+        if (!hasUpdated)
+          return
+        console.log("timetable updates found")
+      }
+
+      await updateLectures(new Date('2025-01-01'), dateFromNow(200), true)
+      //await updateLectures(new Date(), dateFromNow(200), true)
+      setDate(new Date(date))
+
+      const endTime = performance.now()
+      console.log(`Updating lectures took ${endTime - startTime} milliseconds`)
     }
   })
 
@@ -64,10 +71,9 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
       if(isWeekView) {
         const WEEK = getWeekDates(date)
         dates = getDates(WEEK.from, WEEK.till)
-        console.log(dates)
-      } else {
+      } else 
         dates.push(date)
-      }
+
       const lec: TimetableLecture[] = []
 
       const dataPromise = dates.map((d) => getLecturesForDate(getISODateNoTimestamp(d)))
@@ -112,20 +118,23 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
   })
 
   useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => {
+        return <IconButton name='calendar-clear-outline' onPress={openDatePicker} />
+      }
+    })
+  }, [])
+
+  useEffect(() => { 
     if(!ranOnce) {
-      ranOnce = true,
+      ranOnce = true
+      updateLecturesMutation.mutateAsync(false)
       console.log("SETTING NAVIGATION OPTIONS")
-      checkForUpdatesMutation.mutateAsync()
-      navigation.setOptions({
-        headerRight: () => {
-          return <IconButton name='calendar-clear-outline' onPress={openDatePicker} />
-        }
-      })
       if(route2.name === 'DayView' && defaultView === DefaultView.WEEK_VIEW) {
         navigation.navigate('Home', {screen: 'WeekView', params: {isWeekView: true}})
       }
-    }  
-  }, [])
+    }
+  },)
 
   useEffect(() => {
     const scrollPadding = isWeekView ? 45 : -5
@@ -134,34 +143,13 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
       y: calculateNowLineOffset(scrollPadding),
       animated: true
     })
-    checkForTimetableUpdate()
   }, [])
-
-  async function checkForTimetableUpdate() {
-    const hasInternet = await hasInternetConnection()
-    if(!hasInternet) return
-    
-    setRefreshing(true)
-    try {
-      const hasUpdated = await hasTimetableUpdated() // we check if the timetable has been updated
-        if(hasUpdated)
-          onRefresh()
-      else
-        setRefreshing(false)
-    } catch (error) {
-      setRefreshing(false)
-    }
-  }
 
   useEffect(() =>{
     navigation.setOptions({
       title: isWeekView ? formatWeekDate(week.from, week.till) : formatDate(date)
     })
   }, [date, week])
-
-  useEffect(() => {
-    //console.log(JSON.stringify(lectures))
-  }, [lectures])
 
   function lecturePressed(lecture: Lecture) {
     setModalLecture(lecture)
@@ -173,15 +161,7 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
   }
 
   async function onRefresh() {
-    setRefreshing(true)
-    console.log('Updating databse')
-    try {
-      await updateLectures(new Date(), dateFromNow(200), true)
-      setDate(new Date(date)) // we refresh the page
-    } catch (error) {
-      //Alert.alert('Error', error.message)
-    }
-    setRefreshing(false)
+    updateLecturesMutation.mutateAsync(true)
   }
 
   function onConfirmDate(date: Date) {
@@ -203,7 +183,7 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
           setDate(new Date(newDate))
         }}
       >
-        <ScrollView refreshControl={<RefreshControl refreshing={refreshing || checkForUpdatesMutation.isPending} onRefresh={onRefresh} />} ref={scrollRef}>
+        <ScrollView refreshControl={<RefreshControl refreshing={updateLecturesMutation.isPending} onRefresh={onRefresh} />} ref={scrollRef}>
         <Timetable 
           items={lectures} 
           renderItem={({key, ...props}) => <HourSlice key={key} {...props} onPress={lecturePressed} smallMode={isWeekView} animationsDisabled={!timetableAnimationsEnabled}/>} 
