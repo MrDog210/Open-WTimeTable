@@ -18,10 +18,16 @@ import DatePicker from "react-native-date-picker";
 import IconButton from "../../components/ui/IconButton";
 import LectureDetails from "../../components/timetable/LectureDetails";
 import { MarkedDates } from "react-native-calendars/src/types";
+import { useQuery } from "@tanstack/react-query";
 
 type TimeTableScreenProps = StaticScreenProps<{
   isWeekView: boolean
 }>;
+
+type LectureQuery = {
+  lectures: TimetableLecture[],
+  markedDates: MarkedDates
+}
 
 let ranOnce = false
 
@@ -31,7 +37,6 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [modalVisible, setModelVisible] = useState<boolean>(false)
   const [modalLecture, setModalLecture] = useState<Lecture | null>(null)
-  const [lectures, setLectures] = useState<TimetableLecture[]>([])
   const [date, setDate] = useState<Date>(new Date("2025-05-05"))
   const [week, setWeek] = useState(getWeekDates(date))
   const scrollRef = useRef<ScrollView>(null);
@@ -39,7 +44,54 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
   const { isWeekView } = route.params
   const [showDatePicker, setShowDatePicker] = useState(false)
   const route2 = useRoute()
-  const [markedDates, setMarkedDates] = useState<MarkedDates>({})
+
+  const { data: {lectures, markedDates} } = useQuery<LectureQuery>({
+    initialData: { lectures: [], markedDates: {}},
+    queryKey: ['lectures', date],
+    queryFn: async () => {
+      const datesWithLectures = await getDatesWithLectures(
+        getISODateNoTimestamp(addDaysToDate(date, -14)), 
+        getISODateNoTimestamp(addDaysToDate(date, 14))
+      )
+      const tempMarkedDates: MarkedDates = {}
+      datesWithLectures.forEach(item => {
+        tempMarkedDates[item.date] = {
+          //selected: true,
+          marked: true,
+          //dotColor: 'blue',
+          //selectedColor: "purple",
+        }
+      })
+
+      //setIsFetchingData(true)
+      console.log('querying lectures')
+      let dates = []
+      if(isWeekView) {
+        const WEEK = getWeekDates(date)
+        dates = getDates(WEEK.from, WEEK.till)
+        console.log(dates)
+      } else {
+        dates.push(date)
+      }
+      const lec: TimetableLecture[] = []
+
+      for(const d of dates) {
+        const data = await getLecturesForDate(getISODateNoTimestamp(d))
+        data.forEach(lecture => {
+          lec.push({lecture: lecture, startDate: subtrackSeconds(lecture.start_time, -60), endDate: subtrackSeconds(lecture.end_time, 60)})
+        })
+      }
+
+      const customLectures: TimetableLecture[] = []//= await getCustomLecturesForDates(dates)
+      
+      return {
+        lectures: [...lec, ...customLectures],
+        markedDates: tempMarkedDates
+      }
+      //setIsFetchingData(false)
+      //setWeek(getWeekDates(date)) // stupid
+    }
+  })
 
   useLayoutEffect(() => {
     if(!ranOnce) {
@@ -81,56 +133,12 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
       setRefreshing(false)
     }
   }
+
   useEffect(() =>{
     navigation.setOptions({
       title: isWeekView ? formatWeekDate(week.from, week.till) : formatDate(date)
     })
   }, [date, week])
-
-  useEffect(() => { // querring timetable data
-    async function getLectures() {
-      const datesWithLectures = await getDatesWithLectures(
-        getISODateNoTimestamp(addDaysToDate(date, -14)), 
-        getISODateNoTimestamp(addDaysToDate(date, 14))
-      )
-      const tempMarkedDates: MarkedDates = {}
-      datesWithLectures.forEach(item => {
-        tempMarkedDates[item.date] = {
-          //selected: true,
-          marked: true,
-          //dotColor: 'blue',
-          //selectedColor: "purple",
-        }
-      })
-      setMarkedDates(tempMarkedDates)
-      setIsFetchingData(true)
-      console.log('querying lectures')
-      let dates = []
-      if(isWeekView) {
-        const WEEK = getWeekDates(date)
-        dates = getDates(WEEK.from, WEEK.till)
-        console.log(dates)
-      } else {
-        dates.push(date)
-      }
-      const lec: TimetableLecture[] = []
-
-      for(const d of dates) {
-        const data = await getLecturesForDate(getISODateNoTimestamp(d))
-        data.forEach(lecture => {
-          lec.push({lecture: lecture, startDate: subtrackSeconds(lecture.start_time, -60), endDate: subtrackSeconds(lecture.end_time, 60)})
-        })
-      }
-
-      const customLectures: TimetableLecture[] = []//= await getCustomLecturesForDates(dates)
-      console.log("CUSTOM LECTURES: ", customLectures)
-
-      setLectures([...lec, ...customLectures])
-      setIsFetchingData(false)
-      setWeek(getWeekDates(date)) // stupid
-    }
-    getLectures()
-  }, [date])
 
   useEffect(() => {
     //console.log(JSON.stringify(lectures))
