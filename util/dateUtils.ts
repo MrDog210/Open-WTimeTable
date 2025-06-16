@@ -75,6 +75,12 @@ export function dateFromNow(daysToAdd: number) {
   return new Date(date.setDate(date.getDate()+daysToAdd));
 }
 
+export function addDaysToDate(date: Date, daysToAdd: number) {
+  const newDate = new Date(date.getTime())
+  newDate.setDate(newDate.getDate() + daysToAdd)
+  return newDate;
+}
+
 export function getElapsedSecondsFromDate(startDate: Date | string) {
   startDate = new Date(startDate)
   let endDate = new Date();

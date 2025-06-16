@@ -216,3 +216,10 @@ export async function setNoteForCourse(note: string, courseId: number, execution
   await deleteNoteForCourse(courseId, executionTypeId)
   return db.runAsync(`INSERT INTO notes (note, courses_id, executionType_id) VALUES (?, ?, ?)`, [note, courseId, executionTypeId])
 }
+
+// Dates are inclusive
+export async function getDatesWithLectures(fromDate: string, toDate: string) {
+  const db = await database
+
+  return db.getAllAsync<{date: string}>("SELECT DISTINCT date(start_time) as date FROM lectures WHERE date >= ? AND date <= ? ORDER BY date", [fromDate, toDate])
+}

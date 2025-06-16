@@ -28,6 +28,11 @@
     },
     "plugins": [
       "expo-sqlite"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "e0e07b4f-e428-4cc7-af85-1c25528b2bbc"
+      }
+    }
   }
 }

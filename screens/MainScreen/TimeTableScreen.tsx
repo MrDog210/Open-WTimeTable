@@ -4,11 +4,11 @@ import Container from "../../components/ui/Container";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { DefaultView, useSettings } from "../../context/UserSettingsContext";
 import { Lecture, TimetableLecture } from "../../types/types";
-import { dateFromNow, formatDate, formatWeekDate, getDates, getISODateNoTimestamp, getWeekDates, subtrackSeconds } from "../../util/dateUtils";
+import { addDaysToDate, dateFromNow, formatDate, formatWeekDate, getDates, getISODateNoTimestamp, getWeekDates, subtrackSeconds } from "../../util/dateUtils";
 import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
 import { calculateNowLineOffset, getColumnWidth, hasTimetableUpdated, updateLectures } from "../../util/timetableUtils";
 import { hasInternetConnection } from "../../util/http/http";
-import { getLecturesForDate } from "../../util/store/database";
+import { getDatesWithLectures, getLecturesForDate } from "../../util/store/database";
 import { getCustomLecturesForDates } from "../../util/store/customLectures";
 import { Agenda, Calendar, CalendarProvider, ExpandableCalendar, TimelineList, WeekCalendar } from "react-native-calendars";
 import Timetable from "react-native-calendar-timetable";
@@ -17,6 +17,7 @@ import TimeTableHeader from "../../components/timetable/TimetableHeader";
 import DatePicker from "react-native-date-picker";
 import IconButton from "../../components/ui/IconButton";
 import LectureDetails from "../../components/timetable/LectureDetails";
+import { MarkedDates } from "react-native-calendars/src/types";
 
 type TimeTableScreenProps = StaticScreenProps<{
   isWeekView: boolean
@@ -38,6 +39,7 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
   const { isWeekView } = route.params
   const [showDatePicker, setShowDatePicker] = useState(false)
   const route2 = useRoute()
+  const [markedDates, setMarkedDates] = useState<MarkedDates>({})
 
   useLayoutEffect(() => {
     if(!ranOnce) {
@@ -87,6 +89,20 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
 
   useEffect(() => { // querring timetable data
     async function getLectures() {
+      const datesWithLectures = await getDatesWithLectures(
+        getISODateNoTimestamp(addDaysToDate(date, -14)), 
+        getISODateNoTimestamp(addDaysToDate(date, 14))
+      )
+      const tempMarkedDates: MarkedDates = {}
+      datesWithLectures.forEach(item => {
+        tempMarkedDates[item.date] = {
+          //selected: true,
+          marked: true,
+          //dotColor: 'blue',
+          //selectedColor: "purple",
+        }
+      })
+      setMarkedDates(tempMarkedDates)
       setIsFetchingData(true)
       console.log('querying lectures')
       let dates = []
@@ -179,9 +195,10 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
       </ScrollView>
         <WeekCalendar
           firstDay={1}
+          allowShadow={false}
                     //leftArrowImageSource={require('../img/previous.png')}
           //rightArrowImageSource={require('../img/next.png')}
-          //markedDates={this.marked}
+          markedDates={markedDates}
 
         />
       </CalendarProvider>
