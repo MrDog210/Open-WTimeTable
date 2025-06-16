@@ -1,6 +1,7 @@
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import TimeTableScreen from "./TimeTableScreen";
 import { Ionicons } from '@expo/vector-icons'
+import CustomCoursesScreen from "./CustomCoursesScreen";
 
 export const MainDrawer = createDrawerNavigator({
   screens: {
@@ -18,6 +19,14 @@ export const MainDrawer = createDrawerNavigator({
       options: {
         drawerLabel: 'Week View',
         drawerIcon: ({ focused, color, size }) => <Ionicons name='calendar-outline' color={color} size={size}/>
+      }
+    },
+    CustomCourses: {
+      screen: CustomCoursesScreen,
+      options: {
+        title: 'Custom Courses',
+        drawerLabel: 'Add Custom Courses',
+        drawerIcon: ({ focused, color, size }) => <Ionicons name='create-outline' color={color} size={size}/>
       }
     },
     Options: {
