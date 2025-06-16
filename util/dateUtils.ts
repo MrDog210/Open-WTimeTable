@@ -46,9 +46,9 @@ export function getWeekDates(date: Date | string) {
 }
 
 export function getDates(startDate: Date, stopDate: Date) {
-  console.log('start' + startDate.toISOString())
-  var dateArray = new Array();
-  var currentDate = startDate;
+  //console.log('start' + startDate.toISOString())
+  const dateArray: Date[] = new Array();
+  let currentDate = startDate;
   while (currentDate <= stopDate) {
       dateArray.push(new Date (currentDate));
       currentDate.setDate(currentDate.getDate() + 1);

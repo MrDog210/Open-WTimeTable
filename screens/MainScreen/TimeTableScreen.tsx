@@ -4,7 +4,7 @@ import Container from "../../components/ui/Container";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { DefaultView, useSettings } from "../../context/UserSettingsContext";
 import { Lecture, TimetableLecture } from "../../types/types";
-import { addDaysToDate, dateFromNow, formatDate, formatWeekDate, getDates, getISODateNoTimestamp, getWeekDates, subtrackSeconds } from "../../util/dateUtils";
+import { addDaysToDate, dateFromNow, formatDate, formatWeekDate, getDates, getFriday, getISODateNoTimestamp, getMonday, getWeekDates, subtrackSeconds } from "../../util/dateUtils";
 import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
 import { calculateNowLineOffset, getColumnWidth, hasTimetableUpdated, updateLectures } from "../../util/timetableUtils";
 import { hasInternetConnection } from "../../util/http/http";
@@ -18,7 +18,7 @@ import DatePicker from "react-native-date-picker";
 import IconButton from "../../components/ui/IconButton";
 import LectureDetails from "../../components/timetable/LectureDetails";
 import { MarkedDates } from "react-native-calendars/src/types";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 
 type TimeTableScreenProps = StaticScreenProps<{
   isWeekView: boolean
@@ -33,39 +33,34 @@ let ranOnce = false
 
 function TimeTableScreen({ route }: TimeTableScreenProps) {
   const { timetableAnimationsEnabled, defaultView } = useSettings()
-  const [isFetchingData, setIsFetchingData] = useState<boolean>(false)
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [modalVisible, setModelVisible] = useState<boolean>(false)
   const [modalLecture, setModalLecture] = useState<Lecture | null>(null)
   const [date, setDate] = useState<Date>(new Date("2025-05-05"))
-  const [week, setWeek] = useState(getWeekDates(date))
+  const [week, setWeek] = useState(getWeekDates(date)) // TODO: maybe remove this
   const scrollRef = useRef<ScrollView>(null);
   const navigation = useNavigation()
   const { isWeekView } = route.params
   const [showDatePicker, setShowDatePicker] = useState(false)
   const route2 = useRoute()
 
-  const { data: {lectures, markedDates} } = useQuery<LectureQuery>({
-    initialData: { lectures: [], markedDates: {}},
-    queryKey: ['lectures', date],
-    queryFn: async () => {
-      const datesWithLectures = await getDatesWithLectures(
-        getISODateNoTimestamp(addDaysToDate(date, -14)), 
-        getISODateNoTimestamp(addDaysToDate(date, 14))
-      )
-      const tempMarkedDates: MarkedDates = {}
-      datesWithLectures.forEach(item => {
-        tempMarkedDates[item.date] = {
-          //selected: true,
-          marked: true,
-          //dotColor: 'blue',
-          //selectedColor: "purple",
-        }
-      })
+  const markedDatesSpan = {
+    from: getISODateNoTimestamp(addDaysToDate(getMonday(date), -7)),
+    till: getISODateNoTimestamp(addDaysToDate(getFriday(date), 7)) 
+  }
 
-      //setIsFetchingData(true)
+  const checkForUpdatesMutation = useMutation({
+    mutationFn: async () => {
+      
+    }
+  })
+
+  const { data: lectures } = useQuery<TimetableLecture[]>({
+    initialData: [],
+    queryKey: ['lectures', date, isWeekView],
+    queryFn: async () => {
       console.log('querying lectures')
-      let dates = []
+      let dates: Date[] = []
       if(isWeekView) {
         const WEEK = getWeekDates(date)
         dates = getDates(WEEK.from, WEEK.till)
@@ -75,28 +70,50 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
       }
       const lec: TimetableLecture[] = []
 
-      for(const d of dates) {
-        const data = await getLecturesForDate(getISODateNoTimestamp(d))
-        data.forEach(lecture => {
+      const dataPromise = dates.map((d) => getLecturesForDate(getISODateNoTimestamp(d)))
+      const data = await Promise.all(dataPromise)
+      data.forEach(lectures => {
+        lectures.forEach(lecture => {
           lec.push({lecture: lecture, startDate: subtrackSeconds(lecture.start_time, -60), endDate: subtrackSeconds(lecture.end_time, 60)})
         })
-      }
+      });
 
       const customLectures: TimetableLecture[] = []//= await getCustomLecturesForDates(dates)
       
-      return {
-        lectures: [...lec, ...customLectures],
-        markedDates: tempMarkedDates
-      }
-      //setIsFetchingData(false)
-      //setWeek(getWeekDates(date)) // stupid
-    }
+      if(isWeekView)
+        setWeek(getWeekDates(date)) // stupid
+
+      return [...lec, ...customLectures]
+    },
+  })
+
+  const { data: markedDates } = useQuery<MarkedDates>({
+    initialData: {},
+    queryKey: ['markedDates', markedDatesSpan],
+    queryFn: async () => {
+      const datesWithLectures = await getDatesWithLectures(
+        markedDatesSpan.from, 
+        markedDatesSpan.till
+      )
+      const markedD: MarkedDates = {}
+      datesWithLectures.forEach(item => {
+        markedD[item.date] = {
+          //selected: true,
+          marked: true,
+          //dotColor: 'blue',
+          //selectedColor: "purple",
+        }
+      })
+      return markedD
+    },
+    placeholderData: keepPreviousData //(previousData) => { console.log('PLACEHOALDER FUNCTION', previousData);return previousData},
   })
 
   useLayoutEffect(() => {
     if(!ranOnce) {
       ranOnce = true,
       console.log("SETTING NAVIGATION OPTIONS")
+      checkForUpdatesMutation.mutateAsync()
       navigation.setOptions({
         headerRight: () => {
           return <IconButton name='calendar-clear-outline' onPress={openDatePicker} />
@@ -184,7 +201,7 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
           setDate(new Date(newDate))
         }}
       >
-        <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} ref={scrollRef}>
+        <ScrollView refreshControl={<RefreshControl refreshing={refreshing || checkForUpdatesMutation.isPending} onRefresh={onRefresh} />} ref={scrollRef}>
         <Timetable 
           items={lectures} 
           renderItem={({key, ...props}) => <HourSlice key={key} {...props} onPress={lecturePressed} smallMode={isWeekView} animationsDisabled={!timetableAnimationsEnabled}/>} 
