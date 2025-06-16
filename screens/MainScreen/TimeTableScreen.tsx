@@ -161,7 +161,7 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
   }
 
   async function onRefresh() {
-    updateLecturesMutation.mutateAsync(true)
+    updateLecturesMutation.mutateAsync(true).catch(error => console.error(error))
   }
 
   function onConfirmDate(date: Date) {
