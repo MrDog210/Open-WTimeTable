@@ -119,3 +119,8 @@ export type TimetableLecture = {
 export interface GroupWithSelected extends GroupBranchChild {
   selected: boolean
 }
+
+export type ExecutionType = {
+  id: number,
+  executionType: string
+}

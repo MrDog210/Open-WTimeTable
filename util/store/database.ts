@@ -81,9 +81,9 @@ export async function insertLecture({start_time, end_time, eventType, note, show
 
   //console.log('result: ' + resultSet.insertId)
   let lectureId = result.lastInsertRowId
-  rooms.forEach(async room => { await insertLecturesHasRooms(lectureId, Number(room.id))})
-  lecturers.forEach(async lecturer => { await insertLecturesHasLecturers(lectureId, Number(lecturer.id))})
-  const promises = []
+  const promises: Promise<any>[] = []
+  rooms.forEach(room => { promises.push(insertLecturesHasRooms(lectureId, Number(room.id)))})
+  lecturers.forEach(lecturer => { promises.push(insertLecturesHasLecturers(lectureId, Number(lecturer.id)))})
   for( const group of groups)
     promises.push(insertLecturesHasGroups(lectureId, Number(group.id)))
 

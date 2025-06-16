@@ -1,5 +1,5 @@
 import { useWindowDimensions } from "react-native";
-import { GroupBranchChild, GroupBranchMain } from "../types/types"
+import { Course, ExecutionType, GroupBranchChild, GroupBranchMain, GroupLecture, Lecturer, Room } from "../types/types"
 import { fetchGroupsForBranch, fetchLecturesForGroups, getSchoolInfo } from "./http/api"
 import { hasInternetConnection } from "./http/http"
 import { deleteLecturesBetweenDates, getAllDistinctSelectedGroups, insertCourse, insertExecutionType, insertGroup, insertLecture, insertLecturer, insertRoom } from "./store/database"
@@ -11,24 +11,63 @@ export async function getAndSetAllDistinctBranchGroups(schoolCode: string, chose
   return groups
 }
 
+function makeUniqueArray<T, K extends keyof T>(
+  arr: T[],
+  key: K
+): T[] {
+  const map = new Map<T[K], T>();
+  for (const item of arr) {
+    map.set(item[key], item); // keeps the last occurrence
+  }
+  return Array.from(map.values());
+}
+
 export async function fetchAndInsertLectures(schoolCode: string, allGroups: { id: number }[], startDate: Date, endDate: Date) { // allGroups should be an array of all available groups
   const allLectures = await fetchLecturesForGroups(schoolCode, allGroups, startDate, endDate)
   await deleteLecturesBetweenDates(startDate, endDate)
 
   console.log("Number of lectures: " + allLectures.length)
-  // TODO: await for all lecutres to finish
-  // TODO: delete duplicate values for faster db inserts: https://stackoverflow.com/questions/1960473/get-all-unique-values-in-a-javascript-array-remove-duplicates
-  allLectures.forEach(async ({ rooms, groups, lecturers, executionTypeId, executionType, course, courseId }) => {
-    // each will be inserted ONLY IF ITS UNIQUE
-    if (course !== '')
-      await insertCourse(Number(courseId), course)
-    if (executionType !== '')
-      await insertExecutionType(Number(executionTypeId), executionType)
-    
-    rooms.forEach(async (room) => { await insertRoom(room.id, room.name).catch((error) => console.log("insertRoom error",error)) })
-    groups.forEach(async (group) => { await insertGroup(group.id, group.name).catch((error) => console.log("insertGroup error",error)) })
-    lecturers.forEach(async (lecturer) => { await insertLecturer(lecturer.id, lecturer.name).catch((error) => console.log("insertLecturer error",error)) })
+  // TODO: make lazy insert where only insertLecture is being used
+  const allRooms: Room[] = []
+  const allGroupsFromFetch: GroupLecture[] = []
+  const allLecturers: Lecturer[] = []
+  const allExecutionTypes: ExecutionType[] = []
+  const allCoures: Course[] = []
+
+  allLectures.forEach(({ rooms, groups, lecturers, executionTypeId, executionType, course, courseId }) => {
+    allRooms.push(...rooms)
+    allGroupsFromFetch.push(...groups)
+    allLecturers.push(...lecturers)
+    allExecutionTypes.push({ id: Number(executionTypeId), executionType})
+    allCoures.push({ id: Number(courseId), course})
   });
+
+  const uniqueRooms = makeUniqueArray(allRooms, 'id')
+  const uniqueGroups = makeUniqueArray(allGroupsFromFetch, 'id')
+  const uniqueLecturers = makeUniqueArray(allLecturers, 'id')
+  const uniqueExecutionTypes = makeUniqueArray(allExecutionTypes, 'id')
+  const uniqueCourses = makeUniqueArray(allCoures, 'id')
+
+  //console.log(uniqueRooms, uniqueExecutionTypes, uniqueGroups, uniqueLecturers, uniqueCourses)
+  console.log("starting to insert side tables")
+  const promises1: Promise<any>[] = []
+  for(const room of uniqueRooms)
+    promises1.push(insertRoom(room.id, room.name))
+  for(const group of uniqueGroups)
+    promises1.push(insertGroup(group.id, group.name))
+  for(const lecturer of uniqueLecturers)
+    promises1.push(insertLecturer(lecturer.id, lecturer.name))
+  for(const course of uniqueCourses)
+    if(course.course !== '')
+      promises1.push(insertCourse(course.id, course.course))
+  for(const et of uniqueExecutionTypes)
+    if(et.executionType !== '')
+      promises1.push(insertExecutionType(et.id, et.executionType))
+  
+  console.log("awaiting inserting side tables")
+  await Promise.all(promises1)
+  console.log("finished inserting side tables")
+
 
   // now we add all lectures
   const promises = []
