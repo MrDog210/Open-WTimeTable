@@ -1,5 +1,6 @@
 import Storage from 'expo-sqlite/kv-store';
-import { CustomLecture, Lecture } from '../../types/types';
+import { CustomLecture, Lecture, TimetableLecture } from '../../types/types';
+import { subtrackSeconds } from '../dateUtils';
 
 export async function getCustomLectures() {
   const data = await Storage.getItem('customLectures')
@@ -9,13 +10,13 @@ export async function getCustomLectures() {
   return []
 }
 
-export async function setCustomLectures(customLectures: CustomLecture) {
+export async function setCustomLectures(customLectures: CustomLecture[]) {
   return Storage.setItem('customLectures', JSON.stringify(customLectures))
 }
 
-export async function getCustomLecturesForDates(dates = []) {
+export async function getCustomLecturesForDates(dates: Date[]): Promise<TimetableLecture[]> {
   const lectures = await getCustomLectures()
-  const final = []
+  const final: TimetableLecture[] = []
 
   for (const d of dates) {
     const date = new Date(d)
@@ -35,17 +36,9 @@ export async function getCustomLecturesForDates(dates = []) {
       endTime.setHours(lectureEnd.getHours(), lectureEnd.getMinutes(), lectureEnd.getSeconds(), lectureEnd.getMilliseconds());
 
       final.push({
-        lecture: {
-          ...lecture,
-          start_time: startTime,
-          end_time: endTime,
-          lecturers: lecture.lecturers.map((l, index) => ({name: l, id: index})),
-          groups: lecture.groups.map((l, index) => ({name: l, id: index})),
-          rooms: lecture.rooms.map((l, index) => ({name: l, id: index})),
-          usersNote: { id: -1, note: lecture.usersNote}
-        },
-        startDate: startTime,
-        endDate: endTime
+        lecture: lecture as any,
+        startDate: subtrackSeconds(startTime, -60), 
+        endDate: subtrackSeconds(endTime, 60)
       })
     }
   }

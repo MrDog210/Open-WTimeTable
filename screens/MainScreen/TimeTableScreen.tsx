@@ -6,7 +6,7 @@ import { Lecture, TimetableLecture } from "../../types/types";
 import { addDaysToDate, dateFromNow, formatDate, formatWeekDate, getDates, getFriday, getISODateNoTimestamp, getMonday, getWeekDates, subtrackSeconds } from "../../util/dateUtils";
 import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
 import { calculateNowLineOffset, getColumnWidth, hasTimetableUpdated, updateLectures } from "../../util/timetableUtils";
-import { getDatesWithLectures, getLecturesForDate } from "../../util/store/database";
+import { getAllDatesWithLectures, getDatesWithLectures, getLecturesForDate } from "../../util/store/database";
 import { getCustomLecturesForDates } from "../../util/store/customLectures";
 import { CalendarProvider, WeekCalendar } from "react-native-calendars";
 import Timetable from "react-native-calendar-timetable";
@@ -27,7 +27,7 @@ let ranOnce = false
 
 function TimeTableScreen({ route }: TimeTableScreenProps) {
   const { timetableAnimationsEnabled, defaultView } = useSettings()
-  const [modalVisible, setModelVisible] = useState<boolean>(false)
+  const [modalVisible, setModelVisible] = useState<boolean>(false) // TODO: delete this
   const [modalLecture, setModalLecture] = useState<Lecture | null>(null)
   const [date, setDate] = useState<Date>(new Date("2025-05-05"))
   const [week, setWeek] = useState(getWeekDates(date)) // TODO: maybe remove this
@@ -37,10 +37,6 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
   const [showDatePicker, setShowDatePicker] = useState(false)
   const route2 = useRoute()
 
-  const markedDatesSpan = {
-    from: getISODateNoTimestamp(addDaysToDate(getMonday(date), -7)),
-    till: getISODateNoTimestamp(addDaysToDate(getFriday(date), 7)) 
-  }
   const queryClient = useQueryClient()
   const updateLecturesMutation = useMutation({
     mutationFn: async (forceUpdate: boolean) => {
@@ -53,7 +49,7 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
           return
         console.log("timetable updates found")
       }
-
+      
       await updateLectures(new Date('2025-01-01'), dateFromNow(200), true)
       //await updateLectures(new Date(), dateFromNow(200), true)
 
@@ -87,7 +83,7 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
         })
       });
 
-      const customLectures: TimetableLecture[] = []//= await getCustomLecturesForDates(dates)
+      const customLectures: TimetableLecture[] = await getCustomLecturesForDates(dates)
       
       if(isWeekView)
         setWeek(getWeekDates(date)) // stupid
@@ -100,12 +96,9 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
 
   const { data: markedDates } = useQuery<MarkedDates>({
     initialData: {},
-    queryKey: [QUERY_MARKED_DATES, markedDatesSpan],
+    queryKey: [QUERY_MARKED_DATES],
     queryFn: async () => {
-      const datesWithLectures = await getDatesWithLectures(
-        markedDatesSpan.from, 
-        markedDatesSpan.till
-      )
+      const datesWithLectures = await getAllDatesWithLectures()
       const markedD: MarkedDates = {}
       datesWithLectures.forEach(item => {
         markedD[item.date] = {

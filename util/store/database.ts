@@ -223,3 +223,9 @@ export async function getDatesWithLectures(fromDate: string, toDate: string) {
 
   return db.getAllAsync<{date: string}>("SELECT DISTINCT date(start_time) as date FROM lectures WHERE date >= ? AND date <= ? ORDER BY date", [fromDate, toDate])
 }
+
+export async function getAllDatesWithLectures() {
+  const db = await database
+
+  return db.getAllAsync<{date: string}>("SELECT DISTINCT date(start_time) as date FROM lectures")
+}

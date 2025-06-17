@@ -77,9 +77,11 @@ export type Lecture = {
   start_time: string,
   end_time: string,
   courseId: number,
+  course_id: number, // TODO: change delete this and rename it
   course: string,
   eventType: string,
   note: string,
+  executionType_id: number, // TODO: change delete this and rename it
   executionTypeId: number,
   executionType: string,
   branches: BranchLecture[],
@@ -89,13 +91,23 @@ export type Lecture = {
   showLink: string,
   color: string,
   colorText: string,
-  executionType_id: number,
-  course_id: number,
   usersNote: UsersNote | null
 }
 
-export interface CustomLecture extends Lecture { // TODO: fix this type
+export type CustomLecture = {
+  id: string,
+  course: string,
+  note: string,
+  start_time: string,
+  end_time: string,
+  rooms: Room[],
+  groups: GroupLecture[],
+  lecturers: Lecturer[],
   days_of_week: boolean[],
+  usersNote: {
+    id: number,
+    note: string
+  },
 }
 
 export type Course = {

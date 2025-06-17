@@ -1,36 +1,45 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Container from "../../components/ui/Container"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { CustomLecture } from "../../types/types"
 import { getCustomLectures, setCustomLectures } from "../../util/store/customLectures"
-import { Alert, FlatList, View, StyleSheet } from "react-native"
+import { Alert, FlatList, View, StyleSheet, Modal } from "react-native"
 import LoadingOverlay from "../../components/ui/LoadingOverlay"
 import IconButton from "../../components/ui/IconButton"
+import CustomCourseRow from "../../components/customCourses/CustomCourseRow"
+import EditCustomLectureModal from "../../components/customCourses/EditCustomLectureModal"
+import { invalidateLecturesQueries } from "../../util/http/reactQuery"
 
+const QUERY_CUSTOM_COURSES = 'customCourses'
 
 function CustomCoursesScreen() {
   const [visibleModal, setModalVisible] = useState(false)
   const [editingCourse, setEditingCourse] = useState(-1)
-
+  
+  const queryClient = useQueryClient()
   const {data: customCourses} = useQuery<CustomLecture[]>({
-    queryKey: ['customCourses'],
-    queryFn: getCustomLectures
+    queryKey: [QUERY_CUSTOM_COURSES],
+    queryFn: getCustomLectures,
+    initialData: []
   })
   
   // TODO: add swiping to delete
+
   function onAddOrEditCourse(course: CustomLecture) {
     console.log(course)
     setModalVisible(false)
     const newData = editingCourse === -1 ? [...customCourses, course] : customCourses.map((c, index) => index === editingCourse ? course : c)
-    setCustomCourses(newData)
     setCustomLectures(newData)
+    queryClient.setQueryData([QUERY_CUSTOM_COURSES], newData)
     setEditingCourse(-1)
+    invalidateLecturesQueries(queryClient)
   }
 
   function deleteCoures(index: number) {
     const newData = customCourses.filter((_, i) => i !== index)
-    setCustomCourses(newData)
     setCustomLectures(newData)
+    queryClient.setQueryData([QUERY_CUSTOM_COURSES], newData)
+    invalidateLecturesQueries(queryClient)
   }
 
   function onCollumnPressed(index: number) {
@@ -56,6 +65,13 @@ function CustomCoursesScreen() {
     
   return (
     <Container>
+      <Modal animationType="slide" visible={visibleModal} onRequestClose={() => {setModalVisible(false); setEditingCourse(-1)}}>
+        <EditCustomLectureModal
+          onCancelPressed={() => {setModalVisible(false); setEditingCourse(-1)}} 
+          onConfirmPressed={onAddOrEditCourse}
+          customCourse={editingCourse !== -1 ? customCourses[editingCourse] : undefined}
+        />
+      </Modal>
       <FlatList 
         data={customCourses} 
         renderItem={({item, index}) => <CustomCourseRow key={item.id} customCourse={item} onPress={() => onCollumnPressed(index)} onLongPress={() => onCollumnLongPressed(index)}/>}  />
