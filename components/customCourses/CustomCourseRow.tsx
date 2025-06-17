@@ -5,13 +5,10 @@ import Divider from "../ui/Divider"
 import { getTimeFromDate } from "../../util/dateUtils"
 import { useTheme } from "../../context/ThemeContext"
 import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
-import Reanimated, {
+import {
   SharedValue,
-  useAnimatedStyle,
 } from 'react-native-reanimated';
 import Ionicons from '@expo/vector-icons/Ionicons';
-
-const {width} = Dimensions.get('window')
 
 type CustomCourseRowProps = {
   customCourse: CustomLecture,
@@ -21,19 +18,13 @@ type CustomCourseRowProps = {
 }
 
 function RightAction(prog: SharedValue<number>, drag: SharedValue<number>) {
-  const styleAnimation = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateX: drag.value + width }],
-    };
-  });
-  
 
   return (
-    <Reanimated.View style={styleAnimation}>
+    <View style={{flex: 1}}>
       <View style={styles.rightAction}>
         <Ionicons name="trash-bin-outline" size={28} color="white" />
       </View>
-    </Reanimated.View>
+    </View>
   );
 }
 
@@ -47,6 +38,7 @@ function CustomCourseRow({customCourse, onPress, onLongPress, onSwipeDelete}: Cu
       renderRightActions={RightAction}
       containerStyle={{backgroundColor: 'red'}}
       onSwipeableOpen={onSwipeDelete}
+      friction={1.3}
     >
       <Pressable style={{backgroundColor: 'white'}} onPress={onPress} onLongPress={onLongPress} android_ripple={{color: colors.touchColor }}>
         <View style={styles.containerStyle}>
@@ -81,11 +73,9 @@ const styles = StyleSheet.create({
   },
   rightAction: {
     flex: 1,
-    width: width,
     justifyContent: 'center',
-    alignItems: 'flex-start',
-    padding: 10,
-    //height: 50, 
+    alignItems: 'flex-end',
+    padding: 15,
     backgroundColor: 'red' 
   },
 })
