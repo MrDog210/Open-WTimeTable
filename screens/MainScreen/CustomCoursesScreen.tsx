@@ -75,7 +75,7 @@ function CustomCoursesScreen() {
       </Modal>
       <FlatList 
         data={customCourses} 
-        renderItem={({item, index}) => <CustomCourseRow key={item.id} customCourse={item} onPress={() => onCollumnPressed(index)} onLongPress={() => onCollumnLongPressed(index)}/>}  />
+        renderItem={({item, index}) => <CustomCourseRow key={item.id} onSwipeDelete={() => deleteCoures(index)} customCourse={item} onPress={() => onCollumnPressed(index)} onLongPress={() => onCollumnLongPressed(index)}/>}  />
       <View style={styles.addButtonContainer}>
         <IconButton name='add-outline' style={styles.addButton} onPress={() => setModalVisible(true)}/>
       </View>

@@ -54,7 +54,6 @@ function EditCustomLectureModal({customCourse = undefined, onCancelPressed, onCo
     for(const day of days)
       selectedDays[day] = true
     setCourse({...course, days_of_week: selectedDays})
-    console.log(value)
   }
 
   function syncDropdown() {

@@ -46,8 +46,6 @@ export async function getCustomLecturesForDates(dates: Date[]): Promise<Timetabl
   return final
 }
 
-
-
 export async function markDatesForCustomLectures(markedDates: MarkedDates) {
   const NUM_OF_WEEKS = 4 // number of weeks to calculate for
   const lectures = await getCustomLectures()
