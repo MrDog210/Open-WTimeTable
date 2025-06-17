@@ -20,7 +20,8 @@ function CustomCoursesScreen() {
   const {data: customCourses} = useQuery<CustomLecture[]>({
     queryKey: [QUERY_CUSTOM_COURSES],
     queryFn: getCustomLectures,
-    initialData: []
+    initialData: [],
+    networkMode: 'always'
   })
   
   // TODO: add swiping to delete

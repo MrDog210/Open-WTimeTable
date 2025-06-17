@@ -7,7 +7,7 @@ import { addDaysToDate, dateFromNow, formatDate, formatWeekDate, getDates, getFr
 import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
 import { calculateNowLineOffset, getColumnWidth, hasTimetableUpdated, updateLectures } from "../../util/timetableUtils";
 import { getAllDatesWithLectures, getDatesWithLectures, getLecturesForDate } from "../../util/store/database";
-import { getCustomLecturesForDates } from "../../util/store/customLectures";
+import { getCustomLecturesForDates, markDatesForCustomLectures } from "../../util/store/customLectures";
 import { CalendarProvider, WeekCalendar } from "react-native-calendars";
 import Timetable from "react-native-calendar-timetable";
 import HourSlice from "../../components/timetable/HourSlice";
@@ -108,6 +108,7 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
           //selectedColor: "purple",
         }
       })
+      await markDatesForCustomLectures(markedD)
       return markedD
     },
     placeholderData: keepPreviousData,
