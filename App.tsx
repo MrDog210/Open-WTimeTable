@@ -9,6 +9,7 @@ import { onlineManager, QueryClient, QueryClientProvider } from '@tanstack/react
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { MainDrawer } from './screens/MainScreen/MainScreenNavigation';
 import NetInfo from '@react-native-community/netinfo'
+import GroupSelectScreen from './screens/setup/GroupSelectScreen';
 
 function useHasCompletedSetup() {
   const {hasCompletedSetup} = useSettings()
@@ -29,6 +30,13 @@ const RootStack = createNativeStackNavigator({
       if: useHasNotCompletedSetup,
       screen: SetupScreenNavigation,
     },
+    GroupSelect: {
+      screen: GroupSelectScreen,
+      options: {
+        title: 'Select groups for lectures',
+        headerShown: true
+      }
+    }
   },
   screenOptions: {
     headerShown: false,
@@ -46,9 +54,8 @@ declare global {
 const StaticNavigation = createStaticNavigation(RootStack);
 
 function Navigation() {
-  const {isLoading} = useSettings()
   const {colors, theme} = useTheme()
-  console.log(theme)
+  
   const myTheme: ReactNavigation.Theme = {
     ...DefaultTheme,
     dark: theme === 'dark',
@@ -61,9 +68,6 @@ function Navigation() {
       text: colors.onBackground
     }
   }
-
-  if (isLoading)
-    return <></>
 
   return (
     <StaticNavigation theme={myTheme} />

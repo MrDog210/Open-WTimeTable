@@ -20,10 +20,8 @@ type CustomCourseRowProps = {
 function RightAction(prog: SharedValue<number>, drag: SharedValue<number>) {
 
   return (
-    <View style={{flex: 1}}>
-      <View style={styles.rightAction}>
-        <Ionicons name="trash-bin-outline" size={28} color="white" />
-      </View>
+    <View style={styles.rightAction}>
+      <Ionicons name="trash-bin-outline" size={28} color="white" />
     </View>
   );
 }

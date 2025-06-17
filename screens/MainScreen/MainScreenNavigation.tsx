@@ -2,6 +2,7 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import TimeTableScreen from "./TimeTableScreen";
 import { Ionicons } from '@expo/vector-icons'
 import CustomCoursesScreen from "./CustomCoursesScreen";
+import OptionsScreen from "./OptionsScreen";
 
 export const MainDrawer = createDrawerNavigator({
   screens: {
@@ -30,7 +31,7 @@ export const MainDrawer = createDrawerNavigator({
       }
     },
     Options: {
-      screen: () => <></>,
+      screen: OptionsScreen,
       options: {
         drawerIcon: ({ focused, color, size }) => <Ionicons name='settings-outline' color={color} size={size}/>
       }

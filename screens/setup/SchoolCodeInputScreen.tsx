@@ -9,12 +9,14 @@ import { getSchoolInfo } from "../../util/http/api"
 import { useMutation } from "@tanstack/react-query"
 import Container from "../../components/ui/Container"
 import { init } from "../../util/store/database"
+import { useSettings } from "../../context/UserSettingsContext"
 
 let hasCreatedDatabase = false
 
 function SchoolCodeInputScreen() {
   const navigation = useNavigation()
   const [code, setCode] = useState('')
+  const { changeSettings } = useSettings()
   
   const schoolInfoMutation = useMutation({
     mutationFn: async (code: string) => {
@@ -50,6 +52,7 @@ function SchoolCodeInputScreen() {
         <TextInput placeholder="School code (example: 'FERI')" value={code} onChangeText={setCode} autoCapitalize="none" autoComplete="off" />
       </KeyboardAvoidingView>
       <Button loading={schoolInfoMutation.isPending} disabled={schoolInfoMutation.isPending} onPress={onConfirm}>OK</Button>
+      {__DEV__ && <Button onPress={() => changeSettings({ hasCompletedSetup: true })}>change view</Button>}
     </Container>
   )
 }
