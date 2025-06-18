@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { useColorScheme } from "react-native";
+import { Theme, useSettings } from "./UserSettingsContext";
 
 const ThemeContext = createContext<ThemeContextType | null>(null)
 
@@ -77,12 +78,21 @@ const darkMode: ThemeColorsType = {
 function ThemeContextProvider({children}: {children: ReactNode}) {
   const [colors, setColors] = useState<ThemeColorsType>(lightMode)
   const [theme, setTheme] = useState<"dark" | "light">("dark")
+  const { theme: selectedTheme } = useSettings()
   let colorScheme = useColorScheme();
 
   useEffect(() => {
-    setColors(colorScheme === 'dark' ? darkMode : lightMode)
-    setTheme(colorScheme ? colorScheme : 'light')
-  }, [colorScheme])
+    console.log("selected theme", selectedTheme)
+    let selectedColorScheme: typeof theme;
+    if(selectedTheme === Theme.SYSTEM)
+      selectedColorScheme = colorScheme === "dark" ? "dark" : "light";
+    else
+      selectedColorScheme = selectedTheme === Theme.LIGHT ? 'light' : 'dark'
+    console.log("final theme", selectedColorScheme)
+
+    setColors(selectedColorScheme === 'dark' ? darkMode : lightMode)
+    setTheme(selectedColorScheme)
+  }, [colorScheme, selectedTheme])
 
   const ctx: ThemeContextType = {
     colors,

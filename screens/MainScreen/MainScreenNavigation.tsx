@@ -3,6 +3,7 @@ import TimeTableScreen from "./TimeTableScreen";
 import { Ionicons } from '@expo/vector-icons'
 import CustomCoursesScreen from "./CustomCoursesScreen";
 import OptionsScreen from "./OptionsScreen";
+import AboutScreen from "./AboutScreen";
 
 export const MainDrawer = createDrawerNavigator({
   screens: {
@@ -37,7 +38,7 @@ export const MainDrawer = createDrawerNavigator({
       }
     },
     About: {
-      screen: () => <></>,
+      screen: AboutScreen,
       options: {
         drawerIcon: ({ focused, color, size }) => <Ionicons name='information-circle-outline' color={color} size={size}/>
       }

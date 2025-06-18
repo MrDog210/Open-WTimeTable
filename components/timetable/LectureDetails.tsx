@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { CustomLecture, Lecture } from "../../types/types"
+import { Lecture } from "../../types/types"
 import Animated, { Easing, useSharedValue, withTiming } from "react-native-reanimated"
 import { setNoteForCourse } from "../../util/store/database"
 import { Modal, ScrollView, View, StyleSheet } from "react-native"
@@ -34,8 +34,7 @@ type LectureDetailsProps = {
 }
 
 function LectureDetails({modalVisible, onRequestClose, lecture}: LectureDetailsProps) {
-  // TODO: handle null lectures better
-  
+  // TODO: fix animations
   const { colors } = useTheme()
   // ANIMATIONS
   const opacity = useSharedValue(0)

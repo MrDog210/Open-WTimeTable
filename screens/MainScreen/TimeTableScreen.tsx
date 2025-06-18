@@ -27,9 +27,8 @@ let ranOnce = false
 
 function TimeTableScreen({ route }: TimeTableScreenProps) {
   const { timetableAnimationsEnabled, defaultView } = useSettings()
-  const [modalVisible, setModelVisible] = useState<boolean>(false) // TODO: delete this
   const [modalLecture, setModalLecture] = useState<Lecture | null>(null)
-  const [date, setDate] = useState<Date>(new Date("2025-05-05"))
+  const [date, setDate] = useState<Date>(new Date("2025-05-05")) // TODO: revert this
   const [week, setWeek] = useState(getWeekDates(date)) // TODO: maybe remove this
   const scrollRef = useRef<ScrollView>(null);
   const navigation = useNavigation()
@@ -51,7 +50,7 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
       }
       
       await updateLectures(new Date('2025-01-01'), dateFromNow(200), true)
-      //await updateLectures(new Date(), dateFromNow(200), true)
+      //await updateLectures(new Date(), dateFromNow(200), true) // TODO: revert this
 
       const endTime = performance.now()
       console.log(`Updating lectures took ${endTime - startTime} milliseconds`)
@@ -152,7 +151,6 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
 
   function lecturePressed(lecture: Lecture) {
     setModalLecture(lecture)
-    setModelVisible(true)
   }
 
   function openDatePicker() {
@@ -174,7 +172,7 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
 
   return (
     <Container>
-      <LectureDetails modalVisible={modalVisible} lecture={modalLecture!} onRequestClose={() => {setModelVisible(false)}} />
+      <LectureDetails modalVisible={!!modalLecture} lecture={modalLecture!} onRequestClose={() => {setModalLecture(null)}} />
       <DatePicker modal open={showDatePicker} date={date} onConfirm={onConfirmDate} onCancel={onCancelDate} mode="date" />
       <CalendarProvider 
         date={getISODateNoTimestamp(date)}
