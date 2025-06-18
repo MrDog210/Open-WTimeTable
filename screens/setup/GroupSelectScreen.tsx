@@ -10,8 +10,8 @@ import { Course, GroupWithSelected } from "../../types/types"
 import LoadingOverlay from "../../components/ui/LoadingOverlay"
 import CourseGroupSelect from "../../components/groupSelect/CourseGroupSelect"
 import Container from "../../components/ui/Container"
-import { useMutation, useQuery } from "@tanstack/react-query"
-import { QUERY_COURSES_AND_GROUPS } from "../../util/http/reactQuery"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { invalidateLecturesQueries, QUERY_COURSES_AND_GROUPS } from "../../util/http/reactQuery"
 
 type ProgramSelectScreenProps = StaticScreenProps<{
   isEditing?: boolean
@@ -28,6 +28,7 @@ function GroupSelectScreen({route}: ProgramSelectScreenProps) {
   const { changeSettings } = useSettings()
   const navigation = useNavigation()
   const { isEditing = false } = route.params
+  const queryClient = useQueryClient()
 
   const { data: coursesAndTheirGroups} = useQuery<CoursesAndTheirGroups[]>({
     initialData: [],
@@ -75,6 +76,8 @@ function GroupSelectScreen({route}: ProgramSelectScreenProps) {
         await changeSettings({
           hasCompletedSetup: true
         })
+      else
+        invalidateLecturesQueries(queryClient)
     },
     networkMode: 'always'
   })
@@ -105,7 +108,7 @@ function GroupSelectScreen({route}: ProgramSelectScreenProps) {
         />
       </View>
       <View style={styles.buttonContainer}>
-        {isEditing && <Button containerStyle={styles.button} onPress={onCancelPressed} isWarning>Cancel</Button>}
+        {isEditing && <Button containerStyle={styles.button} onPress={onCancelPressed} mode="WARNING">Cancel</Button>}
         <Button containerStyle={styles.button} onPress={onFinishedPressed}>Finish</Button>
       </View>
     </Container>

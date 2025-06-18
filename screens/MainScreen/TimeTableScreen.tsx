@@ -18,6 +18,7 @@ import LectureDetails from "../../components/timetable/LectureDetails";
 import { MarkedDates } from "react-native-calendars/src/types";
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { invalidateLecturesQueries, QUERY_LECTURES, QUERY_MARKED_DATES } from "../../util/http/reactQuery";
+import { useTheme } from "../../context/ThemeContext";
 
 type TimeTableScreenProps = StaticScreenProps<{
   isWeekView: boolean
@@ -35,7 +36,7 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
   const { isWeekView } = route.params
   const [showDatePicker, setShowDatePicker] = useState(false)
   const route2 = useRoute()
-
+  const { colors } = useTheme()
   const queryClient = useQueryClient()
   const updateLecturesMutation = useMutation({
     mutationFn: async (forceUpdate: boolean) => {
@@ -118,7 +119,9 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => {
-        return <IconButton name='calendar-clear-outline' onPress={openDatePicker} />
+        return <IconButton name='calendar-clear-outline' onPress={openDatePicker} style={{
+          backgroundColor: 'transparent'
+        }} iconColor={colors.onBackground} />
       }
     })
   }, [])

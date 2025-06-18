@@ -38,7 +38,7 @@ function Button({style, mode = "PRIMARY", children, containerStyle, loading = fa
   
   return (
     <View style={[{ backgroundColor: bgColor }, styles.containerStyle, containerStyle]}>
-      <Pressable style={[styles.buttonStyle, style]} onPress={myOnPresss} {...props} android_ripple={{color: colors.onSurfaceDisabled}}>
+      <Pressable style={[styles.buttonStyle, style, { backgroundColor: disabled ? colors.surfaceDisabled : undefined }]} onPress={myOnPresss} {...props} android_ripple={{color: disabled ? undefined : colors.touchColor}}>
         {
           loading && <ActivityIndicator color={fgColor} />
         }

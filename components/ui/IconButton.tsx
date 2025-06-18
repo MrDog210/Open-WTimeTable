@@ -6,15 +6,16 @@ type IconButtonProps = {
   title?: string,
   onPress: () => void,
   name: keyof typeof Ionicons.glyphMap,
-  style?: StyleProp<ViewStyle>
+  style?: StyleProp<ViewStyle>,
+  iconColor?: string
 }
 
-function IconButton({title, onPress, name, style}: IconButtonProps) {
+function IconButton({title, onPress, name, style, iconColor}: IconButtonProps) {
   const { colors } = useTheme()
 
   return (
-    <Pressable onPress={onPress} style={[styles.container, style]} android_ripple={{color: 'transparent'}}>
-      <Ionicons name={name} size={25} color={colors.onBackground} />
+    <Pressable onPress={onPress} style={[{ backgroundColor: colors.primary }, styles.container, style]} android_ripple={{color: colors.touchColor}}>
+      <Ionicons name={name} size={25} color={iconColor || colors.onPrimary} />
       {title && <Text style={styles.text}>{title}</Text>}
     </Pressable>
   )

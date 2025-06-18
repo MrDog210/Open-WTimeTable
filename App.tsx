@@ -10,6 +10,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { MainDrawer } from './screens/MainScreen/MainScreenNavigation';
 import NetInfo from '@react-native-community/netinfo'
 import GroupSelectScreen from './screens/setup/GroupSelectScreen';
+import { NAVIGATION_STYLE } from './util/styling';
 
 function useHasCompletedSetup() {
   const {hasCompletedSetup} = useSettings()
@@ -39,6 +40,7 @@ const RootStack = createNativeStackNavigator({
     }
   },
   screenOptions: {
+    ...NAVIGATION_STYLE as any,
     headerShown: false,
   }
 });
@@ -63,8 +65,8 @@ function Navigation() {
       ...DefaultTheme.colors,
       background: colors.background,
       primary: colors.onBackground,
-      border: 'transparent',
-      card: 'transparent',
+      //border: 'transparent',
+      //card: 'transparent',
       text: colors.onBackground
     }
   }

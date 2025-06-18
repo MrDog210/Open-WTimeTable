@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons'
 import CustomCoursesScreen from "./CustomCoursesScreen";
 import OptionsScreen from "./OptionsScreen";
 import AboutScreen from "./AboutScreen";
+import { NAVIGATION_STYLE } from "../../util/styling";
 
 export const MainDrawer = createDrawerNavigator({
   screens: {
@@ -44,4 +45,5 @@ export const MainDrawer = createDrawerNavigator({
       }
     }
   },
+  screenOptions: NAVIGATION_STYLE as any
 })

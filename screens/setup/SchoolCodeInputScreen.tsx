@@ -35,8 +35,6 @@ function SchoolCodeInputScreen() {
   }, [])
 
   async function onConfirm() {
-    //changeView()
-    
     try {
       const schoolInfo = await schoolInfoMutation.mutateAsync(code)
       navigation.navigate('Setup', { screen: 'ProgramSelect', params: { schoolInfo } })

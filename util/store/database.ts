@@ -227,5 +227,9 @@ export async function getDatesWithLectures(fromDate: string, toDate: string) {
 export async function getAllDatesWithLectures() {
   const db = await database
 
-  return db.getAllAsync<{date: string}>("SELECT DISTINCT date(start_time) as date FROM lectures")
+  return db.getAllAsync<{date: string}>(`SELECT DISTINCT date(start_time) as date FROM groups JOIN lectures_has_groups ON groups.id = lectures_has_groups.groups_id
+    JOIN lectures ON lectures.id = lectures_has_groups.lectures_id
+    JOIN courses ON courses.id = lectures.course_id
+    JOIN selected_groups ON selected_groups.groups_id = groups.id
+    AND selected_groups.courses_id = courses.id;`)
 }

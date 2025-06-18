@@ -15,7 +15,17 @@ export function useTheme() {
 
 export type ThemeContextType = {
   theme: "dark" | "light"
-  colors: ThemeColorsType
+  colors: ThemeColorsType,
+  typography: {
+    fontFamily: string;
+    fontSize: {
+      xs: number;
+      sm: number;
+      md: number;
+      lg: number;
+      xl: number;
+    }
+  }
 }
 
 export type ThemeColorsType = {
@@ -29,12 +39,10 @@ export type ThemeColorsType = {
   onError: string,
   surface: string,
   onSurface: string,
-  surfaceVariant: string,
-  shadow: string,
   surfaceDisabled: string,
-  onSurfaceDisabled: string,
   backdrop: string,
-  touchColor: string
+  touchColor: string,
+  border: string
 }
 
 const lightMode: ThemeColorsType = {
@@ -47,11 +55,8 @@ const lightMode: ThemeColorsType = {
   "background": "rgb(255, 251, 255)",
   "onBackground": "rgb(32, 26, 25)",
   "surface": "#EAEAEA",
-  "surfaceVariant": "#f4f4f4",
   "onSurface": "rgb(128 128, 128)",
-  "shadow": "rgb(0, 0, 0)",
   "surfaceDisabled": "rgba(32, 26, 25, 0.12)",
-  "onSurfaceDisabled": "rgba(32, 26, 25, 0.38)",
   "backdrop": "rgba(59, 45, 44, 0.4)",
   touchColor: "rgba(32, 26, 25, 0.38)"
 }
@@ -66,11 +71,8 @@ const darkMode: ThemeColorsType = {
   "background": "rgb(32, 26, 25)",
   "onBackground": "rgb(237, 224, 222)",
   "surface": "rgba(237, 224, 222, 0.32)",
-  "surfaceVariant": "rgba(237, 224, 222, 0.12)",
   "onSurface": "rgb(237, 224, 222)",
-  "shadow": "rgb(0, 0, 0)",
   "surfaceDisabled": "rgba(237, 224, 222, 0.12)",
-  "onSurfaceDisabled": "rgba(237, 224, 222, 0.38)",
   "backdrop": "rgba(59, 45, 44, 0.4)",
   "touchColor": "rgba(237, 224, 222, 0.75)"
 }
@@ -96,7 +98,17 @@ function ThemeContextProvider({children}: {children: ReactNode}) {
 
   const ctx: ThemeContextType = {
     colors,
-    theme
+    theme,
+    typography: {
+      fontFamily: 'System',
+      fontSize: {
+        xs: 12,
+        sm: 14,
+        md: 16,
+        lg: 20,
+        xl: 24,
+      }
+    }
   }
 
   return <ThemeContext.Provider value={ctx}>{children}</ThemeContext.Provider>
