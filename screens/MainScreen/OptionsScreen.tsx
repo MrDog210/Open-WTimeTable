@@ -2,7 +2,7 @@ import { useNavigation } from "@react-navigation/native"
 import { useState } from "react"
 import { DefaultView, Theme, useSettings } from "../../context/UserSettingsContext"
 import LoadingOverlay from "../../components/ui/LoadingOverlay"
-import { Alert, ScrollView, StyleSheet } from "react-native"
+import { ScrollView, StyleSheet } from "react-native"
 import { useMutation } from "@tanstack/react-query"
 import { getSchoolYearDates } from "../../util/dateUtils"
 import { updateLectures } from "../../util/timetableUtils"
@@ -77,8 +77,8 @@ function OptionsScreen() {
           <Picker.Item label="Day view" value={DefaultView.DAY_VIEW} />
           <Picker.Item label="Week view" value={DefaultView.WEEK_VIEW} />
         </Picker>
-       {/*  <Text>Timetable animations </Text>
-        <Switch value={timetableAnimationsEnabled} onValueChange={changeTimetableAnimationns} /> */}
+        <Text>Timetable animations </Text>
+        <Switch value={timetableAnimationsEnabled} onValueChange={changeTimetableAnimationns} />
       </ScrollView>
     </>
   )

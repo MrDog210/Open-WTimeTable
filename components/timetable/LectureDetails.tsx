@@ -9,6 +9,7 @@ import { getTimeFromDate } from "../../util/dateUtils"
 import { formatArray } from "../../util/timetableUtils"
 import Button from "../ui/Button"
 import { useTheme } from "../../context/ThemeContext"
+import EditUsersNote from "./EditUsersNote"
 
 type ContentCardProps = {
   title: string,
@@ -34,7 +35,6 @@ type LectureDetailsProps = {
 }
 
 function LectureDetails({modalVisible, onRequestClose, lecture}: LectureDetailsProps) {
-  // TODO: fix animations
   const { colors } = useTheme()
   // ANIMATIONS
   const opacity = useSharedValue(0)
@@ -47,17 +47,20 @@ function LectureDetails({modalVisible, onRequestClose, lecture}: LectureDetailsP
 
   // OUTPUT
   const {course, course_id, eventType, start_time, end_time, note, showLink, color, colorText, rooms, groups, lecturers, executionType, executionType_id, usersNote} = lecture ?? {}
-  const [customNote, setCustomNote] = useState(usersNote ? usersNote.note : undefined)
+  const [customNote, setCustomNote] = useState<string>(usersNote ? usersNote.note : '')
+  const [isEditing, setIsEditing] = useState(false)
 
-  function updateCustomNote(newCustomNote: any) {
+  function updateCustomNote(newCustomNote: string) {
     setNoteForCourse(newCustomNote, course_id, executionType_id)
     setCustomNote(newCustomNote)
+    setIsEditing(false)
   }
 
   useEffect(() => {
+    setIsEditing(false)
     if(!lecture)
       return
-    setCustomNote(usersNote ? usersNote.note : undefined)
+    setCustomNote(usersNote ? usersNote.note : '')
   }, [lecture])
 
   if(lecture === null)
@@ -73,33 +76,33 @@ function LectureDetails({modalVisible, onRequestClose, lecture}: LectureDetailsP
       <Modal visible={modalVisible} transparent={true} animationType="none" onRequestClose={onRequestClose}>
         <Animated.View style={[styles.container, {opacity}]}>
           <Animated.View style={[styles.centeredContainer, {top}]}>
-            <View style={styles.titleContainer}>
-              <Text style={styles.title}>{course ? course : eventType}</Text>
-            </View>
-            <Divider style={styles.line}/>
-            <ScrollView style={styles.contentsContainer}>
-              <View style={styles.subtitle}>
-                <Text>{`${getTimeFromDate(start_time)} - ${getTimeFromDate(end_time)}`}</Text>
-                {executionType && <Text>{executionType}</Text>}
-              </View>
-              <ContentCard title='Rooms:' contents={formatArray(rooms, 'name')} />
-              <ContentCard title='Groups:' contents={formatArray(groups, 'name')} />
-              <ContentCard title='Lecturers:' contents={formatArray(lecturers, 'name')} />
-              <ContentCard title='Note:' contents={note} />
-              <ContentCard title='Show link:' contents={showLink} />
-              <ContentCard title='Custom note:' contents={customNote} />
-            </ScrollView>
-            <View style={styles.buttonContainer}>
-              {/*lecture.course_id && executionType_id && <InputDialogue 
-                buttonContainerStyle={styles.button}
-                input={customNote}
-                title="Edit note"
-                onRequestConfirm={updateCustomNote}
-              /> */}
-              {lecture.course_id && executionType_id && <View style={{width: 2, backgroundColor: colors.surface }}/>}
-              
-              <Button containerStyle={styles.button} onPress={onRequestClose}>Close</Button>
-            </View>
+            { !isEditing ? (
+              <>
+                <View style={styles.titleContainer}>
+                  <Text style={styles.title}>{course ? course : eventType}</Text>
+                </View>
+                <Divider style={styles.line}/>
+                <ScrollView style={styles.contentsContainer}>
+                  <View style={styles.subtitle}>
+                    <Text>{`${getTimeFromDate(start_time)} - ${getTimeFromDate(end_time)}`}</Text>
+                    {executionType && <Text>{executionType}</Text>}
+                  </View>
+                  <ContentCard title='Rooms:' contents={formatArray(rooms, 'name')} />
+                  <ContentCard title='Groups:' contents={formatArray(groups, 'name')} />
+                  <ContentCard title='Lecturers:' contents={formatArray(lecturers, 'name')} />
+                  <ContentCard title='Note:' contents={note} />
+                  <ContentCard title='Show link:' contents={showLink} />
+                  <ContentCard title='Custom note:' contents={customNote} />
+                </ScrollView>
+                <View style={styles.buttonContainer}>
+                  {lecture.course_id && executionType_id && <Button containerStyle={styles.button} onPress={() => setIsEditing(true)}>Edit note</Button> }
+                  {lecture.course_id && executionType_id && <View style={{width: 2, backgroundColor: colors.surface }}/>}
+                  <Button containerStyle={styles.button} onPress={onRequestClose}>Close</Button>
+                </View>
+              </>
+            ) : (
+              <EditUsersNote note={customNote} onCancelPressed={() => setIsEditing(false)} onConfirmPressed={updateCustomNote} />
+            )}
           </Animated.View>
         </Animated.View>
       </Modal>

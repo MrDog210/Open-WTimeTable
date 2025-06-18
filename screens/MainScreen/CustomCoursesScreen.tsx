@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import Container from "../../components/ui/Container"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { CustomLecture } from "../../types/types"
