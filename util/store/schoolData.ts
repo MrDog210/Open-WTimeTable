@@ -1,4 +1,4 @@
-import Storage from 'expo-sqlite/kv-store';
+import Storage from '@react-native-async-storage/async-storage';
 import { Branch, Group, GroupBranchChild, GroupBranchMain, SchoolInfo } from '../../types/types';
 
 export async function getUrlSchoolCode() {

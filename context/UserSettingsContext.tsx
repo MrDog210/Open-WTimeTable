@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import Storage from 'expo-sqlite/kv-store';
+import Storage from '@react-native-async-storage/async-storage';
 import * as SplashScreen from 'expo-splash-screen';
 
 async function saveSettings(settings: SavedSettings) {

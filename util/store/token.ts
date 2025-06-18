@@ -1,5 +1,5 @@
 import { API_URL, PASSWORD, USERNAME } from "../constants"
-import Storage from 'expo-sqlite/kv-store';
+import Storage from '@react-native-async-storage/async-storage';
 import { encode, decode } from "base-64";
 
 type FetchTokenResponse = {
