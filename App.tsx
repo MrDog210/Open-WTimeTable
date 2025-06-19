@@ -11,6 +11,7 @@ import { MainDrawer } from './screens/MainScreen/MainScreenNavigation';
 import NetInfo from '@react-native-community/netinfo'
 import GroupSelectScreen from './screens/setup/GroupSelectScreen';
 import { NAVIGATION_STYLE } from './util/styling';
+import { View } from 'react-native';
 
 function useHasCompletedSetup() {
   const {hasCompletedSetup} = useSettings()
@@ -73,10 +74,10 @@ function Navigation() {
   }
 
   return (
-    <>
+    <View style={{flex: 1, backgroundColor: colors.background}}>
       <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
       <StaticNavigation theme={myTheme} />
-    </>
+    </View>
   )
 }
 

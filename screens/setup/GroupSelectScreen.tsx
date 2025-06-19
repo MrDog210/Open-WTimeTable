@@ -110,7 +110,7 @@ function GroupSelectScreen({route}: ProgramSelectScreenProps) {
         renderItem={({item}) => <CourseGroupSelect key={item.course.id} groups={item.groups} course={item.course} />} 
       />
       <View style={styles.buttonContainer}>
-        {isEditing && <Button containerStyle={styles.button} onPress={onCancelPressed} mode="WARNING">Cancel</Button>}
+        {isEditing && <Button containerStyle={styles.button} onPress={onCancelPressed} mode="SECONDARY">Cancel</Button>}
         <Button containerStyle={styles.button} onPress={onFinishedPressed}>Finish</Button>
       </View>
     </Container>
