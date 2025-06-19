@@ -71,7 +71,7 @@ function EditCustomLectureModal({customCourse = undefined, onCancelPressed, onCo
 
   return (
     <View style={{backgroundColor: colors.background, flex: 1}}>
-      <ScrollView style={[{flex: 1}, styles.scrollView]}>
+      <ScrollView contentContainerStyle={{gap: 10}} style={styles.scrollView}>
         <Text>Course name</Text>
         <TextInput
           value={course.course}
@@ -102,6 +102,7 @@ function EditCustomLectureModal({customCourse = undefined, onCancelPressed, onCo
           onChangeText={(value) => setCourse({...course, usersNote: {id: 0, note: value}})}
           placeholder={"..."}
         />
+        <Text>Days of week</Text>
         <DropDownPicker
           placeholder='Select days of week'
           multiple
@@ -127,8 +128,8 @@ function EditCustomLectureModal({customCourse = undefined, onCancelPressed, onCo
           </View>
         </View>
       </ScrollView>
-      <View style={{flexDirection: 'row'}}>
-        <Button containerStyle={{flex: 1}} onPress={() => onCancelPressed()}>Cancel</Button>
+      <View style={styles.buttonContainer}>
+        <Button containerStyle={{flex: 1}} mode="SECONDARY" onPress={() => onCancelPressed()}>Cancel</Button>
         <Button containerStyle={{flex: 1}} onPress={() => onConfirmPressed(!course.id ? {...course, id: uuid.v4()} : course)}>Confirm</Button>
       </View>
     </View>
@@ -139,9 +140,11 @@ export default EditCustomLectureModal
 
 const styles = StyleSheet.create({
   scrollView: {
-    flex: 1,
-    paddingHorizontal: 8,
-    paddingTop: 16
+    paddingHorizontal: 15,
+    paddingTop: 15,
+    gap: 10,
+    columnGap: 10,
+    rowGap: 10
   },
   daysContainer: {
     paddingTop: 8,
@@ -156,5 +159,11 @@ const styles = StyleSheet.create({
   },
   timePicker: {
     maxWidth: '100%'
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    padding: 10,
+    paddingTop: 0,
+    gap: 10
   }
 })

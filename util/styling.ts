@@ -5,7 +5,11 @@ export const NAVIGATION_STYLE: NativeStackNavigationOptions | DrawerNavigationOp
     headerTitleAlign: 'center',
     headerTitleStyle: {
       fontWeight: 'bold',
-      //fontFamily: 'Inter'
+      //fontFamily: 'Inter' // TODO: change font
+      ////fontSize: 20
     },
-    headerShadowVisible: false
+    headerShadowVisible: false,
+    headerStyle: {
+      backgroundColor: 'transparent'
+    }
 }

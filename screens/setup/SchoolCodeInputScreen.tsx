@@ -1,4 +1,4 @@
-import { StyleSheet, KeyboardAvoidingView, Platform } from "react-native"
+import { StyleSheet, KeyboardAvoidingView, Platform, Alert } from "react-native"
 import Button from "../../components/ui/Button"
 import Text from "../../components/ui/Text"
 import TextInput from "../../components/ui/TextInput"
@@ -39,7 +39,10 @@ function SchoolCodeInputScreen() {
       const schoolInfo = await schoolInfoMutation.mutateAsync(code)
       navigation.navigate('Setup', { screen: 'ProgramSelect', params: { schoolInfo } })
     } catch (error) {
-      //Alert.alert('An error ocurred', error.message)
+      if(error instanceof Error) {
+        Alert.alert('An error ocurred', error.message)
+        console.error(error)
+      }
     }
   }
 
@@ -49,7 +52,7 @@ function SchoolCodeInputScreen() {
         <Text style={{fontSize: 28, fontWeight: 'bold', textAlign: 'center'}}>Enter your school code</Text>
         <TextInput placeholder="School code (example: 'FERI')" value={code} onChangeText={setCode} autoCapitalize="none" autoComplete="off" />
       </KeyboardAvoidingView>
-      <Button loading={schoolInfoMutation.isPending} disabled={schoolInfoMutation.isPending} onPress={onConfirm}>OK</Button>
+      <Button loading={schoolInfoMutation.isPending} disabled={schoolInfoMutation.isPending || code.length === 0} onPress={onConfirm}>OK</Button>
       {__DEV__ && <Button onPress={() => changeSettings({ hasCompletedSetup: true })}>change view</Button>}
     </Container>
   )

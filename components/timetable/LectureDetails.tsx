@@ -10,6 +10,7 @@ import { formatArray } from "../../util/timetableUtils"
 import Button from "../ui/Button"
 import { useTheme } from "../../context/ThemeContext"
 import EditUsersNote from "./EditUsersNote"
+import { BlurView } from "expo-blur"
 
 type ContentCardProps = {
   title: string,
@@ -39,6 +40,7 @@ function LectureDetails({modalVisible, onRequestClose, lecture}: LectureDetailsP
   // ANIMATIONS
   const opacity = useSharedValue(0)
   const top = useSharedValue(50)
+
   useEffect(() => {
     const isVisible = modalVisible ? 1 : 0
     opacity.value = withTiming(isVisible, {duration: 300})
@@ -67,15 +69,16 @@ function LectureDetails({modalVisible, onRequestClose, lecture}: LectureDetailsP
     return
 
   return (
-    <View style={{
+    <BlurView intensity={20} experimentalBlurMethod="dimezisBlurView" style={{
         width: "100%",
         height: "100%",
         position: "absolute",
         backgroundColor: "transparent",
+        zIndex: 1000
       }}>
       <Modal visible={modalVisible} transparent={true} animationType="none" onRequestClose={onRequestClose}>
         <Animated.View style={[styles.container, {opacity}]}>
-          <Animated.View style={[styles.centeredContainer, {top}]}>
+          <Animated.View style={[styles.centeredContainer, {top, backgroundColor: colors.background, borderColor: colors.border}]}>
             { !isEditing ? (
               <>
                 <View style={styles.titleContainer}>
@@ -96,7 +99,6 @@ function LectureDetails({modalVisible, onRequestClose, lecture}: LectureDetailsP
                 </ScrollView>
                 <View style={styles.buttonContainer}>
                   {lecture.course_id && executionType_id && <Button containerStyle={styles.button} onPress={() => setIsEditing(true)}>Edit note</Button> }
-                  {lecture.course_id && executionType_id && <View style={{width: 2, backgroundColor: colors.surface }}/>}
                   <Button containerStyle={styles.button} onPress={onRequestClose}>Close</Button>
                 </View>
               </>
@@ -106,7 +108,7 @@ function LectureDetails({modalVisible, onRequestClose, lecture}: LectureDetailsP
           </Animated.View>
         </Animated.View>
       </Modal>
-    </View>
+    </BlurView>
   )
 }
 
@@ -118,7 +120,7 @@ const styles = StyleSheet.create({
     flex: 1, 
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    //backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   centeredContainer: {
     width: '85%',
@@ -127,7 +129,6 @@ const styles = StyleSheet.create({
     minHeight: 200,
     maxHeight: '90%',
     borderWidth: 1,
-    //borderColor: COLORS.background.seperator,
     borderRadius: 10,
     overflow: 'hidden'
     //elevation: 4,
@@ -154,7 +155,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly'
   },
   buttonContainer: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    gap: 5,
+    padding: 5,
+    paddingTop: 0
   },
   button: {
     flex: 1

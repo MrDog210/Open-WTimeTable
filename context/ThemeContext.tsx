@@ -42,7 +42,9 @@ export type ThemeColorsType = {
   surfaceDisabled: string,
   backdrop: string,
   touchColor: string,
-  border: string
+  border: string,
+  surfaceVariant: string
+  onSurfaceVariant: string,
 }
 
 const lightMode: ThemeColorsType = {
@@ -56,25 +58,31 @@ const lightMode: ThemeColorsType = {
   "onBackground": "rgb(32, 26, 25)",
   "surface": "#EAEAEA",
   "onSurface": "rgb(128 128, 128)",
+  surfaceVariant: "#EAEAEA",
+  onSurfaceVariant: "black",
   "surfaceDisabled": "rgba(32, 26, 25, 0.12)",
   "backdrop": "rgba(59, 45, 44, 0.4)",
-  touchColor: "rgba(32, 26, 25, 0.38)"
+  touchColor: "rgba(32, 26, 25, 0.38)",
+  border: '#e0e0e0',
 }
 
 const darkMode: ThemeColorsType = {
-  "primary": "rgb(255, 179, 172)",
-  "onPrimary": "rgb(104, 0, 8)",
-  "secondary": "rgb(255, 181, 160)",
-  "onSecondary": "rgb(96, 21, 0)",
-  "error": "rgb(255, 180, 171)",
-  "onError": "rgb(105, 0, 5)",
-  "background": "rgb(32, 26, 25)",
+  "primary": "#419bf9",
+  "onPrimary": "white",
+  "secondary": "#8CC3FC",
+  "onSecondary": "white",
+  "error": "rgb(186, 26, 26)",
+  "onError": "white",
+  "background": "#121212",
   "onBackground": "rgb(237, 224, 222)",
-  "surface": "rgba(237, 224, 222, 0.32)",
+  "surface": "#1e1e1e", // TODO: change color to lighter tone
   "onSurface": "rgb(237, 224, 222)",
   "surfaceDisabled": "rgba(237, 224, 222, 0.12)",
   "backdrop": "rgba(59, 45, 44, 0.4)",
-  "touchColor": "rgba(237, 224, 222, 0.75)"
+  "touchColor": "rgba(237, 224, 222, 0.75)",
+  surfaceVariant: "#2C2C2C",
+  onSurfaceVariant: "white",
+  border: '#2c2c2c',
 }
 
 function ThemeContextProvider({children}: {children: ReactNode}) {

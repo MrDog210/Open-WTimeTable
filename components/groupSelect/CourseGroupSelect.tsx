@@ -32,7 +32,7 @@ function CourseGroupSelect({course, groups}: CourseGroupSelectProps) {
 
   return (
     <>
-      <Text>{course.course}</Text>
+      <Text style={{ paddingBottom: 2}}>{course.course}</Text>
       <DropDownPicker 
         items={groups as any}
         open={isDropDownOpen}
@@ -47,7 +47,7 @@ function CourseGroupSelect({course, groups}: CourseGroupSelectProps) {
         multiple={true}
         min={0}
         max={groups.length}
-        onChangeValue={onGroupSelected}
+        onChangeValue={onGroupSelected as any}
         mode='BADGE'
       />
     </>

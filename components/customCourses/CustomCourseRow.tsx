@@ -18,10 +18,11 @@ type CustomCourseRowProps = {
 }
 
 function RightAction(prog: SharedValue<number>, drag: SharedValue<number>) {
+  const { colors } = useTheme()
 
   return (
-    <View style={styles.rightAction}>
-      <Ionicons name="trash-bin-outline" size={28} color="white" />
+    <View style={[styles.rightAction, {backgroundColor: colors.error}]}>
+      <Ionicons name="trash-bin-outline" size={28} color={colors.onError} />
     </View>
   );
 }
@@ -38,7 +39,7 @@ function CustomCourseRow({customCourse, onPress, onLongPress, onSwipeDelete}: Cu
       onSwipeableOpen={onSwipeDelete}
       friction={1.3}
     >
-      <Pressable style={{backgroundColor: 'white'}} onPress={onPress} onLongPress={onLongPress} android_ripple={{color: colors.touchColor }}>
+      <Pressable style={{backgroundColor: colors.background }} onPress={onPress} onLongPress={onLongPress} android_ripple={{color: colors.touchColor }}>
         <View style={styles.containerStyle}>
           <View style={{flexDirection: 'row', gap: 10}}>
             <Text style={{fontWeight: 'bold'}}>{course}</Text>

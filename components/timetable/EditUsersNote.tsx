@@ -15,10 +15,14 @@ function EditUsersNote({note, onCancelPressed, onConfirmPressed}: EditUsersNoteP
 
   return(
     <View style={{flex: 1}}>
-      <Text>Edit note:</Text>
-      <TextInput value={uNote} onChangeText={setUNote} />
+      <View style={styles.contentContainer}>
+        <Text style={{fontWeight: 'bold'}}>Edit note:</Text>
+        <View style={{flex: 1, justifyContent: 'center'}}>
+          <TextInput value={uNote} onChangeText={setUNote} />
+        </View>
+      </View>
       <View style={styles.buttonContainer}>
-        <Button containerStyle={styles.button} onPress={onCancelPressed}>Cancel</Button>
+        <Button mode='SECONDARY' containerStyle={styles.button} onPress={onCancelPressed}>Cancel</Button>
         <Button containerStyle={styles.button} onPress={() => onConfirmPressed(uNote)}>Confirm</Button>
       </View>
     </View>
@@ -28,8 +32,16 @@ function EditUsersNote({note, onCancelPressed, onConfirmPressed}: EditUsersNoteP
 export default EditUsersNote
 
 const styles = StyleSheet.create({
+  contentContainer: {
+    flex: 1,
+    padding: 10,
+    gap: 10
+  },
   buttonContainer: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    gap: 5,
+    padding: 5,
+    paddingTop: 0
   },
   button: {
     flex: 1

@@ -23,7 +23,6 @@ function HourSlice({style, item, onPress, smallMode = false, animationsDisabled 
   const { colors } = useTheme()
   const hexColor = (color === null || color === '') ? colors.onBackground : `#${color}`
 
-  // TODO FIX ANIMATIONS
   const top = useSharedValue(animationsDisabled ? 0 : 50)
   const opacity = useSharedValue(animationsDisabled ? 1 : 0)
 
@@ -40,11 +39,13 @@ function HourSlice({style, item, onPress, smallMode = false, animationsDisabled 
   const textSize = { fontSize: smallMode ? 12 : 14}
   // TODO: in week view, make slices wider
   return (
-    <Pressable style={style} onPress={onPressed}>
+    <Pressable style={[styles.pressable, style, { backgroundColor: colors.surface, borderColor: colors.surfaceVariant }]} onPress={onPressed}>
       <Animated.View style={[styles.container, {top, opacity}]}>
           <View style={styles.titleContainer}>
-            <Text style={[styles.courseName, textSize]}>{course ? course : eventType}</Text>
-            <Text style={textSize}>{executionType}</Text>
+            <View style={styles.courseNameContainer}>
+              <Text style={[styles.courseName, textSize]} numberOfLines={0}>{course ? course : eventType}</Text>
+            </View>
+            <Text style={[styles.executionType, textSize]}>{executionType}</Text>
           </View>
           <View style={styles.detailsContainer}>
             <Text style={styles.timeText}>{`${getTimeFromDate(start_time)} - ${getTimeFromDate(end_time)}`}</Text>
@@ -63,23 +64,29 @@ function HourSlice({style, item, onPress, smallMode = false, animationsDisabled 
 export default HourSlice
 
 const styles = StyleSheet.create({
+  pressable: {
+    borderRadius: 10,
+    overflow: 'hidden',
+    borderWidth: 1
+  },
   container: {
     flex: 1,
-    //elevation: 5,
-    //backgroundColor: isDarkTheme ? COLORS.background.secondary : COLORS.background.primary,
-    borderWidth: 1,
-    //borderColor: COLORS.background.seperator,
     paddingHorizontal: 5,
     paddingTop: 5,
-    overflow: 'hidden'
   },
   titleContainer: {
     flexDirection: 'row',
-    flexWrap: 'wrap'
+    alignItems: 'flex-start',
+  },
+  courseNameContainer: {
+    flex: 1,
   },
   courseName: {
-    flexGrow: 10,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    flexShrink: 1,
+  },
+  executionType: {
+    flexShrink: 0,
   },
   timeText: {
     fontSize: 12

@@ -11,8 +11,8 @@ function Divider({style}: DividerProps) {
   return <View style={[{
       width: '100%',
       borderBottomWidth: 1,
-      borderBottomColor: colors.onBackground
-    }, style]}></View>
+      borderBottomColor: colors.surfaceVariant
+    }, style]} />
 }
 
 export default Divider

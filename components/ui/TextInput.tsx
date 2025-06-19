@@ -27,6 +27,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 16,
+    minHeight: 55
   },
   textInput: {
     flex: 1,

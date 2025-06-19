@@ -36,7 +36,7 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
   const { isWeekView } = route.params
   const [showDatePicker, setShowDatePicker] = useState(false)
   const route2 = useRoute()
-  const { colors } = useTheme()
+  const { colors, theme } = useTheme()
   const queryClient = useQueryClient()
   const updateLecturesMutation = useMutation({
     mutationFn: async (forceUpdate: boolean) => {
@@ -102,10 +102,7 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
       const markedD: MarkedDates = {}
       datesWithLectures.forEach(item => {
         markedD[item.date] = {
-          //selected: true,
           marked: true,
-          //dotColor: 'blue',
-          //selectedColor: "purple",
         }
       })
       await markDatesForCustomLectures(markedD)
@@ -124,7 +121,7 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
         }} iconColor={colors.onBackground} />
       }
     })
-  }, [])
+  }, [colors])
 
   useEffect(() => { 
     if(!ranOnce) {
@@ -135,7 +132,7 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
         navigation.navigate('Home', {screen: 'WeekView', params: {isWeekView: true}})
       }
     }
-  },)
+  }, [])
 
   useEffect(() => {
     const scrollPadding = isWeekView ? 45 : -5
@@ -193,16 +190,66 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
           fromHour={6}
           toHour={22}
           hourHeight={isWeekView ? 65 : 80}
-          
+          style={{
+            container: {
+              marginBottom: 50
+            },
+            timeContainer: {
+              backgroundColor: colors.background
+            },
+            time: {
+              color: colors.onBackground,
+            },
+            lines: {
+              borderColor: colors.surfaceVariant
+            },
+            nowLine: {
+              dot: {
+                backgroundColor: theme === 'dark' ? '#F0F0F040' : '#554d5640'
+              },
+              line: {
+                backgroundColor: theme === 'dark' ? '#F0F0F040' : '#554d5640'
+              },
+            }
+          }}
 
           renderHeader={isWeekView ? props => <TimeTableHeader {...props} /> : undefined}
-
           columnWidth={isWeekView ? getColumnWidth(isWeekView) : undefined}
         />
       </ScrollView>
-        <WeekCalendar
+        <WeekCalendar key={colors.background}
           firstDay={1}
           allowShadow={false}
+          style={{
+            backgroundColor: colors.background
+          }}
+          calendarStyle={{
+            backgroundColor: colors.background
+          }}
+          headerStyle={{
+            backgroundColor: colors.background
+          }}
+          contentContainerStyle={{
+            backgroundColor: colors.background
+          }}
+          columnWrapperStyle={{
+            backgroundColor: colors.background
+          }}
+          ListFooterComponentStyle={{
+            backgroundColor: colors.background
+          }}
+          ListHeaderComponentStyle={{
+            backgroundColor: colors.background
+          }}
+          theme={{
+            backgroundColor: colors.background,
+            dayTextColor: colors.onBackground,
+            agendaTodayColor: colors.onBackground,
+            selectedDayBackgroundColor: colors.primary,
+            calendarBackground: colors.background,
+            reservationsBackgroundColor: colors.background,
+            dotColor: colors.primary
+          }}
                     //leftArrowImageSource={require('../img/previous.png')}
           //rightArrowImageSource={require('../img/next.png')}
           markedDates={markedDates}
@@ -211,53 +258,6 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
       </CalendarProvider>
     </Container>
   )
-
-  /*const fontColor = isDarkTheme ? COLORS.foreground.primary : COLORS.background.primary
-
-  return (
-    <Container>
-      <LectureDetails modalVisible={modalVisible} lecture={modalLecture} onRequestClose={() => {setModelVisible(false)}} />
-      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} ref={scrollRef}>
-        <Timetable items={lectures} 
-          renderItem={({key, ...props}) => <HourSlice key={key} {...props} onPress={lecturePressed} smallMode={isWeekView} animationsDisabled={!timetableAnimationsEnabled}/>} 
-          date={isWeekView ? undefined : date}
-          range={isWeekView ? week : undefined}
-
-          fromHour={6}
-          toHour={22}
-          hourHeight={isWeekView ? 65 : 80}
-          style={timetableStyles}
-
-          renderHeader={isWeekView ? props => <TimeTableHeader {...props} /> : undefined}
-
-          columnWidth={isWeekView ? getColumnWidth(isWeekView) : undefined}
-        />
-      </ScrollView>
-    </Container>
-  )*/
 }
 
 export default TimeTableScreen
-
-/*const timetableStyles = StyleSheet.create({
-  container: {
-    marginBottom: 50
-  },
-  timeContainer: {
-    backgroundColor: COLORS.background.primary
-  },
-  time: {
-    color: COLORS.foreground.secondary,
-  },
-  lines: {
-    borderColor: COLORS.foreground.secondary
-  },
-  nowLine: {
-    dot: {
-      backgroundColor: COLORS.foreground.primaryOpaque
-    },
-    line: {
-      backgroundColor: COLORS.foreground.primaryOpaque
-    },
-  }
-})*/

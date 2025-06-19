@@ -66,7 +66,7 @@ function Navigation() {
       background: colors.background,
       primary: colors.onBackground,
       //border: 'transparent',
-      //card: 'transparent',
+      card: colors.surface,
       text: colors.onBackground
     }
   }

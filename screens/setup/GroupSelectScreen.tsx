@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useSettings } from "../../context/UserSettingsContext"
-import { FlatList, View, StyleSheet } from "react-native"
+import { FlatList, View, StyleSheet, Alert } from "react-native"
 import Button from "../../components/ui/Button"
 import { getAllStoredBranchGroups } from "../../util/store/schoolData"
 import { getAllCourses, getAllDistinctGroupsOfCourse, insertSelectedGroup, querryNumOFSelectedGroups, truncateSelectedGroups } from "../../util/store/database"
@@ -89,7 +89,7 @@ function GroupSelectScreen({route}: ProgramSelectScreenProps) {
         navigation.goBack()
     } catch (error) {
       if(error instanceof Error) {
-        //Alert.alert('An error occured', error.message)
+        Alert.alert('An error occured', error.message)
         console.error(error)
       }
     }
@@ -102,11 +102,12 @@ function GroupSelectScreen({route}: ProgramSelectScreenProps) {
   return (
     <Container style={styles.container}>
       <LoadingOverlay visible={isFetchingData} text={fetchingDataMessage} />
-      <View style={styles.groupSelectContainer}>
-        <FlatList data={coursesAndTheirGroups}
-          renderItem={({item}) => <CourseGroupSelect key={item.course.id} groups={item.groups} course={item.course} />} 
-        />
-      </View>
+      <FlatList 
+        style={{flex: 1}} 
+        contentContainerStyle={{ gap: 5 }}
+        data={coursesAndTheirGroups}
+        renderItem={({item}) => <CourseGroupSelect key={item.course.id} groups={item.groups} course={item.course} />} 
+      />
       <View style={styles.buttonContainer}>
         {isEditing && <Button containerStyle={styles.button} onPress={onCancelPressed} mode="WARNING">Cancel</Button>}
         <Button containerStyle={styles.button} onPress={onFinishedPressed}>Finish</Button>
@@ -119,14 +120,12 @@ export default GroupSelectScreen
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
-  },
-  groupSelectContainer: {
-    flex: 1,
-    padding: 10,
+    padding: 15,
+    paddingTop: 5
   },
   buttonContainer: {
     flexDirection: 'row',
+    gap: 10
   },
   button: {
     flex: 1

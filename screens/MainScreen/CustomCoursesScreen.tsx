@@ -23,8 +23,6 @@ function CustomCoursesScreen() {
     initialData: [],
     networkMode: 'always'
   })
-  
-  // TODO: add swiping to delete
 
   function onAddOrEditCourse(course: CustomLecture) {
     console.log(course)

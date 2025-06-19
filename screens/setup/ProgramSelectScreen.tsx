@@ -2,7 +2,7 @@ import { StaticScreenProps, useNavigation } from "@react-navigation/native";
 import { Programme, SchoolInfo } from "../../types/types";
 import Text from "../../components/ui/Text";
 import Container from "../../components/ui/Container";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { Alert, ScrollView, StyleSheet, View } from "react-native";
 import { useLayoutEffect, useState } from "react";
 import { fetchBranchesForProgramm, getBasicProgrammes } from "../../util/http/api";
 import { setChosenBranch } from "../../util/store/schoolData";
@@ -96,7 +96,7 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
       navigation.navigate('Setup', { screen: 'GroupSelect', params: { isEditing: false} })
     } catch (error) {
       if(error instanceof Error) {
-        //Alert.alert('Error', error.message)
+        Alert.alert('Error', error.message)
         console.error(error.message)
       }
     }
@@ -107,8 +107,8 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
   return (
     <>
     <LoadingOverlay visible={isFetching} text={fetchingDataMessage} />
-    <Container>
-      <ScrollView style={styles.container}>
+    <Container style={styles.container}>
+      <ScrollView contentContainerStyle={{ gap: 15 }}>
         <Text style={{textAlign: 'center', fontWeight: 'bold'}}>Select your program, year and group</Text>
         <View>
           <DropDownPicker items={programms as any}
@@ -130,7 +130,7 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
             open={yearOpen}
             setOpen={setYearOpen}
             value={chosenYear}
-            setValue={setChosenYear}
+            setValue={(a) => {setChosenBranchID(null);setChosenYear(a)}}
             schema={{
               label: 'name',
               value: 'id'
@@ -166,8 +166,7 @@ export default ProgramSelectScreen
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
-    gap: 10,
-    flex: 1
+    padding: 15,
+    paddingTop: 0
   },
 })

@@ -5,6 +5,7 @@ import CustomCoursesScreen from "./CustomCoursesScreen";
 import OptionsScreen from "./OptionsScreen";
 import AboutScreen from "./AboutScreen";
 import { NAVIGATION_STYLE } from "../../util/styling";
+import { Settings } from "react-native";
 
 export const MainDrawer = createDrawerNavigator({
   screens: {
@@ -32,7 +33,7 @@ export const MainDrawer = createDrawerNavigator({
         drawerIcon: ({ focused, color, size }) => <Ionicons name='create-outline' color={color} size={size}/>
       }
     },
-    Options: {
+    Settings: {
       screen: OptionsScreen,
       options: {
         drawerIcon: ({ focused, color, size }) => <Ionicons name='settings-outline' color={color} size={size}/>

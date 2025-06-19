@@ -1,35 +1,18 @@
 import { PressableProps, Pressable, type StyleProp, StyleSheet, View, type ViewStyle, ActivityIndicator, GestureResponderEvent } from "react-native"
-import Text from "./Text"
+import Text from "../ui/Text"
 import { type ReactNode } from "react"
 import { useTheme } from "../../context/ThemeContext"
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 interface MyButtonProps extends PressableProps {
-  mode?: "PRIMARY" | "SECONDARY" | "WARNING" | "TRANSPARENT",
   children?: ReactNode,
   style?: StyleProp<ViewStyle>,
   containerStyle?: StyleProp<ViewStyle>,
-  loading?: boolean,
-  disabled?: boolean
+  disabled?: boolean,
 }
 
-function Button({style, mode = "PRIMARY", children, containerStyle, loading = false, disabled = false, onPress, ...props}: MyButtonProps) {
+function SettingsButton({style, children, containerStyle, disabled = false, onPress, ...props}: MyButtonProps) {
   const {colors} = useTheme()
-  let bgColor: string
-  let fgColor: string
-
-  if(mode === "PRIMARY") {
-    bgColor = colors.primary
-    fgColor = colors.onPrimary
-  } else if (mode === "SECONDARY") {
-    bgColor = colors.secondary
-    fgColor = colors.onSecondary
-  } else if (mode === "WARNING") {
-    bgColor = colors.error
-    fgColor = colors.onError
-  } else {
-    bgColor = "transparent"
-    fgColor = colors.onBackground
-  }
 
   function myOnPresss(event: GestureResponderEvent) {
     if(!disabled && onPress)
@@ -37,18 +20,16 @@ function Button({style, mode = "PRIMARY", children, containerStyle, loading = fa
   }
   
   return (
-    <View style={[{ backgroundColor: bgColor }, styles.containerStyle, containerStyle]}>
+    <View style={[{ backgroundColor: "transparent" }, styles.containerStyle, containerStyle]}>
       <Pressable style={[styles.buttonStyle, style, { backgroundColor: disabled ? colors.surfaceDisabled : undefined }]} onPress={myOnPresss} {...props} android_ripple={{color: disabled ? undefined : colors.touchColor}}>
-        {
-          loading && <ActivityIndicator color={fgColor} />
-        }
-        <Text style={{color: fgColor}} selectable={false}>{children}</Text>
+        <Text style={{color: colors.onBackground, flex: 1}} selectable={false}>{children}</Text>
+        <Ionicons name="arrow-forward-outline" size={24} color={colors.onBackground} />
       </Pressable>
     </View>
   )
 }
 
-export default Button
+export default SettingsButton
 
 const styles = StyleSheet.create({
   containerStyle: {
@@ -56,9 +37,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   buttonStyle: {
-    justifyContent: 'center', 
     alignItems: 'center',
-    padding: 16,
+    paddingVertical: 16,
     flexDirection: 'row',
     gap: 8
   }

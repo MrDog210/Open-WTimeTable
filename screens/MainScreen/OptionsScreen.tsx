@@ -2,19 +2,21 @@ import { useNavigation } from "@react-navigation/native"
 import { useState } from "react"
 import { DefaultView, Theme, useSettings } from "../../context/UserSettingsContext"
 import LoadingOverlay from "../../components/ui/LoadingOverlay"
-import { ScrollView, StyleSheet } from "react-native"
+import { ScrollView, StyleSheet, View } from "react-native"
 import { useMutation } from "@tanstack/react-query"
 import { getSchoolYearDates } from "../../util/dateUtils"
 import { updateLectures } from "../../util/timetableUtils"
 import Text from "../../components/ui/Text"
-import Button from "../../components/ui/Button"
-import { Picker } from '@react-native-picker/picker';
+import { Picker, PickerItemProps, PickerProps } from '@react-native-picker/picker';
 import { Switch } from "react-native-gesture-handler"
+import SettingsButton from "../../components/optionsScreen/SettingsButton"
+import { useTheme } from "../../context/ThemeContext"
 
 function OptionsScreen() {
   const { changeSettings, defaultView, timetableAnimationsEnabled, theme,  } = useSettings()
   const [fetchingDataMessage, setFetchingDataMessage] = useState('')
   const navigation = useNavigation()
+  const {colors} = useTheme()
 
   const changeSelectedGroupsMutation = useMutation({
     mutationFn: async () => {
@@ -53,32 +55,60 @@ function OptionsScreen() {
       timetableAnimationsEnabled: enabled
     })
   }
+  
+  const pickerStyle: Partial<PickerProps> = {
+    dropdownIconColor: colors.onBackground,
+    dropdownIconRippleColor: colors.touchColor,
+    itemStyle: {
+      color: colors.onBackground,
+      //textAlign: 'right'
+    },
+    style: {
+      flex: 2
+      //height: 54,
+      //textAlign: 'right'
+    }
+  }
+
+  const pickerItmeStyle: Partial<PickerItemProps> = {
+    color: colors.onBackground,
+    //fontFamily: ''
+  }
 
   return (
     <>
       <LoadingOverlay visible={changeSelectedGroupsMutation.isPending} text={fetchingDataMessage} />
-      <ScrollView>
-        <Text style={styles.note}>Note: this is required to do every semester</Text>
-        <Button onPress={restartSetup}>Restart setup</Button>
-        <Button onPress={changeSelectedGroups}>Change selected groups</Button>
-        <Text>Theme</Text>
-        <Picker selectedValue={theme} onValueChange={changeTheme}>
-          <Picker.Item label="System" value={Theme.SYSTEM} />
-          <Picker.Item label="Light" value={Theme.LIGHT} />
-          <Picker.Item label="Dark" value={Theme.DARK} />
-        </Picker>
-        <Text>Default timetable view</Text>
-        <Picker selectedValue={defaultView} onValueChange={changeDefaultView}>
-          <Picker.Item label="Day view" value={DefaultView.DAY_VIEW} />
-          <Picker.Item label="Week view" value={DefaultView.WEEK_VIEW} />
-        </Picker>
-        <Text>Default timetable view</Text>
-        <Picker selectedValue={defaultView} onValueChange={changeDefaultView}>
-          <Picker.Item label="Day view" value={DefaultView.DAY_VIEW} />
-          <Picker.Item label="Week view" value={DefaultView.WEEK_VIEW} />
-        </Picker>
-        <Text>Timetable animations </Text>
-        <Switch value={timetableAnimationsEnabled} onValueChange={changeTimetableAnimationns} />
+      <ScrollView contentContainerStyle={styles.containerStyle}>
+        <Text style={styles.header}>General</Text>
+        <SettingsButton onPress={restartSetup}>Restart setup</SettingsButton>
+        <SettingsButton onPress={changeSelectedGroups}>Change selected groups</SettingsButton>
+        <Text style={styles.header}>Appearance</Text>
+        <View style={styles.pickerContainer}>
+          <Text style={{alignSelf: 'center', flex: 3}}>Theme</Text>
+          <Picker 
+            {...pickerStyle}
+            selectedValue={theme} onValueChange={changeTheme}>
+            <Picker.Item {...pickerItmeStyle} label="System" value={Theme.SYSTEM} />
+            <Picker.Item {...pickerItmeStyle} label="Light" value={Theme.LIGHT} />
+            <Picker.Item {...pickerItmeStyle} label="Dark" value={Theme.DARK} />
+          </Picker>
+        </View>
+        <View style={styles.pickerContainer}>
+          <Text style={{alignSelf: 'center', flex: 3}}>Default timetable view</Text>
+          <Picker {...pickerStyle} selectedValue={defaultView} onValueChange={changeDefaultView}>
+            <Picker.Item {...pickerItmeStyle} label="Day view" value={DefaultView.DAY_VIEW} />
+            <Picker.Item {...pickerItmeStyle} label="Week view" value={DefaultView.WEEK_VIEW} />
+          </Picker>
+        </View>
+        <View style={styles.switchContainer}>
+          <Text style={{alignSelf: 'center'}}>Timetable animations</Text>
+          <Switch trackColor={{
+            false: colors.surfaceVariant,
+            true: colors.secondary
+          }} 
+          thumbColor={colors.primary}
+          value={timetableAnimationsEnabled} onValueChange={changeTimetableAnimationns} />
+        </View>
       </ScrollView>
     </>
   )
@@ -91,5 +121,25 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingTop: 10,
     fontSize: 10
+  },
+  containerStyle: {
+    paddingHorizontal: 15
+  },
+  header: {
+    fontWeight: 700,
+    fontSize: 18,
+    paddingVertical: 5
+  },
+  switchContainer: { 
+    flexDirection: 'row',
+    //alignContent: 'center',
+    justifyContent: 'space-between',
+    height: 54
+  },
+  pickerContainer: {
+    flexDirection: 'row',
+    //alignContent: 'center',
+    justifyContent: 'space-between',
+    height: 54
   }
 })
