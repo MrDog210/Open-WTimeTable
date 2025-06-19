@@ -1,0 +1,32 @@
+name: Expo Health Check
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  expo-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Expo Doctor
+        run: npx expo doctor
+
+      - name: Run Expo ESlint
+        run: npx expo lint
+      
+      - name: Run TypeScript Check
+        run: npx tsc --noEmit
