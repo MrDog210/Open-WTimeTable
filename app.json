@@ -29,12 +29,12 @@
           "backgroundColor": "#ecedee",
           "image": "./assets/splash-icon.png",
           "dark": {
-            "backgroundColor": "#1A1A1A"
+            "backgroundColor": "#1A1A1A",
+            "image": "./assets/splash-icon.png"
           },
           "imageWidth": 200
         }
-      ],
-      "expo-background-task"
+      ]
     ],
     "extra": {
       "eas": {

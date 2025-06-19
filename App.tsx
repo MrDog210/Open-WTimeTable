@@ -3,7 +3,7 @@ import ThemeContextProvider, { useTheme } from './context/ThemeContext';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import UserSettingsContextProvider, { useSettings } from './context/UserSettingsContext';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createStaticNavigation, DefaultTheme, StaticParamList, useNavigation } from '@react-navigation/native';
+import { createStaticNavigation, DefaultTheme, StaticParamList } from '@react-navigation/native';
 import SetupScreenNavigation from './screens/setup/SetupScreenNavigation';
 import { onlineManager, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -49,6 +49,7 @@ type RootStackParamList = StaticParamList<typeof RootStack>;
 
 declare global {
   namespace ReactNavigation {
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface RootParamList extends RootStackParamList {}
   }
 }
