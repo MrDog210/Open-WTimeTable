@@ -23,7 +23,7 @@ jobs:
         run: npm install
 
       - name: Run Expo Doctor
-        run: npx expo doctor
+        run: npx expo-doctor
 
       - name: Run Expo ESlint
         run: npx expo lint
