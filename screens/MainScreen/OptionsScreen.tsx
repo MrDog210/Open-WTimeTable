@@ -2,7 +2,7 @@ import { useNavigation } from "@react-navigation/native"
 import { useState } from "react"
 import { DefaultView, Theme, useSettings } from "../../context/UserSettingsContext"
 import LoadingOverlay from "../../components/ui/LoadingOverlay"
-import { ScrollView, StyleSheet, View } from "react-native"
+import { Alert, ScrollView, StyleSheet, View } from "react-native"
 import { useMutation } from "@tanstack/react-query"
 import { getSchoolYearDates } from "../../util/dateUtils"
 import { updateLectures } from "../../util/timetableUtils"
@@ -35,7 +35,14 @@ function OptionsScreen() {
   }
 
   async function changeSelectedGroups() {
-    changeSelectedGroupsMutation.mutateAsync()
+    try {
+      await changeSelectedGroupsMutation.mutateAsync()
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(error)
+        Alert.alert('Error', error.message)
+      }
+    }
   }
 
   function changeTheme(newTheme: Theme) {

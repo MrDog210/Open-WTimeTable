@@ -1,5 +1,5 @@
 import { useWindowDimensions } from "react-native";
-import { Course, ExecutionType, GroupBranchChild, GroupBranchMain, GroupLecture, Lecturer, Room } from "../types/types"
+import { GroupBranchChild, GroupBranchMain } from "../types/types"
 import { fetchGroupsForBranch, fetchLecturesForGroups, getSchoolInfo } from "./http/api"
 import { hasInternetConnection } from "./http/http"
 import { deleteLecturesBetweenDates, getAllDistinctSelectedGroups, insertCourse, insertExecutionType, insertGroup, insertLecture, insertLecturer, insertRoom } from "./store/database"
@@ -11,7 +11,7 @@ export async function getAndSetAllDistinctBranchGroups(schoolCode: string, chose
   return groups
 }
 
-function makeUniqueArray<T, K extends keyof T>(
+/*function makeUniqueArray<T, K extends keyof T>(
   arr: T[],
   key: K
 ): T[] {
@@ -75,6 +75,37 @@ export async function fetchAndInsertLectures(schoolCode: string, allGroups: { id
     promises.push(insertLecture(lecture))
 
   return Promise.all(promises)
+}*/
+
+export async function fetchAndInsertLectures(
+  schoolCode: string,
+  allGroups: { id: number }[],
+  startDate: Date,
+  endDate: Date
+) {
+  const allLectures = await fetchLecturesForGroups(schoolCode, allGroups, startDate, endDate);
+  await deleteLecturesBetweenDates(startDate, endDate);
+
+  console.log("Number of lectures: " + allLectures.length);
+
+  for (const { rooms, groups, lecturers, executionTypeId, executionType, course, courseId } of allLectures) {
+    if (course !== '') await insertCourse(Number(courseId), course);
+    if (executionType !== '') await insertExecutionType(Number(executionTypeId), executionType);
+
+    for (const room of rooms) {
+      await insertRoom(room.id, room.name).catch((error) => console.log("insertRoom error", error));
+    }
+    for (const group of groups) {
+      await insertGroup(group.id, group.name).catch((error) => console.log("insertGroup error", error));
+    }
+    for (const lecturer of lecturers) {
+      await insertLecturer(lecturer.id, lecturer.name).catch((error) => console.log("insertLecturer error", error));
+    }
+  }
+
+  // Now insert all lectures in parallel (if they're independent)
+  const promises = allLectures.map(lecture => insertLecture(lecture));
+  return Promise.all(promises);
 }
 
 export async function updateLectures(startDate: Date, endDate: Date, fastRefresh = false) {

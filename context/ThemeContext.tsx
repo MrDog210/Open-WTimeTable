@@ -50,7 +50,7 @@ export type ThemeColorsType = {
 const lightMode: ThemeColorsType = {
   primary: "rgb(186, 26, 32)",
   onPrimary: "rgb(255, 255, 255)",
-  secondary: "rgb(176, 46, 0)",
+  secondary: "#eb5261",
   onSecondary: "rgb(255, 255, 255)",
   error: "rgb(186, 26, 26)",
   onError: "rgb(255, 255, 255)",

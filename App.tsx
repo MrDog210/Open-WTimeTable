@@ -3,7 +3,7 @@ import ThemeContextProvider, { useTheme } from './context/ThemeContext';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import UserSettingsContextProvider, { useSettings } from './context/UserSettingsContext';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createStaticNavigation, DefaultTheme, StaticParamList, useNavigation } from '@react-navigation/native';
+import { createStaticNavigation, DefaultTheme, StaticParamList } from '@react-navigation/native';
 import SetupScreenNavigation from './screens/setup/SetupScreenNavigation';
 import { onlineManager, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -11,6 +11,7 @@ import { MainDrawer } from './screens/MainScreen/MainScreenNavigation';
 import NetInfo from '@react-native-community/netinfo'
 import GroupSelectScreen from './screens/setup/GroupSelectScreen';
 import { NAVIGATION_STYLE } from './util/styling';
+import { View } from 'react-native';
 
 function useHasCompletedSetup() {
   const {hasCompletedSetup} = useSettings()
@@ -49,6 +50,7 @@ type RootStackParamList = StaticParamList<typeof RootStack>;
 
 declare global {
   namespace ReactNavigation {
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface RootParamList extends RootStackParamList {}
   }
 }
@@ -72,7 +74,10 @@ function Navigation() {
   }
 
   return (
-    <StaticNavigation theme={myTheme} />
+    <View style={{flex: 1, backgroundColor: colors.background}}>
+      <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
+      <StaticNavigation theme={myTheme} />
+    </View>
   )
 }
 
@@ -91,7 +96,6 @@ export default function App() {
         <UserSettingsContextProvider>
           <ThemeContextProvider>
             <GestureHandlerRootView>
-              <StatusBar style="auto" />
               <Navigation />
             </GestureHandlerRootView>
           </ThemeContextProvider>
