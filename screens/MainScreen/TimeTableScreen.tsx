@@ -1,12 +1,13 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useNavigation, useRoute, type StaticScreenProps } from "@react-navigation/native";
 import Container from "../../components/ui/Container";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { DefaultView, useSettings } from "../../context/UserSettingsContext";
 import { Lecture, TimetableLecture } from "../../types/types";
-import { addDaysToDate, dateFromNow, formatDate, formatWeekDate, getDates, getFriday, getISODateNoTimestamp, getMonday, getWeekDates, subtrackSeconds } from "../../util/dateUtils";
-import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
+import { dateFromNow, formatDate, formatWeekDate, getDates, getISODateNoTimestamp, getWeekDates, subtrackSeconds } from "../../util/dateUtils";
+import { RefreshControl, ScrollView, } from "react-native";
 import { calculateNowLineOffset, getColumnWidth, hasTimetableUpdated, updateLectures } from "../../util/timetableUtils";
-import { getAllDatesWithLectures, getDatesWithLectures, getLecturesForDate } from "../../util/store/database";
+import { getAllDatesWithLectures, getLecturesForDate } from "../../util/store/database";
 import { getCustomLecturesForDates, markDatesForCustomLectures } from "../../util/store/customLectures";
 import { CalendarProvider, WeekCalendar } from "react-native-calendars";
 import Timetable from "react-native-calendar-timetable";
@@ -29,7 +30,7 @@ let ranOnce = false
 function TimeTableScreen({ route }: TimeTableScreenProps) {
   const { timetableAnimationsEnabled, defaultView } = useSettings()
   const [modalLecture, setModalLecture] = useState<Lecture | null>(null)
-  const [date, setDate] = useState<Date>(new Date("2025-05-05")) // TODO: revert this
+  const [date, setDate] = useState<Date>(new Date()) // "2025-05-05"
   const [week, setWeek] = useState(getWeekDates(date)) // TODO: maybe remove this
   const scrollRef = useRef<ScrollView>(null);
   const navigation = useNavigation()
@@ -50,8 +51,8 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
         console.log("timetable updates found")
       }
       
-      await updateLectures(new Date('2025-01-01'), dateFromNow(200), true)
-      //await updateLectures(new Date(), dateFromNow(200), true) // TODO: revert this
+      //await updateLectures(new Date('2025-01-01'), dateFromNow(200), true)
+      await updateLectures(new Date(), dateFromNow(200), true)
 
       const endTime = performance.now()
       console.log(`Updating lectures took ${endTime - startTime} milliseconds`)

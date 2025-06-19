@@ -1,4 +1,4 @@
-import { PressableProps, Pressable, type StyleProp, StyleSheet, View, type ViewStyle, ActivityIndicator, GestureResponderEvent } from "react-native"
+import { PressableProps, Pressable, type StyleProp, StyleSheet, View, type ViewStyle, GestureResponderEvent } from "react-native"
 import Text from "../ui/Text"
 import { type ReactNode } from "react"
 import { useTheme } from "../../context/ThemeContext"

@@ -1,4 +1,4 @@
-import { Pressable, View, StyleSheet, Dimensions } from "react-native"
+import { Pressable, View, StyleSheet } from "react-native"
 import { CustomLecture } from "../../types/types"
 import Text from "../ui/Text"
 import Divider from "../ui/Divider"
@@ -28,7 +28,7 @@ function RightAction(prog: SharedValue<number>, drag: SharedValue<number>) {
 }
 
 function CustomCourseRow({customCourse, onPress, onLongPress, onSwipeDelete}: CustomCourseRowProps) {
-  const { id, course, note, start_time, end_time, days_of_week, groups, lecturers, rooms} = customCourse
+  const { course, start_time, end_time, days_of_week, lecturers, rooms} = customCourse
   const { colors } = useTheme()
   // TODO: fix styling
   return (

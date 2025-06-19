@@ -1,11 +1,7 @@
 import { Text as TextRN, type TextProps } from "react-native"
 import { useTheme } from "../../context/ThemeContext"
 
-interface MyTextProps extends TextProps {
-
-}
-
-function Text({style, ...props}: MyTextProps) {
+function Text({style, ...props}: TextProps) {
   const {colors} = useTheme()
   return (
     <TextRN style={[{fontSize: 16, color: colors.onBackground}, style]} {...props} />

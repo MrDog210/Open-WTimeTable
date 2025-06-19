@@ -1,5 +1,5 @@
 import Storage from 'expo-sqlite/kv-store';
-import { CustomLecture, Lecture, TimetableLecture } from '../../types/types';
+import { CustomLecture, TimetableLecture } from '../../types/types';
 import { addDaysToDate, getISODateNoTimestamp, getMonday, subtrackSeconds } from '../dateUtils';
 import { MarkedDates } from 'react-native-calendars/src/types';
 

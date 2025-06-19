@@ -17,7 +17,7 @@ function CourseGroupSelect({course, groups}: CourseGroupSelectProps) {
       if(group.selected)
         setChosenGroupsID(values => [...values, group.id])
     })
-  }, [])
+  }, [groups])
 
   function onGroupSelected(groupsIds: number[]) {
     groups.forEach(group => {

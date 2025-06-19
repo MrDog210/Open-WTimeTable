@@ -1,4 +1,4 @@
-import { Branch, Group, GroupBranchMain, LectureWise, Programme, SchoolInfo } from "../../types/types"
+import { Branch, GroupBranchMain, LectureWise, Programme, SchoolInfo } from "../../types/types"
 import { API_URL } from "../constants"
 import { getISODateNoTimestamp } from "../dateUtils"
 import { getServerUrl, setServerUrl } from "../store/schoolData"

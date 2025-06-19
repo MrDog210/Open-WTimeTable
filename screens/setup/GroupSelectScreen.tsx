@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { useSettings } from "../../context/UserSettingsContext"
 import { FlatList, View, StyleSheet, Alert } from "react-native"
 import Button from "../../components/ui/Button"
@@ -23,14 +23,13 @@ type CoursesAndTheirGroups = {
 }
 
 function GroupSelectScreen({route}: ProgramSelectScreenProps) {
-  const [isFetchingData, setIsFetchingData] = useState<boolean>(false)
   const [fetchingDataMessage, setFetchingDataMessage] = useState<string>('Querying data')
   const { changeSettings } = useSettings()
   const navigation = useNavigation()
   const { isEditing = false } = route.params
   const queryClient = useQueryClient()
 
-  const { data: coursesAndTheirGroups} = useQuery<CoursesAndTheirGroups[]>({
+  const { data: coursesAndTheirGroups, isPending} = useQuery<CoursesAndTheirGroups[]>({
     initialData: [],
     queryFn: async () => {
       const branchGroups = await getAllStoredBranchGroups() // it is used to filter out unwanted groups
@@ -99,9 +98,11 @@ function GroupSelectScreen({route}: ProgramSelectScreenProps) {
     navigation.goBack()
   }
 
+  const isFetching = useMemo(() => insertSelectedGroups.isPending || isPending, [insertSelectedGroups, isPending])
+
   return (
     <Container style={styles.container}>
-      <LoadingOverlay visible={isFetchingData} text={fetchingDataMessage} />
+      <LoadingOverlay visible={isFetching} text={fetchingDataMessage} />
       <FlatList 
         style={{flex: 1}} 
         contentContainerStyle={{ gap: 5 }}

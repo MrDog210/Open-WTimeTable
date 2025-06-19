@@ -5,7 +5,6 @@ import Button from "../ui/Button";
 import { View, StyleSheet, ScrollView } from "react-native";
 import TextInput from "../ui/TextInput";
 import Text from "../ui/Text";
-import { getTimeFromDate } from "../../util/dateUtils";
 import { useTheme } from "../../context/ThemeContext";
 import DatePicker from "react-native-date-picker";
 import DropDownPicker from "../ui/DropDownPicker";
@@ -67,6 +66,7 @@ function EditCustomLectureModal({customCourse = undefined, onCancelPressed, onCo
   useEffect(() => {
     setCourse(customCourse ? customCourse : DEFAULT_VALUES)
     syncDropdown()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customCourse])
 
   return (

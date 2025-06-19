@@ -8,7 +8,7 @@ import { Lecture, TimetableLecture } from "../../types/types"
 import { CardProps } from "react-native-calendar-timetable/lib/types"
 import { useEffect } from "react"
 
-interface HourSlice extends CardProps<TimetableLecture> {
+interface HourSliceProps extends CardProps<TimetableLecture> {
   animationsDisabled: boolean,
   smallMode: boolean,
   onPress: (lecture: Lecture) => void,
@@ -18,8 +18,8 @@ function getDelayBasedOnPosition(top: number, left: number) {
   return (top + left * 2) * 0.3
 }
 
-function HourSlice({style, item, onPress, smallMode = false, animationsDisabled = true}: HourSlice) {
-  const {course, eventType, start_time, end_time, note, showLink, color, colorText, rooms, groups, lecturers, executionType, usersNote} = item.lecture
+function HourSlice({style, item, onPress, smallMode = false, animationsDisabled = true}: HourSliceProps) {
+  const {course, eventType, start_time, end_time, color, colorText, rooms, lecturers, executionType, usersNote} = item.lecture
   const { colors } = useTheme()
   const hexColor = (color === null || color === '') ? colors.onBackground : `#${color}`
 
@@ -34,7 +34,7 @@ function HourSlice({style, item, onPress, smallMode = false, animationsDisabled 
     const delay = getDelayBasedOnPosition(style.top, style.left)
     top.value = withDelay(delay , withSpring(0))
     opacity.value = withDelay(delay , withTiming(1, {duration: 500}))
-  }, [])
+  })
 
   const textSize = { fontSize: smallMode ? 12 : 14}
   // TODO: in week view, make slices wider

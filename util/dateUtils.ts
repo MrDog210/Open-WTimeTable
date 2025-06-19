@@ -30,7 +30,7 @@ export function formatWeekDate(fromDate: Date | string, toDate: Date | string) {
 
 export function getMonday(d: Date | string) {
   d = new Date(d);
-  var day = d.getDay(),
+  const day = d.getDay(),
     diff = d.getDate() - day + 1; // adjust when day is sunday
   return new Date(d.setDate(diff));
 }

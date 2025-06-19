@@ -45,10 +45,11 @@ function LectureDetails({modalVisible, onRequestClose, lecture}: LectureDetailsP
     const isVisible = modalVisible ? 1 : 0
     opacity.value = withTiming(isVisible, {duration: 300})
     top.value =  withTiming(isVisible ? 0 : 50, {duration: 300, easing: Easing.inOut(Easing.poly(2))})
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [modalVisible])
 
   // OUTPUT
-  const {course, course_id, eventType, start_time, end_time, note, showLink, color, colorText, rooms, groups, lecturers, executionType, executionType_id, usersNote} = lecture ?? {}
+  const {course, course_id, eventType, start_time, end_time, note, showLink, rooms, groups, lecturers, executionType, executionType_id, usersNote} = lecture ?? {}
   const [customNote, setCustomNote] = useState<string>(usersNote ? usersNote.note : '')
   const [isEditing, setIsEditing] = useState(false)
 
@@ -63,7 +64,7 @@ function LectureDetails({modalVisible, onRequestClose, lecture}: LectureDetailsP
     if(!lecture)
       return
     setCustomNote(usersNote ? usersNote.note : '')
-  }, [lecture])
+  }, [lecture, usersNote])
 
   if(lecture === null)
     return

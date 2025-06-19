@@ -1,5 +1,5 @@
 import Storage from 'expo-sqlite/kv-store';
-import { Branch, Group, GroupBranchChild, GroupBranchMain, SchoolInfo } from '../../types/types';
+import { Branch, GroupBranchChild, SchoolInfo } from '../../types/types';
 
 export async function getUrlSchoolCode() {
   return Storage.getItem('UrlSchoolCode')

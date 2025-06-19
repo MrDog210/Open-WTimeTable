@@ -1,6 +1,5 @@
-import { ScrollView, View } from "react-native";
+import { View } from "react-native";
 import Text from "./Text";
-import Container from "./Container";
 import Button from "./Button";
 import TextInput from "./TextInput";
 

@@ -47,7 +47,7 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
     navigation.setOptions({
       title: schoolInfo.schoolName
     })
-  }, [])
+  })
 
   const { data: programms, ...basicProgrammesQuery} = useQuery({
     queryFn: () => getBasicProgrammes(schoolInfo.schoolCode),
@@ -75,7 +75,7 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
 
   const saveAndInsertData = useMutation({
     mutationFn: async () => {
-      const chosenBranch = branches!.find(b => b.id == chosenBranchID)
+      const chosenBranch = branches!.find(b => b.id === chosenBranchID)
       if(!chosenBranch) return
       await setChosenBranch(chosenBranch) // we store the chosen branch, for future use
       await truncateDatabase()
