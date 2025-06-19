@@ -1,18 +1,17 @@
 {
   "expo": {
-    "name": "Open Wise TimeTable",
-    "slug": "Open-WTimeTable",
-    "version": "1.4.0",
+    "name": "open-wtimetable",
+    "slug": "open-wtimetable",
+    "version": "2.0.0",
+    "orientation": "default",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#1A1A1A"
+      "backgroundColor": "#ecedee"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
     "ios": {
       "supportsTablet": true
     },
@@ -21,14 +20,29 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#1A1A1A"
       },
-      "package": "com.mrdog210.OpenWTimeTable"
+      "edgeToEdgeEnabled": true,
+      "package": "com.mrdog210.OpenWTimeTable2"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
+    "plugins": [
+      "expo-sqlite",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#ecedee",
+          "image": "./assets/splash-icon.png",
+          "dark": {
+            "backgroundColor": "#151718"
+          },
+          "imageWidth": 200
+        }
+      ]
+    ],
     "extra": {
       "eas": {
-        "projectId": "637bc169-60f9-431d-8c4c-f9230617aa93"
+        "projectId": "e0e07b4f-e428-4cc7-af85-1c25528b2bbc"
       }
     }
   }

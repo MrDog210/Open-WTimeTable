@@ -1,1 +1,0 @@
-export const URL = 'https://wise-tt.com/WTTWebRestAPI/ws/rest/'
