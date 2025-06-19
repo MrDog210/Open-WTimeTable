@@ -22,7 +22,6 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-sqlite",
       [
         "expo-splash-screen",
         {

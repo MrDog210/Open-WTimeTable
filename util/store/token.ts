@@ -1,6 +1,8 @@
 import { API_URL, PASSWORD, USERNAME } from "../constants"
-import Storage from 'expo-sqlite/kv-store';
+import { Storage } from '@op-engineering/op-sqlite';
 import { encode, decode } from "base-64";
+
+const storage = new Storage({})
 
 type FetchTokenResponse = {
   token: string
@@ -24,13 +26,13 @@ export async function fetchToken() {
 }
 
 async function storeToken(token: string) {
-  return Storage.setItem('token', token)
+  return storage.setItem('token', token)
 }
 
 export async function getToken() {
-  let token = await Storage.getItem('token');
+  let token = await storage.getItem('token');
 
-  if(token !== null) {
+  if(token) {
     const base64Strings = token.split('.')
     const payload = JSON.parse(decode(base64Strings[1])) as any as { exp: number}
     const nowInSeconds = Math.floor(Date.now() / 1000);
