@@ -7,11 +7,6 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ecedee"
-    },
     "ios": {
       "supportsTablet": true
     },
@@ -34,11 +29,12 @@
           "backgroundColor": "#ecedee",
           "image": "./assets/splash-icon.png",
           "dark": {
-            "backgroundColor": "#151718"
+            "backgroundColor": "#1A1A1A"
           },
           "imageWidth": 200
         }
-      ]
+      ],
+      "expo-background-task"
     ],
     "extra": {
       "eas": {

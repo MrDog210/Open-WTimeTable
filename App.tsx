@@ -72,7 +72,10 @@ function Navigation() {
   }
 
   return (
-    <StaticNavigation theme={myTheme} />
+    <>
+      <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
+      <StaticNavigation theme={myTheme} />
+    </>
   )
 }
 
@@ -91,7 +94,6 @@ export default function App() {
         <UserSettingsContextProvider>
           <ThemeContextProvider>
             <GestureHandlerRootView>
-              <StatusBar style="auto" />
               <Navigation />
             </GestureHandlerRootView>
           </ThemeContextProvider>
