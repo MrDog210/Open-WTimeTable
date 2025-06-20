@@ -1,13 +1,13 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { Storage } from '@op-engineering/op-sqlite';
 import * as SplashScreen from 'expo-splash-screen';
+import { storage } from "../util/constants";
 
 async function saveSettings(settings: SavedSettings) {
-  return Storage.setItem('settings', JSON.stringify(settings))
+  return storage.setItem('settings', JSON.stringify(settings))
 }
 
 async function loadSettings() {
-  const json = await Storage.getItem('settings')
+  const json = await storage.getItem('settings')
   if(!json)
     return DEFAULT_VALUES
   const savedSettings = await JSON.parse(json) as SavedSettings

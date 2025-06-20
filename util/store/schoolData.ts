@@ -1,7 +1,5 @@
-import { Storage } from '@op-engineering/op-sqlite';
 import { Branch, GroupBranchChild, SchoolInfo } from '../../types/types';
-
-const storage = new Storage({})
+import { storage } from '../constants';
 
 export async function getUrlSchoolCode() {
   return storage.getItem('UrlSchoolCode')

@@ -1,8 +1,5 @@
-import { API_URL, PASSWORD, USERNAME } from "../constants"
-import { Storage } from '@op-engineering/op-sqlite';
+import { API_URL, PASSWORD, storage, USERNAME } from "../constants"
 import { encode, decode } from "base-64";
-
-const storage = new Storage({})
 
 type FetchTokenResponse = {
   token: string

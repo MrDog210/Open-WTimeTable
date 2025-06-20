@@ -1,8 +1,8 @@
 import { useWindowDimensions } from "react-native";
-import { GroupBranchChild, GroupBranchMain } from "../types/types"
+import { Course, ExecutionType, GroupBranchChild, GroupBranchMain, GroupLecture, Lecturer, Room } from "../types/types"
 import { fetchGroupsForBranch, fetchLecturesForGroups, getSchoolInfo } from "./http/api"
 import { hasInternetConnection } from "./http/http"
-import { deleteLecturesBetweenDates, getAllDistinctSelectedGroups, insertCourse, insertExecutionType, insertGroup, insertLecture, insertLecturer, insertRoom } from "./store/database"
+import { batchInsertGRLETC, deleteLecturesBetweenDates, getAllDistinctSelectedGroups, insertCourse, insertExecutionType, insertGroup, insertLecture, insertLecturer, insertRoom } from "./store/database"
 import { setAllBranchGroups, getSchoolInfo as getStoredSchoolInfo, getAllStoredBranchGroups, getUrlSchoolCode, setSchoolInfo } from "./store/schoolData"
 
 export async function getAndSetAllDistinctBranchGroups(schoolCode: string, chosenBranchID: string) {
@@ -11,7 +11,7 @@ export async function getAndSetAllDistinctBranchGroups(schoolCode: string, chose
   return groups
 }
 
-/*function makeUniqueArray<T, K extends keyof T>(
+function makeUniqueArray<T, K extends keyof T>(
   arr: T[],
   key: K
 ): T[] {
@@ -24,6 +24,7 @@ export async function getAndSetAllDistinctBranchGroups(schoolCode: string, chose
 
 export async function fetchAndInsertLectures(schoolCode: string, allGroups: { id: number }[], startDate: Date, endDate: Date) { // allGroups should be an array of all available groups
   const allLectures = await fetchLecturesForGroups(schoolCode, allGroups, startDate, endDate)
+  if(allLectures.length === 0) return
   await deleteLecturesBetweenDates(startDate, endDate)
 
   console.log("Number of lectures: " + allLectures.length)
@@ -45,27 +46,12 @@ export async function fetchAndInsertLectures(schoolCode: string, allGroups: { id
   const uniqueRooms = makeUniqueArray(allRooms, 'id')
   const uniqueGroups = makeUniqueArray(allGroupsFromFetch, 'id')
   const uniqueLecturers = makeUniqueArray(allLecturers, 'id')
-  const uniqueExecutionTypes = makeUniqueArray(allExecutionTypes, 'id')
-  const uniqueCourses = makeUniqueArray(allCoures, 'id')
+  const uniqueExecutionTypes = makeUniqueArray(allExecutionTypes.filter(v => v.executionType !== ''), 'id')
+  const uniqueCourses = makeUniqueArray(allCoures.filter(v => v.course !== ''), 'id')
 
   //console.log(uniqueRooms, uniqueExecutionTypes, uniqueGroups, uniqueLecturers, uniqueCourses)
   console.log("starting to insert side tables")
-  const promises1: Promise<any>[] = []
-  for(const room of uniqueRooms)
-    promises1.push(insertRoom(room.id, room.name))
-  for(const group of uniqueGroups)
-    promises1.push(insertGroup(group.id, group.name))
-  for(const lecturer of uniqueLecturers)
-    promises1.push(insertLecturer(lecturer.id, lecturer.name))
-  for(const course of uniqueCourses)
-    if(course.course !== '')
-      promises1.push(insertCourse(course.id, course.course))
-  for(const et of uniqueExecutionTypes)
-    if(et.executionType !== '')
-      promises1.push(insertExecutionType(et.id, et.executionType))
-  
-  console.log("awaiting inserting side tables")
-  await Promise.all(promises1)
+  await batchInsertGRLETC(uniqueRooms, uniqueGroups, uniqueLecturers, uniqueExecutionTypes, uniqueCourses)
   console.log("finished inserting side tables")
 
 
@@ -75,9 +61,9 @@ export async function fetchAndInsertLectures(schoolCode: string, allGroups: { id
     promises.push(insertLecture(lecture))
 
   return Promise.all(promises)
-}*/
+}
 
-export async function fetchAndInsertLectures(
+/*export async function fetchAndInsertLectures(
   schoolCode: string,
   allGroups: { id: number }[],
   startDate: Date,
@@ -106,7 +92,7 @@ export async function fetchAndInsertLectures(
   // Now insert all lectures in parallel (if they're independent)
   const promises = allLectures.map(lecture => insertLecture(lecture));
   return Promise.all(promises);
-}
+}*/
 
 export async function updateLectures(startDate: Date, endDate: Date, fastRefresh = false) {
   const hasInternet = await hasInternetConnection()
@@ -172,8 +158,8 @@ export function getAllUniqueGroups(allGroups: GroupBranchMain[]) {
 
 export function getGroupsIntersection(groups1: GroupBranchChild[], groups2: GroupBranchChild[]) { // returns all the common groups between two arrays
   const commonGroups: GroupBranchChild[] = []
-  console.log('g1' + groups1)
-  console.log('g2' + groups2)
+  console.log('g1', groups1)
+  console.log('g2', groups2)
 
   groups1.forEach(g1 => {
     groups2.forEach(g2 => {

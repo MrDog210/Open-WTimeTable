@@ -1,9 +1,8 @@
-import { Storage } from '@op-engineering/op-sqlite';
+
 import { CustomLecture, TimetableLecture } from '../../types/types';
+import { storage } from '../constants';
 import { addDaysToDate, getISODateNoTimestamp, getMonday, subtrackSeconds } from '../dateUtils';
 import { MarkedDates } from 'react-native-calendars/src/types';
-
-const storage = new Storage({})
 
 export async function getCustomLectures() {
   const data = await storage.getItem('customLectures')
