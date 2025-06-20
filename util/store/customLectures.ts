@@ -1,10 +1,11 @@
-import Storage from 'expo-sqlite/kv-store';
+
 import { CustomLecture, TimetableLecture } from '../../types/types';
+import { storage } from '../constants';
 import { addDaysToDate, getISODateNoTimestamp, getMonday, subtrackSeconds } from '../dateUtils';
 import { MarkedDates } from 'react-native-calendars/src/types';
 
 export async function getCustomLectures() {
-  const data = await Storage.getItem('customLectures')
+  const data = await storage.getItem('customLectures')
 
   if(data)
     return JSON.parse(data) as CustomLecture[]
@@ -12,7 +13,7 @@ export async function getCustomLectures() {
 }
 
 export async function setCustomLectures(customLectures: CustomLecture[]) {
-  return Storage.setItem('customLectures', JSON.stringify(customLectures))
+  return storage.setItem('customLectures', JSON.stringify(customLectures))
 }
 
 export async function getCustomLecturesForDates(dates: Date[]): Promise<TimetableLecture[]> {

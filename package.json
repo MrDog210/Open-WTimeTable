@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@expo/metro-runtime": "~5.0.4",
+    "@op-engineering/op-sqlite": "^14.0.4",
     "@react-native-community/netinfo": "11.4.1",
     "@react-native-picker/picker": "2.11.0",
     "@react-navigation/drawer": "^7.4.1",
@@ -24,7 +25,6 @@
     "expo-blur": "~14.1.5",
     "expo-dev-client": "~5.2.1",
     "expo-splash-screen": "~0.30.9",
-    "expo-sqlite": "~15.2.12",
     "expo-status-bar": "~2.2.3",
     "react": "19.0.0",
     "react-dom": "19.0.0",
