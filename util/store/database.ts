@@ -1,80 +1,80 @@
-import * as SQLite from 'expo-sqlite';
+import { open } from '@op-engineering/op-sqlite';
 import { CREATE_DATABASE, DELETE_COMMANDS } from '../constants';
 import { Course, GroupBranchChild, Lecture, LectureWise, Lecturer, Room, UsersNote } from '../../types/types';
 import { getISODateNoTimestamp } from '../dateUtils';
 
-const database = SQLite.openDatabaseAsync('lectures.db', {
-    useNewConnection: true
-})
+const db = open({
+  name: 'lectures.db',
+});
 
 export async function init() {
-  const db = await database
+  
   for (const sql of CREATE_DATABASE) {
     console.log('creating table')
-    await db.execAsync(sql)
+    await db.executeWithHostObjects(sql)
   }
 }
 
 export async function truncateDatabase() {
-  const db = await database
+  
 
   for(const sql of DELETE_COMMANDS) {
-    await db.execAsync(sql)
+    await db.executeWithHostObjects(sql)
   }
 }
 
 export async function insertGroup(id: number, name: string) {
-  const db = await database
+  
   return db.runAsync('INSERT OR IGNORE INTO groups (id, name) VALUES (?,?);', [id, name])
 } 
 
 export async function insertRoom(id: number, name: string) {
-  const db = await database
+  
   return db.runAsync('INSERT OR IGNORE INTO rooms (id, name) VALUES (?,?);', [id, name])
 }
 
 export async function insertLecturer(id: number, name: string) {
-  const db = await database
+  
   return db.runAsync('INSERT OR IGNORE INTO lecturers (id, name) VALUES (?,?);', [id, name])
 }
 
 export async function insertExecutionType(id: number, executionType: string) {
-  const db = await database
+  
   return db.runAsync('INSERT OR IGNORE INTO executionTypes (id, executionType) VALUES (?,?);', [id, executionType])
 }
 
 export async function insertCourse(id: number, course: string) {
-  const db = await database
+  
   return db.runAsync('INSERT OR IGNORE INTO courses (id, course) VALUES (?,?);', [id, course])
 }
 
 export async function insertLecturesHasGroups(lecturesId: number, groupsId: number) {
-  const db = await database
+  
   return db.runAsync('INSERT INTO lectures_has_groups (lectures_id, groups_id) VALUES (?, ?);', [lecturesId, groupsId])
 }
 
 export async function insertLecturesHasLecturers(lecturesId: number, lecturersId: number) {
-  const db = await database
+  
   return db.runAsync('INSERT INTO lectures_has_lecturers (lectures_id, lecturers_id) VALUES (?,?);', [lecturesId, lecturersId])
 }
 
 export async function insertLecturesHasRooms(lecturesId: number, roomsId: number) {
-  const db = await database
+  
   return db.runAsync('INSERT INTO lectures_has_rooms (lectures_id, rooms_id) VALUES (?,?);', [lecturesId, roomsId])
 }
 
 export async function truncateSelectedGroups() {
-  const db = await database
-  return db.execAsync('DELETE FROM selected_groups;')
+  
+  return db.executeWithHostObjects('DELETE FROM selected_groups;')
 }
 
 export async function insertSelectedGroup(courses_id: number, groups_id: number) {
-  const db = await database
+  
   return db.runAsync('INSERT INTO selected_groups (courses_id, groups_id) VALUES (?,?);', [courses_id, groups_id])
 }
 
 export async function insertLecture({start_time, end_time, eventType, note, showLink, color, colorText, courseId, executionTypeId, branches, rooms, groups, lecturers}: LectureWise) {
-  const db = await database
+  
   
   const result = await db.runAsync('INSERT INTO lectures (start_time, end_time, eventType, note, showLink, color, colorText, executionType_id, course_id) VALUES (?,?,?,?,?,?,?,?,?);', 
       [start_time, end_time, eventType, note, showLink, color, colorText, executionTypeId, courseId]) 
@@ -91,7 +91,7 @@ export async function insertLecture({start_time, end_time, eventType, note, show
 }
 
 export async function getAllDistinctGroupsOfCourse(courseId: number) {
-  const db = await database
+  
 
   return db.getAllAsync<GroupBranchChild>(`SELECT DISTINCT groups.id, groups.name FROM groups 
     JOIN lectures_has_groups ON groups.id = lectures_has_groups.groups_id
@@ -100,13 +100,13 @@ export async function getAllDistinctGroupsOfCourse(courseId: number) {
 } 
 
 export async function getAllCourses() {
-  const db = await database
+  
 
   return db.getAllAsync<Course>('SELECT * FROM courses;')
 }
 
 async function getGroupsForLecture(lectureId: number) {
-  const db = await database
+  
 
   return db.getAllAsync<GroupBranchChild>(`SELECT groups.id, groups.name FROM groups
     JOIN lectures_has_groups ON groups.id = lectures_has_groups.groups_id
@@ -114,7 +114,7 @@ async function getGroupsForLecture(lectureId: number) {
 }
 
 async function getRoomsForLecture(lectureId: number) {
- const db = await database
+ 
 
   return db.getAllAsync<Room>(`SELECT rooms.id, rooms.name FROM rooms
     JOIN lectures_has_rooms ON rooms.id = lectures_has_rooms.rooms_id
@@ -122,7 +122,7 @@ async function getRoomsForLecture(lectureId: number) {
 }
 
 async function getLecturersForLecture(lectureId: number) {
-  const db = await database
+  
 
   return db.getAllAsync<Lecturer>(`SELECT lecturers.id, lecturers.name FROM lecturers
     JOIN lectures_has_lecturers ON lecturers.id = lectures_has_lecturers.lecturers_id
@@ -130,14 +130,14 @@ async function getLecturersForLecture(lectureId: number) {
 }
 
 async function getExecutionType(executionTypeId: number) {
-  const db = await database
+  
 
   return db.getFirstAsync<{executionType: string}>(`SELECT executionTypes.executionType FROM executionTypes
     WHERE executionTypes.id = ?;`, [executionTypeId])
 }
 
 async function getLecturesForDateWithNoCurses(date: string) { //edge case, when there is no course attached
-  const db = await database
+  
 
   return db.getAllAsync<Lecture>(
     `SELECT * FROM lectures
@@ -147,7 +147,7 @@ async function getLecturesForDateWithNoCurses(date: string) { //edge case, when 
 }
 
 export async function getLecturesForDate(date: string) { // pazi če je execution type prazen
-  const db = await database
+  
   
   let lecturesNormal = await db.getAllAsync<Lecture>(
     `SELECT DISTINCT lectures.id, lectures.start_time, lectures.end_time, lectures.course_id, courses.course, lectures.executionType_id,
@@ -175,13 +175,13 @@ export async function getLecturesForDate(date: string) { // pazi če je executio
 }
 
 export async function querryNumOFSelectedGroups(courses_id: number, groups_id: number) {
-  const db = await database
+  
   
   return db.getFirstAsync<{num: number}>(`SELECT COUNT(*) AS 'num' FROM selected_groups WHERE courses_id = ? AND groups_id = ?`, [courses_id, groups_id])
 }
 
 export async function getAllDistinctSelectedGroups() {
-  const db = await database
+  
 
   const groupsIds: { id: number }[] = []
   const groups = await db.getAllAsync<{groups_id: number}>(`SELECT DISTINCT groups_id FROM selected_groups`)
@@ -191,7 +191,7 @@ export async function getAllDistinctSelectedGroups() {
 }
 
 export async function deleteLecturesBetweenDates(start_time: Date, end_time: Date) { // this function is INLCUSIVE for start and end date
-  const db = await database
+  
   
   const startTime = getISODateNoTimestamp(start_time)
   const endTime = getISODateNoTimestamp(end_time)
@@ -199,19 +199,19 @@ export async function deleteLecturesBetweenDates(start_time: Date, end_time: Dat
 }
 
 export async function querryNoteForCourse(courseId: number, executionTypeId: number) {
-  const db = await database
+  
 
   return db.getFirstAsync<UsersNote>(`SELECT * FROM notes WHERE courses_id = ? AND executionType_id = ?`, [courseId, executionTypeId])
 }
 
 export async function deleteNoteForCourse(courseId: number, executionTypeId: number) {
-   const db = await database
+   
 
   return db.runAsync(`DELETE FROM notes WHERE courses_id = ? AND executionType_id = ?`, [courseId, executionTypeId])
 }
 
 export async function setNoteForCourse(note: string, courseId: number, executionTypeId: number) {
-  const db = await database
+  
 
   await deleteNoteForCourse(courseId, executionTypeId)
   return db.runAsync(`INSERT INTO notes (note, courses_id, executionType_id) VALUES (?, ?, ?)`, [note, courseId, executionTypeId])
@@ -219,13 +219,13 @@ export async function setNoteForCourse(note: string, courseId: number, execution
 
 // Dates are inclusive
 export async function getDatesWithLectures(fromDate: string, toDate: string) {
-  const db = await database
+  
 
   return db.getAllAsync<{date: string}>("SELECT DISTINCT date(start_time) as date FROM lectures WHERE date >= ? AND date <= ? ORDER BY date", [fromDate, toDate])
 }
 
 export async function getAllDatesWithLectures() {
-  const db = await database
+  
 
   return db.getAllAsync<{date: string}>(`SELECT DISTINCT date(start_time) as date FROM groups JOIN lectures_has_groups ON groups.id = lectures_has_groups.groups_id
     JOIN lectures ON lectures.id = lectures_has_groups.lectures_id
