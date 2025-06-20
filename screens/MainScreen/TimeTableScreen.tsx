@@ -51,8 +51,8 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
         console.log("timetable updates found")
       }
       
-      await updateLectures(new Date('2025-01-01'), dateFromNow(200), true)
-      //await updateLectures(new Date(), dateFromNow(200), true)
+      //await updateLectures(new Date('2025-01-01'), dateFromNow(200), true)
+      await updateLectures(new Date(), dateFromNow(200), true)
 
       const endTime = performance.now()
       console.log(`Updating lectures took ${endTime - startTime} milliseconds`)
