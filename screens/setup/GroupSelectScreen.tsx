@@ -105,7 +105,7 @@ function GroupSelectScreen({route}: ProgramSelectScreenProps) {
       <LoadingOverlay visible={isFetching} text={fetchingDataMessage} />
       <FlatList 
         style={{flex: 1}} 
-        contentContainerStyle={{ gap: 5 }}
+        contentContainerStyle={{ gap: 5, paddingBottom: 20 }}
         data={coursesAndTheirGroups}
         renderItem={({item}) => <CourseGroupSelect key={item.course.id} groups={item.groups} course={item.course} />} 
       />

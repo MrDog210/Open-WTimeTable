@@ -5,7 +5,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { DefaultView, useSettings } from "../../context/UserSettingsContext";
 import { Lecture, TimetableLecture } from "../../types/types";
 import { dateFromNow, formatDate, formatWeekDate, getDates, getISODateNoTimestamp, getWeekDates, subtrackSeconds } from "../../util/dateUtils";
-import { RefreshControl, ScrollView, } from "react-native";
+import { RefreshControl, ScrollView, useWindowDimensions, } from "react-native";
 import { calculateNowLineOffset, getColumnWidth, hasTimetableUpdated, updateLectures } from "../../util/timetableUtils";
 import { getAllDatesWithLectures, getLecturesForDate } from "../../util/store/database";
 import { getCustomLecturesForDates, markDatesForCustomLectures } from "../../util/store/customLectures";
@@ -39,6 +39,8 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
   const route2 = useRoute()
   const { colors, theme } = useTheme()
   const queryClient = useQueryClient()
+  const windowDimensions = useWindowDimensions()
+  
   const updateLecturesMutation = useMutation({
     mutationFn: async (forceUpdate: boolean) => {
       const startTime = performance.now()
@@ -215,7 +217,7 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
           }}
 
           renderHeader={isWeekView ? props => <TimeTableHeader {...props} /> : undefined}
-          columnWidth={isWeekView ? getColumnWidth(isWeekView) : undefined}
+          columnWidth={isWeekView ? getColumnWidth(windowDimensions, isWeekView) : undefined}
         />
       </ScrollView>
         <WeekCalendar key={colors.background}

@@ -1,8 +1,8 @@
-import { useWindowDimensions } from "react-native";
+import { ScaledSize } from "react-native";
 import { Course, ExecutionType, GroupBranchChild, GroupBranchMain, GroupLecture, Lecturer, Room } from "../types/types"
 import { fetchGroupsForBranch, fetchLecturesForGroups, getSchoolInfo } from "./http/api"
 import { hasInternetConnection } from "./http/http"
-import { batchInsertGRLETC, deleteLecturesBetweenDates, getAllDistinctSelectedGroups, insertCourse, insertExecutionType, insertGroup, insertLecture, insertLecturer, insertRoom } from "./store/database"
+import { batchInsertGRLETC, deleteLecturesBetweenDates, getAllDistinctSelectedGroups, insertLecture } from "./store/database"
 import { setAllBranchGroups, getSchoolInfo as getStoredSchoolInfo, getAllStoredBranchGroups, getUrlSchoolCode, setSchoolInfo } from "./store/schoolData"
 
 export async function getAndSetAllDistinctBranchGroups(schoolCode: string, chosenBranchID: string) {
@@ -113,8 +113,7 @@ export function formatArray(array: { [key: string]: any }[], key: string) {
   return string
 }
 
-export function getColumnWidth(isWeekView: boolean) { // https://github.com/dorkyboi/react-native-calendar-timetable?tab=readme-ov-file#layout
-  const {width, height} = useWindowDimensions()
+export function getColumnWidth({width, height}: ScaledSize, isWeekView: boolean) { // https://github.com/dorkyboi/react-native-calendar-timetable?tab=readme-ov-file#layout
   const timeWidth = 50
   const linesLeftInset = 15
   const columnWidth = width - (timeWidth - linesLeftInset)
