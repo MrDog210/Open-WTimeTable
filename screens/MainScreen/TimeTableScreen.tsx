@@ -251,7 +251,8 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
             selectedDayBackgroundColor: colors.primary,
             calendarBackground: colors.background,
             reservationsBackgroundColor: colors.background,
-            dotColor: colors.primary
+            dotColor: colors.primary,
+            todayTextColor: colors.primary
           }}
                     //leftArrowImageSource={require('../img/previous.png')}
           //rightArrowImageSource={require('../img/next.png')}
