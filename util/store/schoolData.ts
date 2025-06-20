@@ -1,4 +1,4 @@
-import { Branch, GroupBranchChild, SchoolInfo } from '../../types/types';
+import { GroupBranchChild, SchoolInfo } from '../../types/types';
 import { storage } from '../constants';
 
 export async function getUrlSchoolCode() {
@@ -37,15 +37,4 @@ export async function getAllStoredBranchGroups() {
 
 export async function setAllBranchGroups(groups: GroupBranchChild[]) {
   return storage.setItem('groups', JSON.stringify(groups))
-}
-
-export async function getChosenBranches() {
-  const json = await storage.getItem('chosenBranch')
-  if(!json)
-    throw new Error("chosenBranch is null!")
-  return JSON.parse(json) as Branch[]
-}
-
-export async function setChosenBranches(branch: Branch[]) {
-  return storage.setItem('chosenBranch', JSON.stringify(branch))
 }

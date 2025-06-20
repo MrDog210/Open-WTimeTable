@@ -5,7 +5,6 @@ import Container from "../../components/ui/Container";
 import { Alert, ScrollView, StyleSheet, View } from "react-native";
 import { useLayoutEffect, useState } from "react";
 import { fetchBranchesForProgramm, getBasicProgrammes } from "../../util/http/api";
-import { setChosenBranches } from "../../util/store/schoolData";
 import { truncateDatabase } from "../../util/store/database";
 import { fetchAndInsertLectures, getAndSetAllDistinctBranchGroups } from "../../util/timetableUtils";
 import { getSchoolYearDates } from "../../util/dateUtils";
@@ -47,7 +46,7 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
     navigation.setOptions({
       title: schoolInfo.schoolName
     })
-  })
+  }, [navigation, schoolInfo.schoolName])
 
   const { data: programms, ...basicProgrammesQuery} = useQuery({
     queryFn: () => getBasicProgrammes(schoolInfo.schoolCode),
@@ -55,8 +54,8 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
   })
 
   const { data: branches} = useQuery({
+    initialData: [],
     queryFn: () => {
-      setChosenBranchesID([])
       return fetchBranchesForProgramm(schoolInfo.schoolCode, chosenProgrammID!, chosenYear!)
     },
     queryKey: [ 'branchesForProgamme', { schoolCode: schoolInfo.schoolCode, chosenProgrammID, chosenYear }],
@@ -70,15 +69,10 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
     if(!program) return
     setYears(generateYearsOfProgram(program))
     setChosenYear(null)
-    setChosenBranchesID([])
   }
 
   const saveAndInsertData = useMutation({
     mutationFn: async () => {
-      const chosenBranches = branches!.filter(b => chosenBranchesID.includes(b.id))
-      console.log(chosenBranches)
-      if(chosenBranches.length === 0) throw new Error("no branches found")
-      await setChosenBranches(chosenBranches) // we store the chosen branch, for future use
       await truncateDatabase()
 
       console.log('Fetchig groups')
@@ -103,6 +97,7 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
     }
   }
 
+  console.log(chosenBranchesID)
   const isFetching = basicProgrammesQuery.isFetching || saveAndInsertData.isPending
 
   return (
@@ -111,7 +106,6 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
     <Container style={styles.container}>
       <ScrollView contentContainerStyle={{ gap: 15 }}>
         <Text style={{textAlign: 'center', fontWeight: 'bold'}}>Select your program, year and group</Text>
-        <View>
           <DropDownPicker items={programms as any}
             open={programsOpen}
             setOpen={setProgramsOpen}
@@ -125,38 +119,35 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
             zIndex={3000}
             placeholder="Select program"
           />
-        </View>
-        <View>
-          {chosenProgrammID && <DropDownPicker items={years as any}
+          <DropDownPicker items={years as any}
             open={yearOpen}
             setOpen={setYearOpen}
             value={chosenYear}
-            setValue={(a) => {setChosenBranchesID([]);setChosenYear(a)}}
+            setValue={setChosenYear}
+            disabled={!chosenProgrammID}
             schema={{
               label: 'name',
               value: 'id'
             }}
             zIndex={2000}
             placeholder="Select year"
-          />}
-        </View>
-        <View>
-        {chosenYear && <DropDownPicker items={branches as any}
+          />
+          <DropDownPicker items={branches as any}
             open={branchOpen}
             setOpen={setBranchOpen}
             value={chosenBranchesID}
             setValue={setChosenBranchesID}
+            onChangeValue={(e) => console.log('changed')}
             schema={{
               label: 'branchName',
               value: 'id'
             }}
-
+            disabled={!chosenYear}
             mode="BADGE"
             multiple
             zIndex={1000}
             placeholder="Select branch"
-          />}
-        </View>
+        />
       </ScrollView>
       <View>
         <Button disabled={chosenBranchesID.length === 0} onPress={proceedToGroupSelect}>Proceed to group selection</Button>
