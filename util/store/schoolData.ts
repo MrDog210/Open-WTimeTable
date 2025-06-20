@@ -39,13 +39,13 @@ export async function setAllBranchGroups(groups: GroupBranchChild[]) {
   return storage.setItem('groups', JSON.stringify(groups))
 }
 
-export async function getChosenBranch() {
+export async function getChosenBranches() {
   const json = await storage.getItem('chosenBranch')
   if(!json)
     throw new Error("chosenBranch is null!")
-  return JSON.parse(json) as Branch
+  return JSON.parse(json) as Branch[]
 }
 
-export async function setChosenBranch(branch: Branch) {
+export async function setChosenBranches(branch: Branch[]) {
   return storage.setItem('chosenBranch', JSON.stringify(branch))
 }

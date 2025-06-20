@@ -5,7 +5,7 @@ import Container from "../../components/ui/Container";
 import { Alert, ScrollView, StyleSheet, View } from "react-native";
 import { useLayoutEffect, useState } from "react";
 import { fetchBranchesForProgramm, getBasicProgrammes } from "../../util/http/api";
-import { setChosenBranch } from "../../util/store/schoolData";
+import { setChosenBranches } from "../../util/store/schoolData";
 import { truncateDatabase } from "../../util/store/database";
 import { fetchAndInsertLectures, getAndSetAllDistinctBranchGroups } from "../../util/timetableUtils";
 import { getSchoolYearDates } from "../../util/dateUtils";
@@ -39,7 +39,7 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
   const [chosenYear, setChosenYear] = useState<string | null>(null)
 
   const [branchOpen, setBranchOpen] = useState(false)
-  const [chosenBranchID, setChosenBranchID] = useState<string | null>(null)
+  const [chosenBranchesID, setChosenBranchesID] = useState<string[]>([])
 
   const navigation = useNavigation()
 
@@ -56,7 +56,7 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
 
   const { data: branches} = useQuery({
     queryFn: () => {
-      setChosenBranchID(null)
+      setChosenBranchesID([])
       return fetchBranchesForProgramm(schoolInfo.schoolCode, chosenProgrammID!, chosenYear!)
     },
     queryKey: [ 'branchesForProgamme', { schoolCode: schoolInfo.schoolCode, chosenProgrammID, chosenYear }],
@@ -70,18 +70,19 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
     if(!program) return
     setYears(generateYearsOfProgram(program))
     setChosenYear(null)
-    setChosenBranchID(null)
+    setChosenBranchesID([])
   }
 
   const saveAndInsertData = useMutation({
     mutationFn: async () => {
-      const chosenBranch = branches!.find(b => b.id === chosenBranchID)
-      if(!chosenBranch) return
-      await setChosenBranch(chosenBranch) // we store the chosen branch, for future use
+      const chosenBranches = branches!.filter(b => chosenBranchesID.includes(b.id))
+      console.log(chosenBranches)
+      if(chosenBranches.length === 0) throw new Error("no branches found")
+      await setChosenBranches(chosenBranches) // we store the chosen branch, for future use
       await truncateDatabase()
 
       console.log('Fetchig groups')
-      const groups = await getAndSetAllDistinctBranchGroups(schoolInfo.schoolCode, chosenBranchID!)
+      const groups = await getAndSetAllDistinctBranchGroups(schoolInfo.schoolCode, chosenBranchesID!)
       setFetchingDataMessage('Inserting lectures into database, this WILL take a while')
       let {startDate, endDate} = getSchoolYearDates()
       console.log(startDate,endDate)
@@ -130,7 +131,7 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
             open={yearOpen}
             setOpen={setYearOpen}
             value={chosenYear}
-            setValue={(a) => {setChosenBranchID(null);setChosenYear(a)}}
+            setValue={(a) => {setChosenBranchesID([]);setChosenYear(a)}}
             schema={{
               label: 'name',
               value: 'id'
@@ -143,19 +144,22 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
         {chosenYear && <DropDownPicker items={branches as any}
             open={branchOpen}
             setOpen={setBranchOpen}
-            value={chosenBranchID}
-            setValue={setChosenBranchID}
+            value={chosenBranchesID}
+            setValue={setChosenBranchesID}
             schema={{
               label: 'branchName',
               value: 'id'
             }}
+
+            mode="BADGE"
+            multiple
             zIndex={1000}
             placeholder="Select branch"
           />}
         </View>
       </ScrollView>
       <View>
-        <Button disabled={!chosenBranchID} onPress={proceedToGroupSelect}>Proceed to group selection</Button>
+        <Button disabled={chosenBranchesID.length === 0} onPress={proceedToGroupSelect}>Proceed to group selection</Button>
       </View>
     </Container>
     </>
