@@ -12,6 +12,7 @@ import Button from "../../components/ui/Button";
 import DropDownPicker from "../../components/ui/DropDownPicker";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import LoadingOverlay from "../../components/ui/LoadingOverlay";
+import Switch from "../../components/ui/Switch";
 
 type ProgramSelectScreenProps = StaticScreenProps<{
   schoolInfo: SchoolInfo
@@ -25,7 +26,7 @@ function generateYearsOfProgram(program: Programme) {
 
   return years
 }
-
+// TODO: redesign this with this component: https://github.com/JairajJangle/react-native-tree-multi-select
 function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
   const { schoolInfo } = route.params
   const [fetchingDataMessage, setFetchingDataMessage] = useState('')
@@ -39,6 +40,8 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
 
   const [branchOpen, setBranchOpen] = useState(false)
   const [chosenBranchesID, setChosenBranchesID] = useState<string[]>([])
+
+  const [multipleGroupSelect, setMultipleGroupSelect] = useState<boolean>(false)
 
   const navigation = useNavigation()
 
@@ -56,6 +59,7 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
   const { data: branches} = useQuery({
     initialData: [],
     queryFn: () => {
+      if(!multipleGroupSelect) setChosenBranchesID([])
       return fetchBranchesForProgramm(schoolInfo.schoolCode, chosenProgrammID!, chosenYear!)
     },
     queryKey: [ 'branchesForProgamme', { schoolCode: schoolInfo.schoolCode, chosenProgrammID, chosenYear }],
@@ -69,6 +73,7 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
     if(!program) return
     setYears(generateYearsOfProgram(program))
     setChosenYear(null)
+    if(!multipleGroupSelect) setChosenBranchesID([])
   }
 
   const saveAndInsertData = useMutation({
@@ -137,7 +142,7 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
             setOpen={setBranchOpen}
             value={chosenBranchesID}
             setValue={setChosenBranchesID}
-            onChangeValue={(e) => console.log('changed')}
+            onChangeValue={() => console.log('changed')}
             schema={{
               label: 'branchName',
               value: 'id'
@@ -145,9 +150,14 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
             disabled={!chosenYear}
             mode="BADGE"
             multiple
+            max={multipleGroupSelect ? 999 : 1}
             zIndex={1000}
             placeholder="Select branch"
         />
+        <View style={styles.switchContainer}>
+          <Text style={{alignSelf: 'center'}}>Enable multiple group selection</Text>
+          <Switch value={multipleGroupSelect} onValueChange={setMultipleGroupSelect} />
+        </View>
       </ScrollView>
       <View>
         <Button disabled={chosenBranchesID.length === 0} onPress={proceedToGroupSelect}>Proceed to group selection</Button>
@@ -163,5 +173,11 @@ const styles = StyleSheet.create({
   container: {
     padding: 15,
     paddingTop: 0
+  },
+  switchContainer: { 
+    flexDirection: 'row',
+    //alignContent: 'center',
+    justifyContent: 'space-between',
+    height: 54
   },
 })
