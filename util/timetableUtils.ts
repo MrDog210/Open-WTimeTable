@@ -5,9 +5,11 @@ import { hasInternetConnection } from "./http/http"
 import { batchInsertGRLETC, deleteLecturesBetweenDates, getAllDistinctSelectedGroups, insertLecture } from "./store/database"
 import { setAllBranchGroups, getSchoolInfo as getStoredSchoolInfo, getAllStoredBranchGroups, getUrlSchoolCode, setSchoolInfo } from "./store/schoolData"
 
-export async function getAndSetAllDistinctBranchGroups(schoolCode: string, chosenBranchID: string) {
-  const groups = getAllUniqueGroups(await fetchGroupsForBranch(schoolCode, chosenBranchID))
-  setAllBranchGroups(groups)
+export async function getAndSetAllDistinctBranchGroups(schoolCode: string, chosenBranchesID: string[]) {
+  const groups: GroupBranchChild[] = []
+  for (const branchId of chosenBranchesID)
+    groups.push(...getAllUniqueGroups(await fetchGroupsForBranch(schoolCode, branchId)))
+  await setAllBranchGroups(groups)
   return groups
 }
 

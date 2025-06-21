@@ -8,9 +8,9 @@ import { getSchoolYearDates } from "../../util/dateUtils"
 import { updateLectures } from "../../util/timetableUtils"
 import Text from "../../components/ui/Text"
 import { Picker, PickerItemProps, PickerProps } from '@react-native-picker/picker';
-import { Switch } from "react-native-gesture-handler"
 import SettingsButton from "../../components/optionsScreen/SettingsButton"
 import { useTheme } from "../../context/ThemeContext"
+import Switch from "../../components/ui/Switch"
 
 function OptionsScreen() {
   const { changeSettings, defaultView, timetableAnimationsEnabled, theme,  } = useSettings()
@@ -109,12 +109,7 @@ function OptionsScreen() {
         </View>
         <View style={styles.switchContainer}>
           <Text style={{alignSelf: 'center'}}>Timetable animations</Text>
-          <Switch trackColor={{
-            false: colors.surfaceVariant,
-            true: colors.secondary
-          }} 
-          thumbColor={colors.primary}
-          value={timetableAnimationsEnabled} onValueChange={changeTimetableAnimationns} />
+          <Switch value={timetableAnimationsEnabled} onValueChange={changeTimetableAnimationns} />
         </View>
       </ScrollView>
     </>

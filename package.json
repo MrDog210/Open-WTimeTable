@@ -9,7 +9,8 @@
     "web": "expo start --web",
     "buildAndroidDevClient": "eas build --profile development --platform android",
     "buildAndroidPreview": "eas build -p android --profile preview",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "testProduction": "npx expo start --no-dev --minify"
   },
   "dependencies": {
     "@expo/metro-runtime": "~5.0.4",

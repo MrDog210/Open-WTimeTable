@@ -5,7 +5,6 @@ import Container from "../../components/ui/Container";
 import { Alert, ScrollView, StyleSheet, View } from "react-native";
 import { useLayoutEffect, useState } from "react";
 import { fetchBranchesForProgramm, getBasicProgrammes } from "../../util/http/api";
-import { setChosenBranch } from "../../util/store/schoolData";
 import { truncateDatabase } from "../../util/store/database";
 import { fetchAndInsertLectures, getAndSetAllDistinctBranchGroups } from "../../util/timetableUtils";
 import { getSchoolYearDates } from "../../util/dateUtils";
@@ -13,6 +12,7 @@ import Button from "../../components/ui/Button";
 import DropDownPicker from "../../components/ui/DropDownPicker";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import LoadingOverlay from "../../components/ui/LoadingOverlay";
+import Switch from "../../components/ui/Switch";
 
 type ProgramSelectScreenProps = StaticScreenProps<{
   schoolInfo: SchoolInfo
@@ -26,7 +26,7 @@ function generateYearsOfProgram(program: Programme) {
 
   return years
 }
-
+// TODO: redesign this with this component: https://github.com/JairajJangle/react-native-tree-multi-select
 function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
   const { schoolInfo } = route.params
   const [fetchingDataMessage, setFetchingDataMessage] = useState('')
@@ -39,7 +39,9 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
   const [chosenYear, setChosenYear] = useState<string | null>(null)
 
   const [branchOpen, setBranchOpen] = useState(false)
-  const [chosenBranchID, setChosenBranchID] = useState<string | null>(null)
+  const [chosenBranchesID, setChosenBranchesID] = useState<string[]>([])
+
+  const [multipleGroupSelect, setMultipleGroupSelect] = useState<boolean>(false)
 
   const navigation = useNavigation()
 
@@ -47,7 +49,7 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
     navigation.setOptions({
       title: schoolInfo.schoolName
     })
-  })
+  }, [navigation, schoolInfo.schoolName])
 
   const { data: programms, ...basicProgrammesQuery} = useQuery({
     queryFn: () => getBasicProgrammes(schoolInfo.schoolCode),
@@ -55,8 +57,9 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
   })
 
   const { data: branches} = useQuery({
+    initialData: [],
     queryFn: () => {
-      setChosenBranchID(null)
+      if(!multipleGroupSelect) setChosenBranchesID([])
       return fetchBranchesForProgramm(schoolInfo.schoolCode, chosenProgrammID!, chosenYear!)
     },
     queryKey: [ 'branchesForProgamme', { schoolCode: schoolInfo.schoolCode, chosenProgrammID, chosenYear }],
@@ -70,18 +73,15 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
     if(!program) return
     setYears(generateYearsOfProgram(program))
     setChosenYear(null)
-    setChosenBranchID(null)
+    if(!multipleGroupSelect) setChosenBranchesID([])
   }
 
   const saveAndInsertData = useMutation({
     mutationFn: async () => {
-      const chosenBranch = branches!.find(b => b.id === chosenBranchID)
-      if(!chosenBranch) return
-      await setChosenBranch(chosenBranch) // we store the chosen branch, for future use
       await truncateDatabase()
 
       console.log('Fetchig groups')
-      const groups = await getAndSetAllDistinctBranchGroups(schoolInfo.schoolCode, chosenBranchID!)
+      const groups = await getAndSetAllDistinctBranchGroups(schoolInfo.schoolCode, chosenBranchesID!)
       setFetchingDataMessage('Inserting lectures into database, this WILL take a while')
       let {startDate, endDate} = getSchoolYearDates()
       console.log(startDate,endDate)
@@ -102,6 +102,7 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
     }
   }
 
+  console.log(chosenBranchesID)
   const isFetching = basicProgrammesQuery.isFetching || saveAndInsertData.isPending
 
   return (
@@ -110,7 +111,6 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
     <Container style={styles.container}>
       <ScrollView contentContainerStyle={{ gap: 15 }}>
         <Text style={{textAlign: 'center', fontWeight: 'bold'}}>Select your program, year and group</Text>
-        <View>
           <DropDownPicker items={programms as any}
             open={programsOpen}
             setOpen={setProgramsOpen}
@@ -124,38 +124,43 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
             zIndex={3000}
             placeholder="Select program"
           />
-        </View>
-        <View>
-          {chosenProgrammID && <DropDownPicker items={years as any}
+          <DropDownPicker items={years as any}
             open={yearOpen}
             setOpen={setYearOpen}
             value={chosenYear}
-            setValue={(a) => {setChosenBranchID(null);setChosenYear(a)}}
+            setValue={setChosenYear}
+            disabled={!chosenProgrammID}
             schema={{
               label: 'name',
               value: 'id'
             }}
             zIndex={2000}
             placeholder="Select year"
-          />}
-        </View>
-        <View>
-        {chosenYear && <DropDownPicker items={branches as any}
+          />
+          <DropDownPicker items={branches as any}
             open={branchOpen}
             setOpen={setBranchOpen}
-            value={chosenBranchID}
-            setValue={setChosenBranchID}
+            value={chosenBranchesID}
+            setValue={setChosenBranchesID}
+            onChangeValue={() => console.log('changed')}
             schema={{
               label: 'branchName',
               value: 'id'
             }}
+            disabled={!chosenYear}
+            mode="BADGE"
+            multiple
+            max={multipleGroupSelect ? 999 : 1}
             zIndex={1000}
             placeholder="Select branch"
-          />}
+        />
+        <View style={styles.switchContainer}>
+          <Text style={{alignSelf: 'center'}}>Enable multiple group selection</Text>
+          <Switch value={multipleGroupSelect} onValueChange={setMultipleGroupSelect} />
         </View>
       </ScrollView>
       <View>
-        <Button disabled={!chosenBranchID} onPress={proceedToGroupSelect}>Proceed to group selection</Button>
+        <Button disabled={chosenBranchesID.length === 0} onPress={proceedToGroupSelect}>Proceed to group selection</Button>
       </View>
     </Container>
     </>
@@ -168,5 +173,11 @@ const styles = StyleSheet.create({
   container: {
     padding: 15,
     paddingTop: 0
+  },
+  switchContainer: { 
+    flexDirection: 'row',
+    //alignContent: 'center',
+    justifyContent: 'space-between',
+    height: 54
   },
 })
