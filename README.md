@@ -10,21 +10,24 @@
 
 This is a mobile app made with react native and expo, to view data from Wise TimeTable. It supports all Wise faculties which provide a school code.
 
-|                               |                               |                               |                               |                               |
-|-------------------------------|-------------------------------|-------------------------------|-------------------------------|-------------------------------|
-| ![](other/preview/image1.png) | ![](other/preview/image2.png) | ![](other/preview/image3.png) | ![](other/preview/image4.png) | ![](other/preview/image5.png) |
+|                               |                               |                               |                               |                               |                               |
+|-------------------------------|-------------------------------|-------------------------------|-------------------------------|-------------------------------|-------------------------------|
+| ![](other/preview/image1.png) | ![](other/preview/image2.png) | ![](other/preview/image3.png) | ![](other/preview/image4.png) | ![](other/preview/image5.png) | ![](other/preview/image6.png) |
 ## Features:
 Main advantage of this app over the official one is, that you can pick a separate group for each course.
 - Separate selectable groups for each course
-- Dynamic dark/light mode
+- Select lectures from multiple years and groups
 - Add and edit custom lectures
+- Dynamic dark/light mode
 - Tablet support
 - Add custom notes to lectures
+- Supports every Wise TimeTable faculty with a provided school code
 
 ## Setup instructions
 
 1. Clone the repo
 2. run  ``` npm install ```
 3. Duplicate ```example.env``` and rename it to ```.env``` in the root folder and enter your credentials
-4. ``` npx expo start ```
+4. Build a dev client and install it on your device ```eas build --profile development --platform android --local```
+5. ``` npx expo start ```
 
