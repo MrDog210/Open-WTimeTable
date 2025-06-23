@@ -1,24 +1,24 @@
 import { StaticScreenProps, useNavigation } from "@react-navigation/native";
-import { Branch, Programme, SchoolInfo } from "../../types/types";
+import { SchoolInfo } from "../../types/types";
 import Text from "../../components/ui/Text";
 import Container from "../../components/ui/Container";
-import { Alert, ScrollView, StyleSheet, View } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
 import { useLayoutEffect, useState } from "react";
-import { fetchBranchesForProgramm, getBasicProgrammes } from "../../util/http/api";
+import { getBasicProgrammes } from "../../util/http/api";
 import { truncateDatabase } from "../../util/store/database";
 import { fetchAndInsertLectures, getAndSetAllDistinctBranchGroups } from "../../util/timetableUtils";
 import { getSchoolYearDates } from "../../util/dateUtils";
 import Button from "../../components/ui/Button";
-import DropDownPicker from "../../components/ui/DropDownPicker";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import LoadingOverlay from "../../components/ui/LoadingOverlay";
-import Switch from "../../components/ui/Switch";
 import { FlatList } from "react-native-gesture-handler";
 import ProgrammTreeRow, { TreeProgramme } from "../../components/programSelect/ProgrammTreeRow";
 import { TreeYears } from "../../components/programSelect/YearTreeRow";
+import ClassicProgramSelect from "../../components/programSelect/ClassicProgramSelect";
+import Switch from "../../components/ui/Switch";
 
 type ProgramSelectScreenProps = StaticScreenProps<{
-  schoolInfo: SchoolInfo
+  schoolInfo: SchoolInfo,
 }>;
 
 function generateYearsOfProgram(numOfYears: number): TreeYears[] {
@@ -28,11 +28,12 @@ function generateYearsOfProgram(numOfYears: number): TreeYears[] {
 
   return years
 }
-// TODO: redesign this with this component: https://github.com/JairajJangle/react-native-tree-multi-select
+
 function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
   const { schoolInfo } = route.params
   const [fetchingDataMessage, setFetchingDataMessage] = useState('')
   const [chosenBranchesID, setChosenBranchesID] = useState<string[]>([])
+  const [advancedMode, setAdvancedMode] = useState(false)
 
   const navigation = useNavigation()
 
@@ -82,23 +83,42 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
     }
   }
 
+  const Title = <Text style={styles.title}>Select your branch or branches</Text>
+
+  function switchMode(isAdvanced: boolean) {
+    setChosenBranchesID([])
+    setAdvancedMode(isAdvanced)
+  }
+
+  console.log(chosenBranchesID)
   const isFetching = basicProgrammesQuery.isFetching || saveAndInsertData.isPending
   // TODO: add toggle for advance mode or simple mode
   return (
     <>
-    <LoadingOverlay visible={isFetching} text={fetchingDataMessage} />
-    <Container style={styles.container}>
-      <FlatList contentContainerStyle={{paddingBottom: 100}} data={programms} 
-      ListHeaderComponent={<Text style={{textAlign: 'center', fontWeight: 'bold', fontSize: 20, paddingVertical: 10}}>Select your branch or branches</Text>}
-      renderItem={({item, index}) => <ProgrammTreeRow selectedBranches={chosenBranchesID} setSelectedBranches={setChosenBranchesID} 
-      schoolCode={schoolInfo.schoolCode} programme={item} index={index} />}/>
-      <View style={{
-        padding: 15,
-        paddingTop: 0
-      }}>
-        <Button disabled={chosenBranchesID.length === 0} onPress={proceedToGroupSelect}>Proceed to group selection</Button>
-      </View>
-    </Container>
+      <LoadingOverlay visible={isFetching} text={fetchingDataMessage} />
+      <Container >
+        { advancedMode ? <FlatList key="advanced" contentContainerStyle={{paddingBottom: 100}} data={programms} 
+        ListHeaderComponent={Title}
+        renderItem={({item, index}) => <ProgrammTreeRow selectedBranches={chosenBranchesID} setSelectedBranches={setChosenBranchesID} 
+        schoolCode={schoolInfo.schoolCode} programme={item} index={index} />} /> 
+        : 
+        <View style={{flex: 1}} key="classic">
+          {Title}
+          <ClassicProgramSelect chosenBranchesID={chosenBranchesID} setChosenBranchesID={setChosenBranchesID}
+            programms={programms} schoolCode={schoolInfo.schoolCode} />
+        </View>
+        }
+        <View style={styles.switchContainer}>
+          <Text style={{alignSelf: 'center'}}>Advanced mode</Text>
+          <Switch value={advancedMode} onValueChange={switchMode} />
+        </View>
+        <View style={{
+          padding: 15,
+          paddingTop: 0
+        }}>
+          <Button disabled={chosenBranchesID.length === 0} onPress={proceedToGroupSelect}>Proceed to group selection</Button>
+        </View>
+      </Container>
     </>
   )
 }
@@ -106,12 +126,16 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
 export default ProgramSelectScreen
 
 const styles = StyleSheet.create({
-  container: {
+  title: {
+    textAlign: 'center', 
+    fontWeight: 'bold', 
+    fontSize: 20, 
+    paddingVertical: 10,
   },
   switchContainer: { 
     flexDirection: 'row',
-    //alignContent: 'center',
     justifyContent: 'space-between',
-    height: 54
+    height: 54,
+    padding: 15
   },
 })

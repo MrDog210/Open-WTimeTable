@@ -39,9 +39,13 @@ function DropDownPicker<T extends ValueType>({style, ...props}: DropDownPickerPr
       
     }}
     disabledItemLabelStyle={{
+      //color: 'red'
     }}
     disabledStyle={{
-      //backgroundColor: colors.surfaceDisabled
+      backgroundColor: colors.border
+    }}
+    disabledItemContainerStyle={{
+      
     }}
     showBadgeDot={false}
     extendableBadgeContainer={true}
