@@ -82,15 +82,15 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
     }
   }
 
-  console.log(chosenBranchesID)
   const isFetching = basicProgrammesQuery.isFetching || saveAndInsertData.isPending
-
+  // TODO: add toggle for advance mode or simple mode
   return (
     <>
     <LoadingOverlay visible={isFetching} text={fetchingDataMessage} />
     <Container style={styles.container}>
-      <Text style={{textAlign: 'center', fontWeight: 'bold'}}>Select your branch or branches</Text>
-      <FlatList contentContainerStyle={{paddingBottom: 100}} data={programms} renderItem={({item, index}) => <ProgrammTreeRow selectedBranches={chosenBranchesID} setSelectedBranches={setChosenBranchesID} 
+      <FlatList contentContainerStyle={{paddingBottom: 100}} data={programms} 
+      ListHeaderComponent={<Text style={{textAlign: 'center', fontWeight: 'bold', fontSize: 20, paddingVertical: 10}}>Select your branch or branches</Text>}
+      renderItem={({item, index}) => <ProgrammTreeRow selectedBranches={chosenBranchesID} setSelectedBranches={setChosenBranchesID} 
       schoolCode={schoolInfo.schoolCode} programme={item} index={index} />}/>
       <View style={{
         padding: 15,
