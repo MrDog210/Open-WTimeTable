@@ -9,6 +9,8 @@ export const LICENSE = 'https://github.com/MrDog210/Open-WTimeTable/blob/master/
 export const CONTR_MRDOG210 = 'https://github.com/MrDog210'
 export const CONTR_MZHAP = 'https://github.com/mzHap'
 
+export const DONATION_LINK = 'https://buymeacoffee.com/mrdog210'
+
 export const storage = new Storage({})
 
 export const CREATE_DATABASE = [/*`DROP TABLE IF EXISTS lectures_has_groups`,

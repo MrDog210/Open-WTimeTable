@@ -9,11 +9,11 @@
     "web": "expo start --web",
     "buildAndroidDevClient": "eas build --profile development --platform android",
     "buildAndroidPreview": "eas build -p android --profile preview",
+    "buildAndroidProduction": "eas build --platform android",
     "lint": "expo lint",
     "testProduction": "npx expo start --no-dev --minify"
   },
   "dependencies": {
-    "@expo/metro-runtime": "~5.0.4",
     "@op-engineering/op-sqlite": "^14.0.4",
     "@react-native-community/netinfo": "11.4.1",
     "@react-native-picker/picker": "2.11.0",
@@ -28,7 +28,6 @@
     "expo-splash-screen": "~0.30.9",
     "expo-status-bar": "~2.2.3",
     "react": "19.0.0",
-    "react-dom": "19.0.0",
     "react-native": "0.79.4",
     "react-native-calendar-timetable": "^1.0.7",
     "react-native-calendars": "^1.1312.1",
@@ -38,8 +37,7 @@
     "react-native-reanimated": "~3.17.4",
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.11.1",
-    "react-native-uuid": "^2.0.3",
-    "react-native-web": "^0.20.0"
+    "react-native-uuid": "^2.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
