@@ -92,7 +92,10 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
   async function proceedToGroupSelect() {
     setFetchingDataMessage('Fetching lectures')
     try {
+      const startTime = performance.now()
       await saveAndInsertData.mutateAsync()
+      const endTime = performance.now()
+      console.log(`Inserting data took ${endTime - startTime} milliseconds`)
       navigation.navigate('Setup', { screen: 'GroupSelect', params: { isEditing: false} })
     } catch (error) {
       if(error instanceof Error) {

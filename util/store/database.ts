@@ -92,6 +92,37 @@ export async function insertSelectedGroup(courses_id: number, groups_id: number)
   return db.executeWithHostObjects('INSERT INTO selected_groups (courses_id, groups_id) VALUES (?,?);', [courses_id, groups_id])
 }
 
+/*
+export async function insertLecture({start_time, end_time, eventType, note, showLink, color, colorText, courseId, executionTypeId, branches, rooms, groups, lecturers}: LectureWise) {
+  return db.transaction(async (tx) => {
+    const { insertId } = await tx.execute('INSERT INTO lectures (start_time, end_time, eventType, note, showLink, color, colorText, executionType_id, course_id) VALUES (?,?,?,?,?,?,?,?,?);', 
+      [start_time, end_time, eventType, note, showLink, color, colorText, executionTypeId, courseId])
+    const promises: Promise<any>[] = []
+    for (const { id } of rooms) {
+      promises.push(tx.execute(
+        'INSERT INTO lectures_has_rooms (lectures_id, rooms_id) VALUES (?, ?);',
+        [insertId!, Number(id)]
+      ))
+    }
+
+    for (const { id } of lecturers) {
+      promises.push(tx.execute(
+        'INSERT INTO lectures_has_lecturers (lectures_id, lecturers_id) VALUES (?, ?);',
+        [insertId!, Number(id)]
+      ))
+    }
+
+    for (const { id } of groups) {
+      promises.push(tx.execute(
+        'INSERT INTO lectures_has_groups (lectures_id, groups_id) VALUES (?, ?);',
+        [insertId!, Number(id)]
+      ))
+    }
+
+    await Promise.all(promises)
+  })
+}
+*/
 export async function insertLecture({start_time, end_time, eventType, note, showLink, color, colorText, courseId, executionTypeId, branches, rooms, groups, lecturers}: LectureWise) {
   const result = await db.execute('INSERT INTO lectures (start_time, end_time, eventType, note, showLink, color, colorText, executionType_id, course_id) VALUES (?,?,?,?,?,?,?,?,?);', 
       [start_time, end_time, eventType, note, showLink, color, colorText, executionTypeId, courseId]) 
