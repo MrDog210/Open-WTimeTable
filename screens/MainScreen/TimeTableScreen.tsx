@@ -30,7 +30,7 @@ let ranOnce = false
 function TimeTableScreen({ route }: TimeTableScreenProps) {
   const { timetableAnimationsEnabled, defaultView } = useSettings()
   const [modalLecture, setModalLecture] = useState<Lecture | null>(null)
-  const [date, setDate] = useState<Date>(new Date()) // "2025-05-05"
+  const [date, setDate] = useState<Date>(new Date("2025-05-05")) // "2025-05-05"
   const [week, setWeek] = useState(getWeekDates(date)) // TODO: maybe remove this
   const scrollRef = useRef<ScrollView>(null);
   const navigation = useNavigation()
@@ -53,8 +53,8 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
         console.log("timetable updates found")
       }
       
-      //await updateLectures(new Date('2025-01-01'), dateFromNow(200), true)
-      await updateLectures(new Date(), dateFromNow(200), true)
+      await updateLectures(new Date('2025-01-01'), dateFromNow(200), true)
+      //await updateLectures(new Date(), dateFromNow(200), true)
 
       const endTime = performance.now()
       console.log(`Updating lectures took ${endTime - startTime} milliseconds`)

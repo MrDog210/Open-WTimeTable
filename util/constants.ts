@@ -61,21 +61,21 @@ export const CREATE_DATABASE = [/*`DROP TABLE IF EXISTS lectures_has_groups`,
   groups_id INTEGER NOT NULL,
   lectures_id INTEGER NOT NULL,
   FOREIGN KEY (groups_id) REFERENCES groups (id),
-  FOREIGN KEY (lectures_id) REFERENCES lectures (id)
+  FOREIGN KEY (lectures_id) REFERENCES lectures (id) ON DELETE CASCADE
 )`,
 `CREATE TABLE IF NOT EXISTS lectures_has_lecturers (
   id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL,
   lecturers_id INTEGER NOT NULL,
   lectures_id INTEGER NOT NULL,
   FOREIGN KEY (lecturers_id) REFERENCES lecturers (id),
-  FOREIGN KEY (lectures_id) REFERENCES lectures (id)
+  FOREIGN KEY (lectures_id) REFERENCES lectures (id) ON DELETE CASCADE
 )`,
 `CREATE TABLE IF NOT EXISTS lectures_has_rooms (
   id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL,
   rooms_id INTEGER NOT NULL,
   lectures_id INTEGER NOT NULL,
   FOREIGN KEY (rooms_id) REFERENCES rooms (id),
-  FOREIGN KEY (lectures_id) REFERENCES lectures (id)
+  FOREIGN KEY (lectures_id) REFERENCES lectures (id) ON DELETE CASCADE
 )`,
 `CREATE TABLE IF NOT EXISTS selected_groups (
   id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL,
@@ -91,7 +91,14 @@ export const CREATE_DATABASE = [/*`DROP TABLE IF EXISTS lectures_has_groups`,
 	executionType_id INTEGER NOT NULL,
 	FOREIGN KEY (courses_id) REFERENCES courses (id),
 	FOREIGN KEY (executionType_id) REFERENCES executionTypes (id)
-)`]
+)`,
+`CREATE UNIQUE INDEX IF NOT EXISTS index_group_id ON groups(id);`,
+`CREATE UNIQUE INDEX IF NOT EXISTS index_rooms_id ON rooms(id);`,
+`CREATE UNIQUE INDEX IF NOT EXISTS index_courses_id ON courses(id);`,
+`CREATE UNIQUE INDEX IF NOT EXISTS index_executionTypes_id ON executionTypes(id);`,
+`CREATE UNIQUE INDEX IF NOT EXISTS index_lecturers_id ON lecturers(id);`,
+//`CREATE INDEX IF NOT EXISTS lectures_date_index ON lectures(start_time, end_time);`
+]
 
 export const DELETE_COMMANDS = [
 `DELETE FROM lectures_has_lecturers;`,
