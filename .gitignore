@@ -38,3 +38,4 @@ yarn-error.*
 %ProgramData%
 .env
 *.apk
+*.aab

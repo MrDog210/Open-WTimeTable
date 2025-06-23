@@ -1,47 +1,39 @@
 import { StaticScreenProps, useNavigation } from "@react-navigation/native";
-import { Programme, SchoolInfo } from "../../types/types";
+import { SchoolInfo } from "../../types/types";
 import Text from "../../components/ui/Text";
 import Container from "../../components/ui/Container";
-import { Alert, ScrollView, StyleSheet, View } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
 import { useLayoutEffect, useState } from "react";
-import { fetchBranchesForProgramm, getBasicProgrammes } from "../../util/http/api";
+import { getBasicProgrammes } from "../../util/http/api";
 import { truncateDatabase } from "../../util/store/database";
 import { fetchAndInsertLectures, getAndSetAllDistinctBranchGroups } from "../../util/timetableUtils";
 import { getSchoolYearDates } from "../../util/dateUtils";
 import Button from "../../components/ui/Button";
-import DropDownPicker from "../../components/ui/DropDownPicker";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import LoadingOverlay from "../../components/ui/LoadingOverlay";
+import { FlatList } from "react-native-gesture-handler";
+import ProgrammTreeRow, { TreeProgramme } from "../../components/programSelect/ProgrammTreeRow";
+import { TreeYears } from "../../components/programSelect/YearTreeRow";
+import ClassicProgramSelect from "../../components/programSelect/ClassicProgramSelect";
 import Switch from "../../components/ui/Switch";
 
 type ProgramSelectScreenProps = StaticScreenProps<{
-  schoolInfo: SchoolInfo
+  schoolInfo: SchoolInfo,
 }>;
 
-function generateYearsOfProgram(program: Programme) {
-  const numOfYears = Number(program.year)
-  const years = []
+function generateYearsOfProgram(numOfYears: number): TreeYears[] {
+  const years: TreeYears[] = []
   for(let i = 1; i <= numOfYears; i++)
     years.push({id: i, name: i.toString()})
 
   return years
 }
-// TODO: redesign this with this component: https://github.com/JairajJangle/react-native-tree-multi-select
+
 function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
   const { schoolInfo } = route.params
   const [fetchingDataMessage, setFetchingDataMessage] = useState('')
-
-  const [programsOpen, setProgramsOpen] = useState(false)
-  const [chosenProgrammID, setChosenProgrammID] = useState<string | null>(null)
-
-  const [yearOpen, setYearOpen] = useState(false)
-  const [years, setYears] = useState<{id: number; name: string}[]>([])
-  const [chosenYear, setChosenYear] = useState<string | null>(null)
-
-  const [branchOpen, setBranchOpen] = useState(false)
   const [chosenBranchesID, setChosenBranchesID] = useState<string[]>([])
-
-  const [multipleGroupSelect, setMultipleGroupSelect] = useState<boolean>(false)
+  const [advancedMode, setAdvancedMode] = useState(false)
 
   const navigation = useNavigation()
 
@@ -51,30 +43,19 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
     })
   }, [navigation, schoolInfo.schoolName])
 
-  const { data: programms, ...basicProgrammesQuery} = useQuery({
-    queryFn: () => getBasicProgrammes(schoolInfo.schoolCode),
+  const { data: programms, ...basicProgrammesQuery} = useQuery<TreeProgramme[]>({
+    initialData: [],
+     queryFn: async () => {
+      const data = await getBasicProgrammes(schoolInfo.schoolCode)
+      return data.map(({id, name, year}): TreeProgramme => ({
+        id,
+        name,
+        year, 
+        years: generateYearsOfProgram(Number(year))
+      }))
+    },
     queryKey: [ 'basicProgrammes', { schoolCode: schoolInfo.schoolCode }]
   })
-
-  const { data: branches} = useQuery({
-    initialData: [],
-    queryFn: () => {
-      if(!multipleGroupSelect) setChosenBranchesID([])
-      return fetchBranchesForProgramm(schoolInfo.schoolCode, chosenProgrammID!, chosenYear!)
-    },
-    queryKey: [ 'branchesForProgamme', { schoolCode: schoolInfo.schoolCode, chosenProgrammID, chosenYear }],
-    enabled: !!chosenProgrammID && !!chosenYear
-  })
-
-  function onProgrammIdSelected(id: string | null) {
-    if(!id || !programms)
-      return
-    const program = programms.find((item) => item.id === id)
-    if(!program) return
-    setYears(generateYearsOfProgram(program))
-    setChosenYear(null)
-    if(!multipleGroupSelect) setChosenBranchesID([])
-  }
 
   const saveAndInsertData = useMutation({
     mutationFn: async () => {
@@ -105,67 +86,42 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
     }
   }
 
+  const Title = <Text style={styles.title}>Select your branch or branches</Text>
+
+  function switchMode(isAdvanced: boolean) {
+    setChosenBranchesID([])
+    setAdvancedMode(isAdvanced)
+  }
+
   console.log(chosenBranchesID)
   const isFetching = basicProgrammesQuery.isFetching || saveAndInsertData.isPending
-
+  // TODO: add toggle for advance mode or simple mode
   return (
     <>
-    <LoadingOverlay visible={isFetching} text={fetchingDataMessage} />
-    <Container style={styles.container}>
-      <ScrollView contentContainerStyle={{ gap: 15 }}>
-        <Text style={{textAlign: 'center', fontWeight: 'bold'}}>Select your program, year and group</Text>
-          <DropDownPicker items={programms as any}
-            open={programsOpen}
-            setOpen={setProgramsOpen}
-            value={chosenProgrammID}
-            setValue={setChosenProgrammID}
-            schema={{
-              label: 'name',
-              value: 'id'
-            }}
-            onChangeValue={onProgrammIdSelected}
-            zIndex={3000}
-            placeholder="Select program"
-          />
-          <DropDownPicker items={years as any}
-            open={yearOpen}
-            setOpen={setYearOpen}
-            value={chosenYear}
-            setValue={setChosenYear}
-            disabled={!chosenProgrammID}
-            schema={{
-              label: 'name',
-              value: 'id'
-            }}
-            zIndex={2000}
-            placeholder="Select year"
-          />
-          <DropDownPicker items={branches as any}
-            open={branchOpen}
-            setOpen={setBranchOpen}
-            value={chosenBranchesID}
-            setValue={setChosenBranchesID}
-            onChangeValue={() => console.log('changed')}
-            schema={{
-              label: 'branchName',
-              value: 'id'
-            }}
-            disabled={!chosenYear}
-            mode="BADGE"
-            multiple
-            max={multipleGroupSelect ? 999 : 1}
-            zIndex={1000}
-            placeholder="Select branch"
-        />
-        <View style={styles.switchContainer}>
-          <Text style={{alignSelf: 'center'}}>Enable multiple group selection</Text>
-          <Switch value={multipleGroupSelect} onValueChange={setMultipleGroupSelect} />
+      <LoadingOverlay visible={isFetching} text={fetchingDataMessage} />
+      <Container >
+        { advancedMode ? <FlatList key="advanced" contentContainerStyle={{paddingBottom: 100}} data={programms} 
+        ListHeaderComponent={Title}
+        renderItem={({item, index}) => <ProgrammTreeRow selectedBranches={chosenBranchesID} setSelectedBranches={setChosenBranchesID} 
+        schoolCode={schoolInfo.schoolCode} programme={item} index={index} />} /> 
+        : 
+        <View style={{flex: 1}} key="classic">
+          {Title}
+          <ClassicProgramSelect chosenBranchesID={chosenBranchesID} setChosenBranchesID={setChosenBranchesID}
+            programms={programms} schoolCode={schoolInfo.schoolCode} />
         </View>
-      </ScrollView>
-      <View>
-        <Button disabled={chosenBranchesID.length === 0} onPress={proceedToGroupSelect}>Proceed to group selection</Button>
-      </View>
-    </Container>
+        }
+        <View style={styles.switchContainer}>
+          <Text style={{alignSelf: 'center'}}>Advanced mode</Text>
+          <Switch value={advancedMode} onValueChange={switchMode} />
+        </View>
+        <View style={{
+          padding: 15,
+          paddingTop: 0
+        }}>
+          <Button disabled={chosenBranchesID.length === 0} onPress={proceedToGroupSelect}>Proceed to group selection</Button>
+        </View>
+      </Container>
     </>
   )
 }
@@ -173,14 +129,16 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
 export default ProgramSelectScreen
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 15,
-    paddingTop: 0
+  title: {
+    textAlign: 'center', 
+    fontWeight: 'bold', 
+    fontSize: 20, 
+    paddingVertical: 10,
   },
   switchContainer: { 
     flexDirection: 'row',
-    //alignContent: 'center',
     justifyContent: 'space-between',
-    height: 54
+    height: 54,
+    padding: 15
   },
 })

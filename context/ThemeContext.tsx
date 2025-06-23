@@ -45,6 +45,7 @@ export type ThemeColorsType = {
   border: string,
   surfaceVariant: string
   onSurfaceVariant: string,
+  placeholder: string
 }
 
 const lightMode: ThemeColorsType = {
@@ -60,10 +61,11 @@ const lightMode: ThemeColorsType = {
   onSurface: "rgb(128 128, 128)",
   surfaceVariant: "#dedede",
   onSurfaceVariant: "black",
-  surfaceDisabled: "rgba(32, 26, 25, 0.12)",
+  surfaceDisabled: "rgba(255, 255, 255, 0.3)",
   backdrop: "rgba(59, 45, 44, 0.4)",
   touchColor: "rgba(32, 26, 25, 0.38)",
   border: '#e0e0e0',
+  placeholder: '#999999'
 }
 
 const darkMode: ThemeColorsType = {
@@ -77,12 +79,13 @@ const darkMode: ThemeColorsType = {
   onBackground: "rgb(237, 224, 222)",
   surface: "#1e1e1e", // TODO: change color to lighter tone
   onSurface: "rgb(237, 224, 222)",
-  surfaceDisabled: "rgba(237, 224, 222, 0.12)",
+  surfaceDisabled: "rgba(0, 0, 0, 0.3)",
   backdrop: "rgba(59, 45, 44, 0.4)",
   touchColor: "rgba(237, 224, 222, 0.75)",
   surfaceVariant: "#2C2C2C",
   onSurfaceVariant: "white",
   border: '#2c2c2c',
+  placeholder: '#666666'
 }
 
 function ThemeContextProvider({children}: {children: ReactNode}) {
