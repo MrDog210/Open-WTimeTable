@@ -1,19 +1,36 @@
 import type { WidgetTaskHandlerProps } from 'react-native-android-widget';
 import NextUpWidget from '../components/widgets/NextUpWidget';
-import { getLecturesForDate } from './store/database';
+import { getLecturesForDate, getNextLecture } from './store/database';
 
 const nameToWidget = {
   // Hello will be the **name** with which we will reference our widget.
   NextUp: NextUpWidget,
 };
 
+async function getInProgressLecture() {
+  const lectures = await getLecturesForDate("2025-06-02")
+  if (lectures.length === 0) return undefined;
+  const now = new Date("2025-06-02T16:10:20");
+  console.log(now)
+  return lectures.find(lecture => {
+    const start = new Date(lecture.start_time);
+    const end = new Date(lecture.end_time);
+    return now >= start && now <= end;
+  });
+}
+
 export async function widgetTaskHandler({ renderWidget, widgetInfo, widgetAction}: WidgetTaskHandlerProps) {
   const Widget = nameToWidget[widgetInfo.widgetName as keyof typeof nameToWidget];
-  const lectures = await getLecturesForDate("2025-06-02")
-  const lecture = lectures.length > 0 ? lectures[0] : undefined
-  switch (widgetAction) {
+  //const lectures = await getLecturesForDate("2025-06-02")
+  //const lecture = lectures.length > 0 ? lectures[0] : undefined
+  console.log(widgetInfo.widgetName)
+  const isNextUp = widgetInfo.widgetName === 'NextUp'
+  const lecture = isNextUp ? await getNextLecture() : await getInProgressLecture()
+  console.log(lecture)
+  renderWidget(<Widget lecture={lecture} isNextUp={isNextUp} />)
+  /*switch (widgetAction) {
     case 'WIDGET_ADDED':
-      renderWidget(<Widget lecture={lecture} />);
+      renderWidget(<Widget lecture={lecture}  />);
       break;
 
     case 'WIDGET_UPDATE':
@@ -29,15 +46,16 @@ export async function widgetTaskHandler({ renderWidget, widgetInfo, widgetAction
       break;
 
     case 'WIDGET_CLICK':
+      console.log("click")
       renderWidget(<Widget lecture={lecture} />)
-      /*if (clickAction === 'play') {
+      if (clickAction === 'play') {
         renderWidget(<Widget status="playing" />);
       } else {
         renderWidget(<Widget status="stopped" />);
-      }*/
+      }
       break;
 
     default:
       break;
-  }
+  }*/
 }

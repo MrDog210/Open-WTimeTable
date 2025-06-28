@@ -61,6 +61,16 @@
               "previewImage": "./assets/widget-preview/NextUp.png",
               "updatePeriodMillis": 1800000, // Minimum is 1800000 (30 min),
               "resizeMode": "horizontal|vertical"
+            },
+            {
+              "name": "Now",
+              "label": "In Progress",
+              "description": "Shows the lecture that is in progress",
+              "minWidth": "160dp",
+              "minHeight": "80dp",
+              "previewImage": "./assets/widget-preview/NextUp.png",
+              "updatePeriodMillis": 1800000,
+              "resizeMode": "horizontal|vertical"
             }
           ]
         }

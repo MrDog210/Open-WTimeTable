@@ -277,3 +277,28 @@ export async function getAllDatesWithLectures() {
    
     return rows as any as {date: string}[]
 }
+
+export async function getNextLecture() {
+  const { rows } = await db.execute(
+    `SELECT DISTINCT lectures.id, lectures.start_time, lectures.end_time, lectures.course_id, courses.course, lectures.executionType_id,
+    eventType, note, showLink, color, colorText
+    FROM groups JOIN lectures_has_groups ON groups.id = lectures_has_groups.groups_id
+    JOIN lectures ON lectures.id = lectures_has_groups.lectures_id
+    JOIN courses ON courses.id = lectures.course_id
+    JOIN selected_groups ON selected_groups.groups_id = groups.id
+    AND selected_groups.courses_id = courses.id
+    AND datetime(start_time) > datetime('now') ORDER BY start_time LIMIT 1`) //datetime('now') datetime('2025-02-24T11:00:00')
+
+  const lecturesNormal = rows as any as Lecture[]
+  if(lecturesNormal.length === 0) return undefined
+  const lecture: Lecture = lecturesNormal[0]
+  lecture.groups = await getGroupsForLecture(lecture.id)
+  lecture.rooms = await getRoomsForLecture(lecture.id)
+  lecture.lecturers = await getLecturersForLecture(lecture.id)
+  if(lecture.executionType_id){
+    lecture.executionType = (await getExecutionType(lecture.executionType_id))!.executionType
+    lecture.usersNote = await querryNoteForCourse(lecture.course_id, lecture.executionType_id)
+  }
+
+  return lecture
+}

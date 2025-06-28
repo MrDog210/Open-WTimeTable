@@ -4,7 +4,8 @@ import { formatArray } from "../../util/timetableUtils";
 import { getTimeFromDate } from "../../util/dateUtils";
 
 type NextUpWidgetProps = {
-  lecture?: Lecture
+  lecture?: Lecture,
+  isNextUp: boolean
 }
 
 type UniversalColorMap = {
@@ -18,7 +19,7 @@ const colors: UniversalColorMap = {
   onBackground: "#ffffffff",
 }
 
-function NextUpWidget({ lecture }: NextUpWidgetProps) {
+function NextUpWidget({ lecture, isNextUp }: NextUpWidgetProps) {
   return (
     <FlexWidget
       style={{
@@ -26,14 +27,16 @@ function NextUpWidget({ lecture }: NextUpWidgetProps) {
         width: 'match_parent',
         backgroundColor: colors.primary,
         borderRadius: 15,
+        justifyContent: !lecture ? 'center' : undefined,
+        alignItems: !lecture ? 'center' : undefined
       }}
     >
       { lecture ? (
         <FlexWidget style={{flex: 1, width: 'match_parent', height: 'match_parent'}}>
           <TextWidget
-            text="Now"
+            text={isNextUp ? "Next" : "Now"}
             style={{
-              fontSize: 18,
+              fontSize: 16,
               color: colors.onPrimary,
               padding: 10
             }}
@@ -42,12 +45,13 @@ function NextUpWidget({ lecture }: NextUpWidgetProps) {
             flex: 1,
             backgroundColor: colors.background,
             width: 'match_parent',
-            padding: 10
+            padding: 10,
+            paddingBottom: 0
           }}>
             <TextWidget
               text={lecture.course}
               style={{
-                fontSize: 20,
+                fontSize: 18,
                 fontWeight: 'bold',
                 color: colors.onPrimary,
               }}
@@ -55,7 +59,7 @@ function NextUpWidget({ lecture }: NextUpWidgetProps) {
             <TextWidget
               text={`${getTimeFromDate(lecture.start_time)} - ${getTimeFromDate(lecture.end_time)}`}
               style={{
-                fontSize: 20,
+                fontSize: 18,
                 textAlign: 'center',
                 color: colors.onPrimary,
               }}
@@ -63,14 +67,14 @@ function NextUpWidget({ lecture }: NextUpWidgetProps) {
             <TextWidget
               text={formatArray(lecture.rooms, 'name')}
               style={{
-                fontSize: 16,
+                fontSize: 14,
                 color: colors.onPrimary,
               }}
             />
             <TextWidget
               text={formatArray(lecture.lecturers, 'name')}
               style={{
-                fontSize: 16,
+                fontSize: 14,
                 color: colors.onPrimary,
               }}
             />
@@ -78,10 +82,12 @@ function NextUpWidget({ lecture }: NextUpWidgetProps) {
         </FlexWidget>
       ) : (
           <TextWidget
-            text="NO LECTURE"
+            text={isNextUp ? "End of semester :)" : "No lecture in progress"}
             style={{
-              fontSize: 30,
+              fontSize: 24,
               color: colors.onBackground,
+              padding: 10,
+              textAlign: 'center'
             }}
           />
         )

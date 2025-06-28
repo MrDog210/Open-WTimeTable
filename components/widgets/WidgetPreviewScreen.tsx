@@ -59,7 +59,7 @@ function WidgetPreviewScreen() {
   return (
     <View style={styles.container}>
       <WidgetPreview
-        renderWidget={() => <NextUpWidget lecture={EXAMPLE_LECTURE} />}
+        renderWidget={() => <NextUpWidget lecture={EXAMPLE_LECTURE} isNextUp={true} />}
         width={320}
         height={200}
       />
