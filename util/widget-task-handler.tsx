@@ -11,7 +11,7 @@ async function getInProgressLecture() {
   const lectures = await getLecturesForDate("2025-06-02")
   if (lectures.length === 0) return undefined;
   const now = new Date("2025-06-02T16:10:20");
-  console.log(now)
+  now.setHours((new Date()).getHours())
   return lectures.find(lecture => {
     const start = new Date(lecture.start_time);
     const end = new Date(lecture.end_time);

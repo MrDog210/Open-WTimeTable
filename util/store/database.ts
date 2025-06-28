@@ -279,6 +279,9 @@ export async function getAllDatesWithLectures() {
 }
 
 export async function getNextLecture() {
+  const date = new Date('2025-06-02T11:00:00')
+  date.setHours((new Date()).getHours())
+  console.log('new date: ', date)
   const { rows } = await db.execute(
     `SELECT DISTINCT lectures.id, lectures.start_time, lectures.end_time, lectures.course_id, courses.course, lectures.executionType_id,
     eventType, note, showLink, color, colorText
@@ -287,7 +290,7 @@ export async function getNextLecture() {
     JOIN courses ON courses.id = lectures.course_id
     JOIN selected_groups ON selected_groups.groups_id = groups.id
     AND selected_groups.courses_id = courses.id
-    AND datetime(start_time) > datetime('now') ORDER BY start_time LIMIT 1`) //datetime('now') datetime('2025-02-24T11:00:00')
+    AND datetime(start_time) > datetime('${date.toISOString()}') ORDER BY start_time LIMIT 1`) //datetime('now') datetime('2025-02-24T11:00:00')
 
   const lecturesNormal = rows as any as Lecture[]
   if(lecturesNormal.length === 0) return undefined
