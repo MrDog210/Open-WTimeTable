@@ -43,8 +43,6 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
   
   const updateLecturesMutation = useMutation({
     mutationFn: async (forceUpdate: boolean) => {
-      const data = await getLecturesForDate("2025-06-02")
-      console.log("lectures for day", data)
       const startTime = performance.now()
 
       if(!forceUpdate) { // if user hasnt swiped down, then this is automaticly checking for updates
