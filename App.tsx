@@ -13,6 +13,7 @@ import GroupSelectScreen from './screens/setup/GroupSelectScreen';
 import { NAVIGATION_STYLE } from './util/styling';
 import { View } from 'react-native';
 import WidgetPreviewScreen from './components/widgets/WidgetPreviewScreen';
+import { useEffect } from 'react';
 
 function useHasCompletedSetup() {
   const {hasCompletedSetup} = useSettings()
@@ -60,7 +61,6 @@ const StaticNavigation = createStaticNavigation(RootStack);
 
 function Navigation() {
   const {colors, theme} = useTheme()
-  
   const myTheme: ReactNavigation.Theme = {
     ...DefaultTheme,
     dark: theme === 'dark',
@@ -73,7 +73,7 @@ function Navigation() {
       text: colors.onBackground
     }
   }
-  //return <WidgetPreviewScreen />
+  return <WidgetPreviewScreen />
   return (
     <View style={{flex: 1, backgroundColor: colors.background}}>
       <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />

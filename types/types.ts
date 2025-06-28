@@ -136,3 +136,23 @@ export type ExecutionType = {
   id: number,
   executionType: string
 }
+
+export type ThemeColorsType = {
+  primary: string,
+  secondary: string,
+  onPrimary: string,
+  onSecondary: string,
+  background: string,
+  onBackground: string,
+  error: string,
+  onError: string,
+  surface: string,
+  onSurface: string,
+  surfaceDisabled: string,
+  backdrop: string,
+  touchColor: string,
+  border: string,
+  surfaceVariant: string
+  onSurfaceVariant: string,
+  placeholder: string
+}

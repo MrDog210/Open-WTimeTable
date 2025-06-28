@@ -54,12 +54,13 @@
               "name": "NextUp",
               "label": "Next Up Widget",
               "description": "Shows the next lecture",
-              "minWidth": "320dp",
-              "minHeight": "120dp",
-              "targetCellWidth": 5,
-              "targetCellHeight": 2,
+              "minWidth": "160dp",
+              "minHeight": "80dp",
+              //"targetCellWidth": 5,
+              //"targetCellHeight": 2,
               "previewImage": "./assets/widget-preview/NextUp.png",
-              "updatePeriodMillis": 1800000 // Minimum is 1800000 (30 min)
+              "updatePeriodMillis": 1800000, // Minimum is 1800000 (30 min),
+              "resizeMode": "horizontal|vertical"
             }
           ]
         }

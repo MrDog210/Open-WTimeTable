@@ -7,22 +7,21 @@ const nameToWidget = {
   NextUp: NextUpWidget,
 };
 
-export async function widgetTaskHandler(props: WidgetTaskHandlerProps) {
-  const widgetInfo = props.widgetInfo;
+export async function widgetTaskHandler({ renderWidget, widgetInfo, widgetAction}: WidgetTaskHandlerProps) {
   const Widget = nameToWidget[widgetInfo.widgetName as keyof typeof nameToWidget];
-  const lectures = await getLecturesForDate((new Date("2025-06-02").toISOString()))
+  const lectures = await getLecturesForDate("2025-06-02")
   const lecture = lectures.length > 0 ? lectures[0] : undefined
-  switch (props.widgetAction) {
+  switch (widgetAction) {
     case 'WIDGET_ADDED':
-      props.renderWidget(<Widget lecture={lecture} />);
+      renderWidget(<Widget lecture={lecture} />);
       break;
 
     case 'WIDGET_UPDATE':
-      props.renderWidget(<Widget lecture={lecture} />);
+      renderWidget(<Widget lecture={lecture} />);
       break;
 
     case 'WIDGET_RESIZED':
-      props.renderWidget(<Widget lecture={lecture} />);
+      renderWidget(<Widget lecture={lecture} />);
       break;
 
     case 'WIDGET_DELETED':
@@ -30,10 +29,11 @@ export async function widgetTaskHandler(props: WidgetTaskHandlerProps) {
       break;
 
     case 'WIDGET_CLICK':
-      /*if (props.clickAction === 'play') {
-        props.renderWidget(<Widget status="playing" />);
+      renderWidget(<Widget lecture={lecture} />)
+      /*if (clickAction === 'play') {
+        renderWidget(<Widget status="playing" />);
       } else {
-        props.renderWidget(<Widget status="stopped" />);
+        renderWidget(<Widget status="stopped" />);
       }*/
       break;
 
