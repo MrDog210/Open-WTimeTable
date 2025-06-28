@@ -12,6 +12,7 @@ import NetInfo from '@react-native-community/netinfo'
 import GroupSelectScreen from './screens/setup/GroupSelectScreen';
 import { NAVIGATION_STYLE } from './util/styling';
 import { View } from 'react-native';
+import WidgetPreviewScreen from './components/widgets/WidgetPreviewScreen';
 
 function useHasCompletedSetup() {
   const {hasCompletedSetup} = useSettings()
@@ -72,7 +73,7 @@ function Navigation() {
       text: colors.onBackground
     }
   }
-
+  //return <WidgetPreviewScreen />
   return (
     <View style={{flex: 1, backgroundColor: colors.background}}>
       <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
@@ -88,6 +89,7 @@ onlineManager.setEventListener((setOnline) => {
     setOnline(!!state.isConnected)
   })
 })
+
 
 export default function App() {
   return (

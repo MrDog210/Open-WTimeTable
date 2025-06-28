@@ -50,17 +50,17 @@
         {
           //"fonts": ["./assets/fonts/Inter.ttf"],
           "widgets": [
-            /*{
-              "name": "Hello",
-              "label": "My Hello Widget",
+            {
+              "name": "NextUp",
+              "label": "Next Up Widget",
+              "description": "Shows the next lecture",
               "minWidth": "320dp",
               "minHeight": "120dp",
               "targetCellWidth": 5,
               "targetCellHeight": 2,
-              "description": "This is my first widget",
-              "previewImage": "./assets/widget-preview/hello.png",
-              "updatePeriodMillis": 1800000
-            }*/
+              "previewImage": "./assets/widget-preview/NextUp.png",
+              "updatePeriodMillis": 1800000 // Minimum is 1800000 (30 min)
+            }
           ]
         }
       ]
