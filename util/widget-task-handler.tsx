@@ -1,10 +1,13 @@
 import type { WidgetTaskHandlerProps } from 'react-native-android-widget';
 import NextUpWidget from '../components/widgets/NextUpWidget';
 import { getLecturesForDate, getNextLecture } from './store/database';
+import TodayWidget from '../components/widgets/TodayWidget';
+import { getAllLecturesForDay } from './timetableUtils';
 
 const nameToWidget = {
-  // Hello will be the **name** with which we will reference our widget.
   NextUp: NextUpWidget,
+  Now: TodayWidget,
+  Today: TodayWidget
 };
 
 async function getInProgressLecture() {
@@ -21,13 +24,21 @@ async function getInProgressLecture() {
 
 export async function widgetTaskHandler({ renderWidget, widgetInfo, widgetAction}: WidgetTaskHandlerProps) {
   const Widget = nameToWidget[widgetInfo.widgetName as keyof typeof nameToWidget];
-  //const lectures = await getLecturesForDate("2025-06-02")
-  //const lecture = lectures.length > 0 ? lectures[0] : undefined
-  console.log(widgetInfo.widgetName)
-  const isNextUp = widgetInfo.widgetName === 'NextUp'
-  const lecture = isNextUp ? await getNextLecture() : await getInProgressLecture()
-  console.log(lecture)
-  renderWidget(<Widget lecture={lecture} isNextUp={isNextUp} />)
+  console.log("Widget info ", widgetInfo)
+  console.log("Widget action ", widgetAction)
+  if(Widget === NextUpWidget) {
+    const isNextUp = widgetInfo.widgetName === 'NextUp'
+    const lecture = isNextUp ? await getNextLecture() : await getInProgressLecture()
+    //console.log(lecture)
+    renderWidget(<Widget lecture={lecture} isNextUp={isNextUp} />)
+  } else if (Widget === TodayWidget) {
+    const tLectures = await getAllLecturesForDay(new Date("2025-06-02"), false)
+    const lectures = tLectures.map(tl => tl.lecture)
+    lectures.sort((a, b) => a.start_time === b.start_time ? 0 : a.start_time < b.start_time ? -1 : 1)
+    //console.log(lectures)
+    renderWidget(<Widget lectures={lectures} />)
+  }
+  
   /*switch (widgetAction) {
     case 'WIDGET_ADDED':
       renderWidget(<Widget lecture={lecture}  />);

@@ -1,27 +1,18 @@
-import { FlexWidget, TextWidget, ColorProp } from "react-native-android-widget"
+import { FlexWidget, TextWidget } from "react-native-android-widget"
 import { Lecture } from "../../types/types"
 import { formatArray } from "../../util/timetableUtils";
 import { getTimeFromDate } from "../../util/dateUtils";
+import { WIDGET_COLORS as colors } from "../../util/constants";
 
 type NextUpWidgetProps = {
   lecture?: Lecture,
   isNextUp: boolean
 }
 
-type UniversalColorMap = {
-  [key: string]: ColorProp;
-};
-
-const colors: UniversalColorMap = {
-  primary: "#eb3b5aff",
-  onPrimary: "#ffffffff",
-  background: "#2c2c2eff",
-  onBackground: "#ffffffff",
-}
-
 function NextUpWidget({ lecture, isNextUp }: NextUpWidgetProps) {
   return (
     <FlexWidget
+      clickAction="REFRESH"
       style={{
         height: 'match_parent',
         width: 'match_parent',
@@ -49,7 +40,7 @@ function NextUpWidget({ lecture, isNextUp }: NextUpWidgetProps) {
             paddingBottom: 0
           }}>
             <TextWidget
-              text={lecture.course}
+              text={`${lecture.course} - ${lecture.executionType}`}
               style={{
                 fontSize: 18,
                 fontWeight: 'bold',

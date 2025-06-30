@@ -1,5 +1,6 @@
 import { Storage } from '@op-engineering/op-sqlite';
 import { ThemeColorsType } from '../types/types';
+import { type ColorProp } from 'react-native-android-widget';
 
 export const API_URL = 'https://wise-tt.com/WTTWebRestAPI/ws/rest/'
 export const USERNAME = process.env.EXPO_PUBLIC_USERNAME
@@ -52,6 +53,18 @@ export const DARK_MODE_COLORS: ThemeColorsType = {
   onSurfaceVariant: "white",
   border: '#2c2c2c',
   placeholder: '#666666'
+}
+
+type UniversalColorMap = {
+  [key: string]: ColorProp;
+};
+
+export const WIDGET_COLORS: UniversalColorMap = {
+  primary: "#eb3b5aff",
+  onPrimary: "#ffffffff",
+  background: "#2c2c2eff",
+  surface: "#373739ff",
+  onBackground: "#ffffffff",
 }
 
 export const CREATE_DATABASE = [/*`DROP TABLE IF EXISTS lectures_has_groups`,

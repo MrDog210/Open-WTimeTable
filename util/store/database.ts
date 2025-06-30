@@ -290,7 +290,7 @@ export async function getNextLecture() {
     JOIN courses ON courses.id = lectures.course_id
     JOIN selected_groups ON selected_groups.groups_id = groups.id
     AND selected_groups.courses_id = courses.id
-    AND datetime(start_time) > datetime('${date.toISOString()}') ORDER BY start_time LIMIT 1`) //datetime('now') datetime('2025-02-24T11:00:00')
+    AND datetime(start_time) > datetime('${date.toISOString()}', 'localtime') ORDER BY start_time LIMIT 1`) //datetime('now') datetime('2025-02-24T11:00:00')
 
   const lecturesNormal = rows as any as Lecture[]
   if(lecturesNormal.length === 0) return undefined

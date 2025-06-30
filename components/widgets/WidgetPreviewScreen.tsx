@@ -2,6 +2,7 @@ import { StyleSheet, View } from 'react-native';
 import { WidgetPreview } from 'react-native-android-widget';
 import NextUpWidget from './NextUpWidget';
 import { Lecture } from '../../types/types';
+import TodayWidget from './TodayWidget';
 
 const EXAMPLE_LECTURE: Lecture = {
   "id": 101,
@@ -12,7 +13,7 @@ const EXAMPLE_LECTURE: Lecture = {
   "eventType": "Lecture",
   "note": "Covers foundational concepts of AI and machine learning algorithms.",
   "executionTypeId": 1,
-  "executionType": "On-Campus",
+  "executionType": "SV",
   "branches": [
     {
       "id": 501,
@@ -54,8 +55,20 @@ const EXAMPLE_LECTURE: Lecture = {
   }
 }
 
+const EXAMPLE_LECTURES: Lecture[] = [EXAMPLE_LECTURE, EXAMPLE_LECTURE, EXAMPLE_LECTURE, EXAMPLE_LECTURE, EXAMPLE_LECTURE, EXAMPLE_LECTURE, EXAMPLE_LECTURE]
+
 
 function WidgetPreviewScreen() {
+  return (
+    <View style={styles.container}>
+      <WidgetPreview
+        renderWidget={() => <TodayWidget lectures={EXAMPLE_LECTURES} />}
+        width={320}
+        height={600}
+      />
+    </View>
+  );
+
   return (
     <View style={styles.container}>
       <WidgetPreview

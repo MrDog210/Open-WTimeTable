@@ -73,7 +73,7 @@ function Navigation() {
       text: colors.onBackground
     }
   }
-  //return <WidgetPreviewScreen />
+  return <WidgetPreviewScreen />
   return (
     <View style={{flex: 1, backgroundColor: colors.background}}>
       <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />

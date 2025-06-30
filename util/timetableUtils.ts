@@ -1,9 +1,11 @@
 import { ScaledSize } from "react-native";
-import { Course, ExecutionType, GroupBranchChild, GroupBranchMain, GroupLecture, Lecturer, Room } from "../types/types"
+import { Course, ExecutionType, GroupBranchChild, GroupBranchMain, GroupLecture, Lecturer, Room, TimetableLecture } from "../types/types"
 import { fetchGroupsForBranch, fetchLecturesForGroups, getSchoolInfo } from "./http/api"
 import { hasInternetConnection } from "./http/http"
-import { batchInsertGRLETC, deleteLecturesBetweenDates, getAllDistinctSelectedGroups, insertLecture } from "./store/database"
+import { batchInsertGRLETC, deleteLecturesBetweenDates, getAllDistinctSelectedGroups, getLecturesForDate, insertLecture } from "./store/database"
 import { setAllBranchGroups, getSchoolInfo as getStoredSchoolInfo, getAllStoredBranchGroups, getUrlSchoolCode, setSchoolInfo } from "./store/schoolData"
+import { getDates, getISODateNoTimestamp, getWeekDates, subtrackSeconds } from "./dateUtils";
+import { getCustomLecturesForDates } from "./store/customLectures";
 
 export async function getAndSetAllDistinctBranchGroups(schoolCode: string, chosenBranchesID: string[]) {
   const groups: GroupBranchChild[] = []
@@ -170,4 +172,27 @@ export function getGroupsIntersection(groups1: GroupBranchChild[], groups2: Grou
   })
   
   return commonGroups
+}
+
+export async function getAllLecturesForDay(date: Date, isWeekView: boolean) {
+  console.log('querying lectures')
+  let dates: Date[] = []
+  if(isWeekView) {
+    const WEEK = getWeekDates(date)
+    dates = getDates(WEEK.from, WEEK.till)
+  } else 
+    dates.push(date)
+
+  const lec: TimetableLecture[] = []
+
+  const customLectures = getCustomLecturesForDates(dates)
+  const dataPromise = dates.map((d) => getLecturesForDate(getISODateNoTimestamp(d)))
+  const data = await Promise.all(dataPromise)
+  data.forEach(lectures => {
+    lectures.forEach(lecture => {
+      lec.push({lecture: lecture, startDate: subtrackSeconds(lecture.start_time, -60), endDate: subtrackSeconds(lecture.end_time, 60)})
+    })
+  });
+
+  return [...lec, ...(await customLectures)]
 }

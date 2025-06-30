@@ -4,11 +4,11 @@ import Container from "../../components/ui/Container";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { DefaultView, useSettings } from "../../context/UserSettingsContext";
 import { Lecture, TimetableLecture } from "../../types/types";
-import { dateFromNow, formatDate, formatWeekDate, getDates, getISODateNoTimestamp, getWeekDates, subtrackSeconds } from "../../util/dateUtils";
+import { dateFromNow, formatDate, formatWeekDate, getISODateNoTimestamp, getWeekDates } from "../../util/dateUtils";
 import { RefreshControl, ScrollView, useWindowDimensions, } from "react-native";
-import { calculateNowLineOffset, getColumnWidth, hasTimetableUpdated, updateLectures } from "../../util/timetableUtils";
-import { getAllDatesWithLectures, getLecturesForDate } from "../../util/store/database";
-import { getCustomLecturesForDates, markDatesForCustomLectures } from "../../util/store/customLectures";
+import { calculateNowLineOffset, getAllLecturesForDay, getColumnWidth, hasTimetableUpdated, updateLectures } from "../../util/timetableUtils";
+import { getAllDatesWithLectures } from "../../util/store/database";
+import { markDatesForCustomLectures } from "../../util/store/customLectures";
 import { CalendarProvider, WeekCalendar } from "react-native-calendars";
 import Timetable from "react-native-calendar-timetable";
 import HourSlice from "../../components/timetable/HourSlice";
@@ -68,30 +68,12 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
     initialData: [],
     queryKey: [QUERY_LECTURES, date, isWeekView],
     queryFn: async () => {
-      console.log('querying lectures')
-      let dates: Date[] = []
-      if(isWeekView) {
-        const WEEK = getWeekDates(date)
-        dates = getDates(WEEK.from, WEEK.till)
-      } else 
-        dates.push(date)
-
-      const lec: TimetableLecture[] = []
-
-      const dataPromise = dates.map((d) => getLecturesForDate(getISODateNoTimestamp(d)))
-      const data = await Promise.all(dataPromise)
-      data.forEach(lectures => {
-        lectures.forEach(lecture => {
-          lec.push({lecture: lecture, startDate: subtrackSeconds(lecture.start_time, -60), endDate: subtrackSeconds(lecture.end_time, 60)})
-        })
-      });
-
-      const customLectures: TimetableLecture[] = await getCustomLecturesForDates(dates)
+      const data = await getAllLecturesForDay(date, isWeekView)
       
       if(isWeekView)
         setWeek(getWeekDates(date)) // stupid
 
-      return [...lec, ...customLectures]
+      return data
     },
     networkMode: 'always',
     //staleTime: Infinity
