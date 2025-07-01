@@ -6,7 +6,7 @@ import { getAllLecturesForDay } from './timetableUtils';
 
 const nameToWidget = {
   NextUp: NextUpWidget,
-  Now: TodayWidget,
+  Now: NextUpWidget,
   Today: TodayWidget
 };
 

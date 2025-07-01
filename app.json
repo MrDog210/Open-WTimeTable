@@ -58,7 +58,7 @@
               "minHeight": "80dp",
               //"targetCellWidth": 5,
               //"targetCellHeight": 2,
-              "previewImage": "./assets/widget-preview/NextUp.png",
+              "previewImage": "./assets/widget-preview/next.png",
               "updatePeriodMillis": 1800000, // Minimum is 1800000 (30 min),
               "resizeMode": "horizontal|vertical"
             },
@@ -68,8 +68,18 @@
               "description": "Shows the lecture that is in progress",
               "minWidth": "160dp",
               "minHeight": "80dp",
-              "previewImage": "./assets/widget-preview/NextUp.png",
+              "previewImage": "./assets/widget-preview/now.png",
               "updatePeriodMillis": 1800000,
+              "resizeMode": "horizontal|vertical"
+            },
+            {
+              "name": "Today",
+              "label": "Today",
+              "description": "Shows the lecture for today",
+              "minWidth": "160dp",
+              "minHeight": "80dp",
+              "previewImage": "./assets/widget-preview/today.png",
+              "updatePeriodMillis": 3600000,
               "resizeMode": "horizontal|vertical"
             }
           ]
