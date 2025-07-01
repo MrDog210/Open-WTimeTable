@@ -93,6 +93,7 @@ function TodayWidget({ lectures }: TodayWidgetProps) {
               <FlexWidget style={{
                   overflow: 'hidden',
                   justifyContent: 'center',
+                  height: 'match_parent'
                 }}>
                 <TextWidget
                   text={`${lecture.course} - ${lecture.executionType}`}

@@ -3,6 +3,7 @@ import NextUpWidget from '../components/widgets/NextUpWidget';
 import { getLecturesForDate, getNextLecture } from './store/database';
 import TodayWidget from '../components/widgets/TodayWidget';
 import { getAllLecturesForDay } from './timetableUtils';
+import { getISODateNoTimestamp } from './dateUtils';
 
 const nameToWidget = {
   NextUp: NextUpWidget,
@@ -11,9 +12,9 @@ const nameToWidget = {
 };
 
 async function getInProgressLecture() {
-  const lectures = await getLecturesForDate("2025-06-02")
+  const lectures = await getLecturesForDate(getISODateNoTimestamp(new Date()))
   if (lectures.length === 0) return undefined;
-  const now = new Date("2025-06-02T16:10:20");
+  const now = new Date();
   now.setHours((new Date()).getHours())
   return lectures.find(lecture => {
     const start = new Date(lecture.start_time);
@@ -32,7 +33,7 @@ export async function widgetTaskHandler({ renderWidget, widgetInfo, widgetAction
     //console.log(lecture)
     renderWidget(<Widget lecture={lecture} isNextUp={isNextUp} />)
   } else if (Widget === TodayWidget) {
-    const tLectures = await getAllLecturesForDay(new Date("2025-06-02"), false)
+    const tLectures = await getAllLecturesForDay(new Date(), false)
     const lectures = tLectures.map(tl => tl.lecture)
     lectures.sort((a, b) => a.start_time === b.start_time ? 0 : a.start_time < b.start_time ? -1 : 1)
     //console.log(lectures)
