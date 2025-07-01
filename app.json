@@ -2,7 +2,7 @@
   "expo": {
     "name": "Open Wise TimeTable",
     "slug": "open-wtimetable",
-    "version": "2.1.0",
+    "version": "2.2.0",
     "orientation": "default",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
