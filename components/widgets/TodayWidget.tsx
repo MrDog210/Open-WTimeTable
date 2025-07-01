@@ -66,7 +66,7 @@ function TodayWidget({ lectures }: TodayWidgetProps) {
                 flexDirection: 'row',
                 paddingVertical: 5,
                 width: 'match_parent',
-                backgroundColor: index % 2 === 1 ? colors.surface : undefined
+                backgroundColor: index % 2 === 1 ? colors.surface : colors.background
               }}>
               <FlexWidget style={{
                 alignItems: 'center',
