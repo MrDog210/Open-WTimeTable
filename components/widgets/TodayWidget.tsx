@@ -1,4 +1,4 @@
-import { FlexWidget, ListWidget, TextWidget } from "react-native-android-widget";
+import { FlexWidget, ListWidget, SvgWidget, TextWidget } from "react-native-android-widget";
 import { Lecture } from "../../types/types";
 import { WIDGET_COLORS as colors } from "../../util/constants";
 import { getTimeFromDate } from "../../util/dateUtils";
@@ -21,14 +21,33 @@ function TodayWidget({ lectures }: TodayWidgetProps) {
         borderRadius: 15,
       }}
     >
-      <TextWidget
-        text="Today"
-        style={{
-          fontSize: 16,
-          color: colors.onPrimary,
-          padding: 10
-        }}
-      />
+      <FlexWidget style={{ 
+        flexDirection: 'row',
+          width: 'match_parent',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+        <FlexWidget style={{flex: 1}}>
+          <TextWidget
+            text="Today"
+            style={{
+              fontSize: 16,
+              color: colors.onPrimary,
+              padding: 10,
+              fontWeight: 'bold'
+            }}
+          />
+        </FlexWidget>
+        <SvgWidget 
+          svg={require('../../assets/widget/refresh.svg')}
+          style={{
+            borderColor: colors.primary,
+            width: 28,
+            height: 38,
+            marginRight: 10
+          }}
+        />
+      </FlexWidget>
       <FlexWidget style={{
         flex: 1,
         width: 'match_parent',

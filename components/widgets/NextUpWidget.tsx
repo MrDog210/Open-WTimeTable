@@ -1,7 +1,7 @@
-import { FlexWidget, TextWidget } from "react-native-android-widget"
+import { FlexWidget, SvgWidget, TextWidget } from "react-native-android-widget"
 import { Lecture } from "../../types/types"
 import { formatArray } from "../../util/timetableUtils";
-import { getTimeFromDate } from "../../util/dateUtils";
+import { formatDate, getTimeFromDate } from "../../util/dateUtils";
 import { WIDGET_COLORS as colors } from "../../util/constants";
 
 type NextUpWidgetProps = {
@@ -24,14 +24,33 @@ function NextUpWidget({ lecture, isNextUp }: NextUpWidgetProps) {
     >
       { lecture ? (
         <FlexWidget style={{flex: 1, width: 'match_parent', height: 'match_parent'}}>
-          <TextWidget
-            text={isNextUp ? "Next" : "Now"}
-            style={{
-              fontSize: 16,
-              color: colors.onPrimary,
-              padding: 10
-            }}
-          />
+          <FlexWidget style={{ 
+            flexDirection: 'row',
+              width: 'match_parent',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}>
+            <FlexWidget style={{flex: 1}}>
+              <TextWidget
+                text={isNextUp ? "Next" : "Now"}
+                style={{
+                  fontSize: 16,
+                  color: colors.onPrimary,
+                  padding: 10,
+                  fontWeight: 'bold'
+                }}
+              />
+            </FlexWidget>
+            <SvgWidget
+              svg={require('../../assets/widget/refresh.svg')}
+              style={{
+                borderColor: colors.primary,
+                width: 28,
+                height: 38,
+                marginRight: 10
+              }}
+            />
+          </FlexWidget>
           <FlexWidget style={{
             flex: 1,
             backgroundColor: colors.background,
@@ -55,6 +74,14 @@ function NextUpWidget({ lecture, isNextUp }: NextUpWidgetProps) {
                 color: colors.onPrimary,
               }}
             />
+            { isNextUp && <TextWidget
+              text={formatDate(lecture.start_time)}
+              style={{
+                fontSize: 14,
+                textAlign: 'center',
+                color: colors.onPrimary,
+              }}
+            />}
             <TextWidget
               text={formatArray(lecture.rooms, 'name')}
               style={{
