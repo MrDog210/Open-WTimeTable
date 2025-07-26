@@ -279,7 +279,7 @@ export async function getAllDatesWithLectures() {
 }
 
 export async function getNextLecture() {
-  const date = new Date('2025-06-02T11:00:00')
+  const date = new Date() // '2025-06-02T11:00:00'
   date.setHours((new Date()).getHours())
   console.log('new date: ', date)
   const { rows } = await db.execute(
