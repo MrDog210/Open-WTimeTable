@@ -2,7 +2,7 @@
   "expo": {
     "name": "Open Wise TimeTable",
     "slug": "open-wtimetable",
-    "version": "2.1.0",
+    "version": "2.2.0",
     "orientation": "default",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -43,6 +43,46 @@
           },
           "ios": {
           }
+        }
+      ],
+      [
+        "react-native-android-widget",
+        {
+          //"fonts": ["./assets/fonts/Inter.ttf"],
+          "widgets": [
+            {
+              "name": "NextUp",
+              "label": "Next Up Widget",
+              "description": "Shows the next lecture",
+              "minWidth": "160dp",
+              "minHeight": "80dp",
+              //"targetCellWidth": 5,
+              //"targetCellHeight": 2,
+              "previewImage": "./assets/widget-preview/next.png",
+              "updatePeriodMillis": 1800000, // Minimum is 1800000 (30 min),
+              "resizeMode": "horizontal|vertical"
+            },
+            {
+              "name": "Now",
+              "label": "In Progress",
+              "description": "Shows the lecture that is in progress",
+              "minWidth": "160dp",
+              "minHeight": "80dp",
+              "previewImage": "./assets/widget-preview/now.png",
+              "updatePeriodMillis": 1800000,
+              "resizeMode": "horizontal|vertical"
+            },
+            {
+              "name": "Today",
+              "label": "Today",
+              "description": "Shows the lecture for today",
+              "minWidth": "160dp",
+              "minHeight": "80dp",
+              "previewImage": "./assets/widget-preview/today.png",
+              "updatePeriodMillis": 3600000,
+              "resizeMode": "horizontal|vertical"
+            }
+          ]
         }
       ]
     ],

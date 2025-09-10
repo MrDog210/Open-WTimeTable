@@ -59,7 +59,6 @@ const StaticNavigation = createStaticNavigation(RootStack);
 
 function Navigation() {
   const {colors, theme} = useTheme()
-  
   const myTheme: ReactNavigation.Theme = {
     ...DefaultTheme,
     dark: theme === 'dark',
@@ -88,6 +87,7 @@ onlineManager.setEventListener((setOnline) => {
     setOnline(!!state.isConnected)
   })
 })
+
 
 export default function App() {
   return (

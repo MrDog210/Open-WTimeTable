@@ -21,6 +21,7 @@ Main advantage of this app over the official one is, that you can pick a separat
 - Dynamic dark/light mode
 - Tablet support
 - Add custom notes to lectures
+- Widget support on android
 - Supports every Wise TimeTable faculty with a provided school code
 
 ## Setup instructions

@@ -1,4 +1,6 @@
 import { Storage } from '@op-engineering/op-sqlite';
+import { ThemeColorsType } from '../types/types';
+import { type ColorProp } from 'react-native-android-widget';
 
 export const API_URL = 'https://wise-tt.com/WTTWebRestAPI/ws/rest/'
 export const USERNAME = process.env.EXPO_PUBLIC_USERNAME
@@ -12,6 +14,58 @@ export const CONTR_MZHAP = 'https://github.com/mzHap'
 export const DONATION_LINK = 'https://buymeacoffee.com/mrdog210'
 
 export const storage = new Storage({})
+
+export const LIGHT_MODE_COLORS: ThemeColorsType = {
+  primary: "rgb(186, 26, 32)",
+  onPrimary: "rgb(255, 255, 255)",
+  secondary: "#eb5261",
+  onSecondary: "rgb(255, 255, 255)",
+  error: "rgb(186, 26, 26)",
+  onError: "rgb(255, 255, 255)",
+  background: "rgb(255, 251, 255)",
+  onBackground: "rgb(32, 26, 25)",
+  surface: "#f2f2f2",
+  onSurface: "rgb(128 128, 128)",
+  surfaceVariant: "#dedede",
+  onSurfaceVariant: "black",
+  surfaceDisabled: "rgba(255, 255, 255, 0.3)",
+  backdrop: "rgba(59, 45, 44, 0.4)",
+  touchColor: "rgba(32, 26, 25, 0.38)",
+  border: '#e0e0e0',
+  placeholder: '#999999'
+}
+
+export const DARK_MODE_COLORS: ThemeColorsType = {
+  primary: "#419bf9",
+  onPrimary: "white",
+  secondary: "#8CC3FC",
+  onSecondary: "white",
+  error: "rgb(186, 26, 26)",
+  onError: "white",
+  background: "#121212",
+  onBackground: "rgb(237, 224, 222)",
+  surface: "#1e1e1e", // TODO: change color to lighter tone
+  onSurface: "rgb(237, 224, 222)",
+  surfaceDisabled: "rgba(0, 0, 0, 0.3)",
+  backdrop: "rgba(59, 45, 44, 0.4)",
+  touchColor: "rgba(237, 224, 222, 0.75)",
+  surfaceVariant: "#2C2C2C",
+  onSurfaceVariant: "white",
+  border: '#2c2c2c',
+  placeholder: '#666666'
+}
+
+type UniversalColorMap = {
+  [key: string]: ColorProp;
+};
+
+export const WIDGET_COLORS: UniversalColorMap = {
+  primary: "#eb3b5aff",
+  onPrimary: "#ffffffff",
+  background: "#2c2c2eff",
+  surface: "#373739ff",
+  onBackground: "#ffffffff",
+}
 
 export const CREATE_DATABASE = [/*`DROP TABLE IF EXISTS lectures_has_groups`,
 `DROP TABLE IF EXISTS lectures_has_lecturers`,

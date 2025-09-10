@@ -1,3 +1,5 @@
+// TODO: replace with library, day.js?
+
 export function subtrackSeconds(dateString: Date | string, seconds: number) {
   let date = new Date(dateString)
   date.setSeconds(date.getSeconds() - seconds)
