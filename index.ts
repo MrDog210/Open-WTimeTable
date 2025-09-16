@@ -19,7 +19,7 @@ function isSetImmediateFunctional() {
 }
 
 if (!isSetImmediateFunctional()) {
-  global.setImmediate = function (handler, ...args) {
+  (global as any).setImmediate = function (handler: any, ...args: any[]) {
     return setTimeout(() => {
       handler(...args);
     }, 0);
