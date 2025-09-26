@@ -1,11 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useNavigation, useRoute, type StaticScreenProps } from "@react-navigation/native";
 import Container from "../../components/ui/Container";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { DefaultView, useSettings } from "../../context/UserSettingsContext";
 import { Lecture, TimetableLecture } from "../../types/types";
-import { dateFromNow, formatDate, formatWeekDate, getISODateNoTimestamp, getWeekDates } from "../../util/dateUtils";
-import { RefreshControl, ScrollView, useWindowDimensions, } from "react-native";
+import { dateFromNow, formatDate, formatWeekDate, getISODateNoTimestamp, getSchoolWeekNumber, getWeekDates } from "../../util/dateUtils";
+import { RefreshControl, ScrollView, StyleSheet, useWindowDimensions, View, } from "react-native";
 import { calculateNowLineOffset, getAllLecturesForDay, getColumnWidth, hasTimetableUpdated, updateLectures } from "../../util/timetableUtils";
 import { getAllDatesWithLectures } from "../../util/store/database";
 import { markDatesForCustomLectures } from "../../util/store/customLectures";
@@ -20,6 +20,9 @@ import { MarkedDates } from "react-native-calendars/src/types";
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { invalidateLecturesQueries, QUERY_LECTURES, QUERY_MARKED_DATES } from "../../util/http/reactQuery";
 import { useTheme } from "../../context/ThemeContext";
+import Text from "../../components/ui/Text";
+import dayjs from "dayjs";
+import { AnimatedRollingNumber } from "react-native-animated-rolling-numbers";
 
 type TimeTableScreenProps = StaticScreenProps<{
   isWeekView: boolean
@@ -155,6 +158,7 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
     setShowDatePicker(false)
   }
 
+  const WeekNum = useMemo(() => <AnimatedRollingNumber textStyle={{fontSize: 16, color: colors.onBackground}} value={getSchoolWeekNumber(date)} />, [date])
   return (
     <Container>
       <LectureDetails modalVisible={!!modalLecture} lecture={modalLecture!} onRequestClose={() => {setModalLecture(null)}} />
@@ -202,7 +206,8 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
           columnWidth={isWeekView ? getColumnWidth(windowDimensions, isWeekView) : undefined}
         />
       </ScrollView>
-        <WeekCalendar key={colors.background}
+      { !isWeekView ? 
+       <WeekCalendar key={colors.background}
           firstDay={1}
           allowShadow={false}
           style={{
@@ -239,11 +244,29 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
                     //leftArrowImageSource={require('../img/previous.png')}
           //rightArrowImageSource={require('../img/next.png')}
           markedDates={markedDates}
-
-        />
+        /> : 
+        <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginHorizontal: 8}}>
+          <View style={styles.arrowButtonContainerStyle}>
+            <IconButton name="chevron-back-outline"  style={{ backgroundColor: 'transparent'}} onPress={() => setDate(dayjs(date).subtract(1, 'week').toDate())} />
+          </View>
+          <View style={{alignItems: 'center'}}>
+            <Text style={{color: colors.onBackground}}>Week</Text>
+            {WeekNum}
+          </View>
+          <View style={styles.arrowButtonContainerStyle}>
+            <IconButton name="chevron-forward-outline"  style={{ backgroundColor: 'transparent'}} onPress={() => setDate(dayjs(date).add(1, 'week').toDate())}/>
+          </View>
+        </View>}
       </CalendarProvider>
     </Container>
   )
 }
 
 export default TimeTableScreen
+
+const styles = StyleSheet.create({
+  arrowButtonContainerStyle: {
+    borderRadius: 32, 
+    overflow: 'hidden'
+  }
+})

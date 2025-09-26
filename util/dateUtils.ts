@@ -1,5 +1,10 @@
 // TODO: replace with library, day.js?
 
+import dayjs from 'dayjs';
+import weekOfYear from 'dayjs/plugin/weekOfYear' // ES 2015
+
+dayjs.extend(weekOfYear);
+
 export function subtrackSeconds(dateString: Date | string, seconds: number) {
   let date = new Date(dateString)
   date.setSeconds(date.getSeconds() - seconds)
@@ -63,10 +68,23 @@ export function getSchoolYearDates() {
   let startDate, endDate
   if(currentDate.getMonth()>=8) { // then we start this year to +1
     startDate = new Date(`${currentDate.getFullYear()}-09-01`)
-    endDate = new Date(`${currentDate.getFullYear()+1}-08-01`)
+    endDate = new Date(`${currentDate.getFullYear()+1}-08-30`)
   } else {
     startDate = new Date(`${currentDate.getFullYear()-1}-09-01`)
-    endDate = new Date(`${currentDate.getFullYear()}-08-01`)
+    endDate = new Date(`${currentDate.getFullYear()}-08-30`)
+  }
+
+  return {startDate, endDate}
+}
+
+export function getSchoolYearDates2(currentDate: Date) {
+  let startDate, endDate
+  if(currentDate.getMonth()>=9) { // then we start this year to +1
+    startDate = new Date(`${currentDate.getFullYear()}-10-01`)
+    endDate = new Date(`${currentDate.getFullYear()+1}-09-30`)
+  } else {
+    startDate = new Date(`${currentDate.getFullYear()-1}-10-01`)
+    endDate = new Date(`${currentDate.getFullYear()}-09-30`)
   }
 
   return {startDate, endDate}
@@ -87,4 +105,11 @@ export function getElapsedSecondsFromDate(startDate: Date | string) {
   startDate = new Date(startDate)
   let endDate = new Date();
   return (endDate.getTime() - startDate.getTime()) / 1000;
+}
+
+export function getSchoolWeekNumber(date: Date): number {
+  const {startDate} = getSchoolYearDates2(date)
+  const startWeek = dayjs(startDate).week()
+  const week = dayjs(date).week() - startWeek + 1
+  return week <= 0 ? 52 + week : week
 }
