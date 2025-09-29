@@ -33,7 +33,7 @@ function AboutScreen() {
       </View>
       <Divider />
       <Text style={[styles.infoText, { textAlign: 'center', paddingBottom: 0 }]}>Made with ❤️ by MrDog210</Text>
-      <Pressable style={styles.imagesContainer} onPress={() => Linking.openURL(DONATION_LINK)}>
+      <Pressable style={[styles.imagesContainer, {paddingBottom: 100}]} onPress={() => Linking.openURL(DONATION_LINK)}>
         <Image source={require('./../../assets/bmc.png')} style={{width: 300, height: 110}} resizeMode="contain" />
       </Pressable>
     </ScrollView>

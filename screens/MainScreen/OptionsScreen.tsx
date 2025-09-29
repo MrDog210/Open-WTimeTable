@@ -2,7 +2,7 @@ import { useNavigation } from "@react-navigation/native"
 import { useState } from "react"
 import { DefaultView, Theme, useSettings } from "../../context/UserSettingsContext"
 import LoadingOverlay from "../../components/ui/LoadingOverlay"
-import { Alert, ScrollView, StyleSheet, View } from "react-native"
+import { Alert, Linking, ScrollView, StyleSheet, View } from "react-native"
 import { useMutation } from "@tanstack/react-query"
 import { getSchoolYearDates } from "../../util/dateUtils"
 import { updateLectures } from "../../util/timetableUtils"
@@ -11,6 +11,7 @@ import { Picker, PickerItemProps, PickerProps } from '@react-native-picker/picke
 import SettingsButton from "../../components/optionsScreen/SettingsButton"
 import { useTheme } from "../../context/ThemeContext"
 import Switch from "../../components/ui/Switch"
+import { GITHUB_ISSUE } from "../../util/constants"
 
 function OptionsScreen() {
   const { changeSettings, defaultView, timetableAnimationsEnabled, theme,  } = useSettings()
@@ -111,6 +112,8 @@ function OptionsScreen() {
           <Text style={{alignSelf: 'center'}}>Timetable animations</Text>
           <Switch value={timetableAnimationsEnabled} onValueChange={changeTimetableAnimationns} />
         </View>
+        <Text style={styles.header}>Misc</Text>
+        <SettingsButton onPress={() => Linking.openURL(GITHUB_ISSUE)}>Report a issue</SettingsButton>
       </ScrollView>
     </>
   )
