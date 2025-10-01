@@ -61,7 +61,7 @@ type UniversalColorMap = {
 };
 
 export const WIDGET_COLORS: UniversalColorMap = {
-  primary: "#eb3b5aff",
+  primary: "#419bf9",
   onPrimary: "#ffffffff",
   background: "#2c2c2eff",
   surface: "#373739ff",
