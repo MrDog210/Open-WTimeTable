@@ -8,7 +8,9 @@
 ![GitHub Repo stars](https://img.shields.io/github/stars/MrDog210/Open-WTimeTable?style=for-the-badge)
 
 
-This is a mobile app made with react native and expo, to view data from Wise TimeTable. It supports all Wise faculties which provide a school code.
+This is a mobile app made with react native and expo, to view data from Wise TimeTable. It supports all Wise faculties which provide a school code. Android users can install the app from app store. Due to Apple app store requirements, I am currently unable to publish it to ios app store. [There is a web version available with similar features available here.](https://mrdog210.github.io/Open-WTimeTable-Web/)
+
+[![Get it on play store](other/play-store.svg)](https://play.google.com/store/apps/details?id=com.mrdog210.OpenWTimeTable2)
 
 |                               |                               |                               |                               |                               |                               |
 |-------------------------------|-------------------------------|-------------------------------|-------------------------------|-------------------------------|-------------------------------|
