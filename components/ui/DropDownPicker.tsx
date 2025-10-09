@@ -1,4 +1,4 @@
-import DDP, { DropDownPickerProps, ValueType } from 'react-native-dropdown-picker';
+import DDP, { DropDownPickerProps, ValueType } from 'react-native-dropdown-picker-plus';
 import { useTheme } from '../../context/ThemeContext';
 
 function DropDownPicker<T extends ValueType>({style, ...props}: DropDownPickerProps<T>) {
@@ -16,8 +16,11 @@ function DropDownPicker<T extends ValueType>({style, ...props}: DropDownPickerPr
     textStyle={{
       color: colors.onBackground
     }}
+    containerStyle={{
+      //backgroundColor: 'red'
+    }}
     modalContentContainerStyle={{
-      backgroundColor: colors.surface
+      //backgroundColor: 'red'
     }}
     modalTitleStyle={{
       color: colors.onBackground,
@@ -37,6 +40,12 @@ function DropDownPicker<T extends ValueType>({style, ...props}: DropDownPickerPr
     }}
     badgeSeparatorStyle={{
       
+    }}
+    flatListProps={{
+      style: {
+      //backgroundColor: 'red'
+
+      }
     }}
     disabledItemLabelStyle={{
       //color: 'red'

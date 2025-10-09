@@ -36,7 +36,7 @@
     "react-native-calendar-timetable": "^1.0.7",
     "react-native-calendars": "^1.1313.0",
     "react-native-date-picker": "^5.0.13",
-    "react-native-dropdown-picker": "^5.4.6",
+    "react-native-dropdown-picker-plus": "^5.10.23",
     "react-native-gesture-handler": "~2.24.0",
     "react-native-reanimated": "~3.17.4",
     "react-native-safe-area-context": "5.4.0",
