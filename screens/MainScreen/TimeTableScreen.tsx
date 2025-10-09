@@ -23,6 +23,8 @@ import { useTheme } from "../../context/ThemeContext";
 import Text from "../../components/ui/Text";
 import dayjs from "dayjs";
 import { AnimatedRollingNumber } from "react-native-animated-rolling-numbers";
+import { Directions, Gesture, GestureDetector } from "react-native-gesture-handler";
+import { runOnJS } from "react-native-reanimated";
 
 type TimeTableScreenProps = StaticScreenProps<{
   isWeekView: boolean
@@ -43,7 +45,28 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
   const { colors, theme } = useTheme()
   const queryClient = useQueryClient()
   const windowDimensions = useWindowDimensions()
-  
+
+  function shiftDate(days: number) {
+    setDate(prev => dayjs(prev).add(days, 'day').toDate());
+  };
+
+  const flingLeft = Gesture.Fling()
+    .direction(Directions.LEFT)
+    .enabled(!isWeekView)
+    .onEnd(() => {
+      'worklet';
+      runOnJS(shiftDate)(1);
+    });
+
+  const flingRight = Gesture.Fling()
+    .direction(Directions.RIGHT)
+    .enabled(!isWeekView)
+    .onEnd(() => {
+      'worklet';
+      runOnJS(shiftDate)(-1);
+    });
+
+  const flingGesture = Gesture.Simultaneous(flingLeft, flingRight)
   const updateLecturesMutation = useMutation({
     mutationFn: async (forceUpdate: boolean) => {
       const startTime = performance.now()
@@ -104,9 +127,14 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => {
-        return <IconButton name='calendar-clear-outline' onPress={openDatePicker} style={{
+        return <>
+          <IconButton name='calendar-clear-outline' onPress={openDatePicker} style={{
           backgroundColor: 'transparent'
-        }} iconColor={colors.onBackground} />
+          }} iconColor={colors.onBackground} />
+          <IconButton name='calendar-number-outline' onPress={() => setDate(new Date)} style={{
+            backgroundColor: 'transparent'
+          }} iconColor={colors.onBackground} />
+        </>
       }
     })
   }, [colors])
@@ -170,6 +198,7 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
         }}
       >
         <ScrollView refreshControl={<RefreshControl refreshing={updateLecturesMutation.isPending} onRefresh={onRefresh} />} ref={scrollRef}>
+        <GestureDetector gesture={flingGesture} >
         <Timetable 
           items={lectures} 
           renderItem={({key, ...props}) => <HourSlice key={key} {...props} onPress={lecturePressed} smallMode={isWeekView} animationsDisabled={!timetableAnimationsEnabled}/>} 
@@ -205,6 +234,7 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
           renderHeader={isWeekView ? props => <TimeTableHeader {...props} /> : undefined}
           columnWidth={isWeekView ? getColumnWidth(windowDimensions, isWeekView) : undefined}
         />
+        </GestureDetector>
       </ScrollView>
       { !isWeekView ? 
        <WeekCalendar key={colors.background}

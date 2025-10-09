@@ -39,8 +39,8 @@ function HourSlice({style, item, onPress, smallMode = false, animationsDisabled 
   const textSize = { fontSize: smallMode ? 12 : 14}
   // TODO: in week view, make slices wider
   return (
-    <Pressable style={[styles.pressable, style, { backgroundColor: colors.surface, borderColor: colors.surfaceVariant }]} onPress={onPressed}>
-      <Animated.View style={[styles.container, {top, opacity}]}>
+    <Pressable style={[styles.pressable, style]} onPress={onPressed}>
+      <Animated.View style={[styles.container, {top, opacity}, { backgroundColor: colors.surface, borderColor: colors.surfaceVariant }]}>
           <View style={styles.titleContainer}>
             <View style={styles.courseNameContainer}>
               <Text style={[styles.courseName, textSize]} numberOfLines={0}>{course ? course : eventType}</Text>

@@ -11,6 +11,7 @@ export const GITHUB_ISSUE = 'https://github.com/MrDog210/Open-WTimeTable/issues/
 export const LICENSE = 'https://github.com/MrDog210/Open-WTimeTable/blob/master/LICENSE'
 export const CONTR_MRDOG210 = 'https://github.com/MrDog210'
 export const CONTR_MZHAP = 'https://github.com/mzHap'
+export const PLAY_STORE_LINK = 'https://play.google.com/store/apps/details?id=com.mrdog210.OpenWTimeTable2&reviewId=0'
 
 export const DONATION_LINK = 'https://buymeacoffee.com/mrdog210'
 
