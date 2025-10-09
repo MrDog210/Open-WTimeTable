@@ -38,7 +38,7 @@ function CourseGroupSelect({course, groups}: CourseGroupSelectProps) {
         open={isDropDownOpen}
         setOpen={setIsDropDownOpen}
         value={chosenGroupsID}
-        setValue={setChosenGroupsID}
+        setValue={setChosenGroupsID as any}
         schema={{
           label: 'name',
           value: 'id'

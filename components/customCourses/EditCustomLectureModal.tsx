@@ -114,8 +114,8 @@ function EditCustomLectureModal({customCourse = undefined, onCancelPressed, onCo
           value={value}
           items={items}
           setOpen={setOpen}
-          setValue={setValue}
-          setItems={setItems}
+          setValue={setValue as any}
+          setItems={setItems as any}
         />
         <View style={styles.timePickerRow}>
           <View style={styles.timePickerContainer}>
