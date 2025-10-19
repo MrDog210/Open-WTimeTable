@@ -8,7 +8,8 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.mrdog210.OpenWTimeTable2"
     },
     "android": {
       "adaptiveIcon": {
@@ -41,8 +42,7 @@
             "enableProguardInReleaseBuilds": true,
             "enableShrinkResourcesInReleaseBuilds": true
           },
-          "ios": {
-          }
+          "ios": {}
         }
       ],
       [
