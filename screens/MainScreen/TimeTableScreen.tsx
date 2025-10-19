@@ -50,23 +50,23 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
     setDate(prev => dayjs(prev).add(days, 'day').toDate());
   };
 
-  const flingLeft = Gesture.Fling()
-    .direction(Directions.LEFT)
+  const DISTANCE_THRESHOLD = 50; // px horizontal moved
+  const VELOCITY_THRESHOLD = 700; // px/s — how "fast" the swipe must be
+
+  const swipeGesture = Gesture.Pan()
     .enabled(!isWeekView)
-    .onEnd(() => {
+    .activeOffsetX([-10, 10])
+    .failOffsetY([-15, 15])
+    .onEnd((event) => {
       'worklet';
-      runOnJS(shiftDate)(1);
+      const { translationX, velocityX } = event;
+      if (translationX > DISTANCE_THRESHOLD && velocityX > VELOCITY_THRESHOLD) {
+        runOnJS(shiftDate)(-1);
+      } else if (translationX < -DISTANCE_THRESHOLD && velocityX < -VELOCITY_THRESHOLD) {
+        runOnJS(shiftDate)(1);
+      }
     });
 
-  const flingRight = Gesture.Fling()
-    .direction(Directions.RIGHT)
-    .enabled(!isWeekView)
-    .onEnd(() => {
-      'worklet';
-      runOnJS(shiftDate)(-1);
-    });
-
-  const flingGesture = Gesture.Simultaneous(flingLeft, flingRight)
   const updateLecturesMutation = useMutation({
     mutationFn: async (forceUpdate: boolean) => {
       const startTime = performance.now()
@@ -161,7 +161,7 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
 
   useEffect(() =>{
     navigation.setOptions({
-      title: isWeekView ? formatWeekDate(week.from, week.till) : formatDate(date)
+      title: isWeekView ? formatWeekDate(week.from, week.till) : dayjs(date).format('ddd, D MMMM')
     })
   }, [date, week])
 
@@ -198,7 +198,7 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
         }}
       >
         <ScrollView refreshControl={<RefreshControl refreshing={updateLecturesMutation.isPending} onRefresh={onRefresh} />} ref={scrollRef}>
-        <GestureDetector gesture={flingGesture} >
+        <GestureDetector gesture={swipeGesture} >
         <Timetable 
           items={lectures} 
           renderItem={({key, ...props}) => <HourSlice key={key} {...props} onPress={lecturePressed} smallMode={isWeekView} animationsDisabled={!timetableAnimationsEnabled}/>} 
