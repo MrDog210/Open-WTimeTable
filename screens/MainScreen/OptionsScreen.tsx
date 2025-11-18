@@ -142,9 +142,5 @@ const styles = StyleSheet.create({
     height: 54
   },
   pickerContainer: {
-    //flexDirection: 'row',
-    //alignContent: 'center',
-    //justifyContent: 'space-between',
-    //height: 54
   }
 })
