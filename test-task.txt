@@ -1,0 +1,5 @@
+adb shell cmd jobscheduler run -f com.mrdog210.OpenWTimeTable2 16
+
+adb shell dumpsys jobscheduler | Select-String -Pattern "JOB #.* com.mrdog210.OpenWTimeTable2" -Context 0,40
+
+adb logcat | Select-String -Pattern "BGTASK" -Context 0,1

@@ -12,6 +12,16 @@ import NetInfo from '@react-native-community/netinfo'
 import GroupSelectScreen from './screens/setup/GroupSelectScreen';
 import { NAVIGATION_STYLE } from './util/styling';
 import { View } from 'react-native';
+import * as Notifications from "expo-notifications";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldPlaySound: false,
+    shouldSetBadge: true,
+    shouldShowBanner: true,
+    shouldShowList: true
+  })
+});
 
 function useHasCompletedSetup() {
   const {hasCompletedSetup} = useSettings()

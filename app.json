@@ -48,7 +48,6 @@
       [
         "react-native-android-widget",
         {
-          //"fonts": ["./assets/fonts/Inter.ttf"],
           "widgets": [
             {
               "name": "NextUp",
@@ -56,10 +55,8 @@
               "description": "Shows the next lecture",
               "minWidth": "160dp",
               "minHeight": "80dp",
-              //"targetCellWidth": 5,
-              //"targetCellHeight": 2,
               "previewImage": "./assets/widget-preview/next.png",
-              "updatePeriodMillis": 1800000, // Minimum is 1800000 (30 min),
+              "updatePeriodMillis": 1800000,
               "resizeMode": "horizontal|vertical"
             },
             {
@@ -84,7 +81,8 @@
             }
           ]
         }
-      ]
+      ],
+      "expo-background-task"
     ],
     "extra": {
       "eas": {

@@ -12,6 +12,8 @@ import SettingsButton from "../../components/optionsScreen/SettingsButton"
 import { useTheme } from "../../context/ThemeContext"
 import Switch from "../../components/ui/Switch"
 import { GITHUB_ISSUE, PLAY_STORE_LINK } from "../../util/constants"
+import { isTimetableBackgroundTaskRegistered, registerTimetableBackgroundTask, testbackgroundTask } from "../../tasks/updateTimetableTask"
+import * as Notifications from "expo-notifications";
 
 function OptionsScreen() {
   const { changeSettings, defaultView, timetableAnimationsEnabled, theme,  } = useSettings()
@@ -83,6 +85,30 @@ function OptionsScreen() {
     //fontFamily: ''
   }
 
+  async function notAndTask() {
+    await registerTimetableBackgroundTask()
+
+    console.log("TASK REGISTERED: ",await isTimetableBackgroundTaskRegistered())
+    const response = await Notifications.requestPermissionsAsync();
+    console.log("NOTIFICATIONS ALLOWED: ", response)
+
+    sendNotification()
+    testbackgroundTask()
+  }
+
+  const sendNotification = () => {
+    Notifications.scheduleNotificationAsync({
+      content: {
+        title: "🧪 Test Notification!",
+        body: "This is a test.",
+      },
+      trigger: {
+        type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+        seconds: 1,
+      },
+    });
+  };
+
   return (
     <>
       <LoadingOverlay visible={changeSelectedGroupsMutation.isPending} text={fetchingDataMessage} />
@@ -115,6 +141,7 @@ function OptionsScreen() {
         <Text style={styles.header}>Misc</Text>
         <SettingsButton onPress={() => Linking.openURL(GITHUB_ISSUE)}>Report a issue or suggest a feature on GitHub</SettingsButton>
         <SettingsButton onPress={() => Linking.openURL(PLAY_STORE_LINK)}>Leave feadback on Play Store</SettingsButton>
+        <SettingsButton onPress={notAndTask}>ENABLE BG TASKS AND NOTIFICATIONS</SettingsButton>
       </ScrollView>
     </>
   )
