@@ -12,15 +12,16 @@ interface HourSliceProps extends CardProps<TimetableLecture> {
   animationsDisabled: boolean,
   smallMode: boolean,
   onPress: (lecture: Lecture) => void,
+  expand?: number
 }
 
 function getDelayBasedOnPosition(top: number, left: number) {
   return (top + left * 2) * 0.3
 }
 
-function HourSlice({style, item, onPress, smallMode = false, animationsDisabled = true}: HourSliceProps) {
+function HourSlice({style, item, onPress, smallMode = false, animationsDisabled = true, expand = 0}: HourSliceProps) {
   const {course, eventType, start_time, end_time, color, colorText, rooms, lecturers, executionType, usersNote} = item.lecture
-  const { colors } = useTheme()
+  const { colors, theme } = useTheme()
   const hexColor = (color === null || color === '') ? colors.onBackground : `#${color}`
 
   const top = useSharedValue(animationsDisabled ? 0 : 50)
@@ -37,10 +38,13 @@ function HourSlice({style, item, onPress, smallMode = false, animationsDisabled 
   })
 
   const textSize = { fontSize: smallMode ? 12 : 14}
-  // TODO: in week view, make slices wider
   return (
-    <Pressable style={[styles.pressable, style]} onPress={onPressed}>
-      <Animated.View style={[styles.container, {top, opacity}, { backgroundColor: colors.surface, borderColor: colors.surfaceVariant }]}>
+    <Pressable style={[styles.pressable, {
+      ...style,
+      left: style.left - expand,
+      width: style.width + 2*expand
+    }]} onPress={onPressed}>
+      <Animated.View style={[styles.container, {top, opacity}, { backgroundColor: theme === 'dark' ? colors.surface : '#ffffffff', borderColor: colors.surfaceVariant }]}>
           <View style={styles.titleContainer}>
             <View style={styles.courseNameContainer}>
               <Text style={[styles.courseName, textSize]} numberOfLines={0}>{course ? course : eventType}</Text>
@@ -65,14 +69,15 @@ export default HourSlice
 
 const styles = StyleSheet.create({
   pressable: {
-    borderRadius: 10,
-    overflow: 'hidden',
-    borderWidth: 1
+
   },
   container: {
     flex: 1,
     paddingHorizontal: 5,
     paddingTop: 5,
+    borderRadius: 10,
+    overflow: 'hidden',
+    borderWidth: 1
   },
   titleContainer: {
     flexDirection: 'row',

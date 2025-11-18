@@ -67,20 +67,18 @@ function OptionsScreen() {
   const pickerStyle: Partial<PickerProps> = {
     dropdownIconColor: colors.onBackground,
     dropdownIconRippleColor: colors.touchColor,
-    itemStyle: {
-      color: colors.onBackground,
-      //textAlign: 'right'
-    },
     style: {
-      flex: 2
-      //height: 54,
-      //textAlign: 'right'
+      flex: 2,
+      // Apply the background color to the parent Picker component to fill the "margins"
+      backgroundColor: colors.background, 
     }
   }
 
   const pickerItmeStyle: Partial<PickerItemProps> = {
     color: colors.onBackground,
-    //fontFamily: ''
+    style: {
+      backgroundColor: colors.background,
+    }
   }
 
   return (
@@ -90,11 +88,12 @@ function OptionsScreen() {
         <Text style={styles.header}>General</Text>
         <SettingsButton onPress={restartSetup}>Restart setup</SettingsButton>
         <SettingsButton onPress={changeSelectedGroups}>Change selected groups</SettingsButton>
-        <Text style={styles.header}>Appearance</Text>
+        <Text style={[styles.header, { marginBottom: 16 }]}>Appearance</Text>
         <View style={styles.pickerContainer}>
-          <Text style={{alignSelf: 'center', flex: 3}}>Theme</Text>
+          <Text style={{ fontWeight: '600' }}>Theme</Text>
           <Picker 
             {...pickerStyle}
+            mode="dropdown"
             selectedValue={theme} onValueChange={changeTheme}>
             <Picker.Item {...pickerItmeStyle} label="System" value={Theme.SYSTEM} />
             <Picker.Item {...pickerItmeStyle} label="Light" value={Theme.LIGHT} />
@@ -102,8 +101,8 @@ function OptionsScreen() {
           </Picker>
         </View>
         <View style={styles.pickerContainer}>
-          <Text style={{alignSelf: 'center', flex: 3}}>Default timetable view</Text>
-          <Picker {...pickerStyle} selectedValue={defaultView} onValueChange={changeDefaultView}>
+          <Text style={{ fontWeight: '600' }}>Default timetable view</Text>
+          <Picker mode="dropdown" {...pickerStyle} selectedValue={defaultView} onValueChange={changeDefaultView}>
             <Picker.Item {...pickerItmeStyle} label="Day view" value={DefaultView.DAY_VIEW} />
             <Picker.Item {...pickerItmeStyle} label="Week view" value={DefaultView.WEEK_VIEW} />
           </Picker>
@@ -143,9 +142,5 @@ const styles = StyleSheet.create({
     height: 54
   },
   pickerContainer: {
-    flexDirection: 'row',
-    //alignContent: 'center',
-    justifyContent: 'space-between',
-    height: 54
   }
 })

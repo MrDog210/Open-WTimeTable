@@ -186,7 +186,7 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
     setShowDatePicker(false)
   }
 
-  const WeekNum = useMemo(() => <AnimatedRollingNumber textStyle={{fontSize: 16, color: colors.onBackground}} value={getSchoolWeekNumber(date)} />, [date])
+  const WeekNum = useMemo(() => <AnimatedRollingNumber key={theme} textStyle={{fontSize: 16, color: colors.onBackground}} value={getSchoolWeekNumber(date)} />, [date, theme])
   return (
     <Container>
       <LectureDetails modalVisible={!!modalLecture} lecture={modalLecture!} onRequestClose={() => {setModalLecture(null)}} />
@@ -201,7 +201,7 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
         <GestureDetector gesture={swipeGesture} >
         <Timetable 
           items={lectures} 
-          renderItem={({key, ...props}) => <HourSlice key={key} {...props} onPress={lecturePressed} smallMode={isWeekView} animationsDisabled={!timetableAnimationsEnabled}/>} 
+          renderItem={({key, ...props}) => <HourSlice key={key} expand={isWeekView ? 8 : 0} {...props} onPress={lecturePressed} smallMode={isWeekView} animationsDisabled={!timetableAnimationsEnabled}/>} 
           date={(isWeekView ? undefined : date) as any}
           range={isWeekView ? week : undefined}
 
@@ -277,14 +277,14 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
         /> : 
         <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginHorizontal: 8}}>
           <View style={styles.arrowButtonContainerStyle}>
-            <IconButton name="chevron-back-outline"  style={{ backgroundColor: 'transparent'}} onPress={() => setDate(dayjs(date).subtract(1, 'week').toDate())} />
+            <IconButton iconColor={colors.onBackground} name="chevron-back-outline"  style={{ backgroundColor: 'transparent'}} onPress={() => setDate(dayjs(date).subtract(1, 'week').toDate())} />
           </View>
           <View style={{alignItems: 'center'}}>
             <Text style={{color: colors.onBackground}}>Week</Text>
             {WeekNum}
           </View>
           <View style={styles.arrowButtonContainerStyle}>
-            <IconButton name="chevron-forward-outline"  style={{ backgroundColor: 'transparent'}} onPress={() => setDate(dayjs(date).add(1, 'week').toDate())}/>
+            <IconButton iconColor={colors.onBackground} name="chevron-forward-outline" style={{ backgroundColor: 'transparent'}} onPress={() => setDate(dayjs(date).add(1, 'week').toDate())}/>
           </View>
         </View>}
       </CalendarProvider>
