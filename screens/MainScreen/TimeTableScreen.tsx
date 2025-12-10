@@ -1,11 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useNavigation, useRoute, type StaticScreenProps } from "@react-navigation/native";
 import Container from "../../components/ui/Container";
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { ComponentRef, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { DefaultView, useSettings } from "../../context/UserSettingsContext";
 import { Lecture, TimetableLecture } from "../../types/types";
 import { dateFromNow, formatDate, formatWeekDate, getISODateNoTimestamp, getSchoolWeekNumber, getWeekDates } from "../../util/dateUtils";
-import { RefreshControl, ScrollView, StyleSheet, useWindowDimensions, View, } from "react-native";
+import { RefreshControl, StyleSheet, useWindowDimensions, View, } from "react-native";
 import { calculateNowLineOffset, getAllLecturesForDay, getColumnWidth, hasTimetableUpdated, updateLectures } from "../../util/timetableUtils";
 import { getAllDatesWithLectures } from "../../util/store/database";
 import { markDatesForCustomLectures } from "../../util/store/customLectures";
@@ -23,7 +23,7 @@ import { useTheme } from "../../context/ThemeContext";
 import Text from "../../components/ui/Text";
 import dayjs from "dayjs";
 import { AnimatedRollingNumber } from "react-native-animated-rolling-numbers";
-import { Directions, Gesture, GestureDetector } from "react-native-gesture-handler";
+import { ScrollView, Gesture, GestureDetector } from "react-native-gesture-handler";
 import { runOnJS } from "react-native-reanimated";
 import { Calendar1, CalendarSearch, ChevronLeft, ChevronRight } from "lucide-react-native";
 
@@ -38,7 +38,7 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
   const [modalLecture, setModalLecture] = useState<Lecture | null>(null)
   const [date, setDate] = useState<Date>(new Date()) // "2025-05-05"
   const [week, setWeek] = useState(getWeekDates(date)) // TODO: maybe remove this
-  const scrollRef = useRef<ScrollView>(null);
+  const scrollRef = useRef<ComponentRef<typeof ScrollView>>(null);
   const navigation = useNavigation()
   const { isWeekView } = route.params
   const [showDatePicker, setShowDatePicker] = useState(false)
@@ -58,6 +58,7 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
     .enabled(!isWeekView)
     .activeOffsetX([-10, 10])
     .failOffsetY([-15, 15])
+    .simultaneousWithExternalGesture(scrollRef as any)
     .onEnd((event) => {
       'worklet';
       const { translationX, velocityX } = event;
@@ -197,8 +198,8 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
           setDate(new Date(newDate))
         }}
       >
-        <ScrollView refreshControl={<RefreshControl refreshing={updateLecturesMutation.isPending} onRefresh={onRefresh} />} ref={scrollRef}>
         <GestureDetector gesture={swipeGesture} >
+        <ScrollView nestedScrollEnabled={false} refreshControl={<RefreshControl refreshing={updateLecturesMutation.isPending} onRefresh={onRefresh} />} ref={scrollRef}>
         <Timetable 
           items={lectures} 
           renderItem={({key, ...props}) => <HourSlice key={key} expand={isWeekView ? 8 : 0} {...props} onPress={lecturePressed} smallMode={isWeekView} animationsDisabled={!timetableAnimationsEnabled}/>} 
@@ -234,8 +235,8 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
           renderHeader={isWeekView ? props => <TimeTableHeader {...props} /> : undefined}
           columnWidth={isWeekView ? getColumnWidth(windowDimensions, isWeekView) : undefined}
         />
-        </GestureDetector>
       </ScrollView>
+      </GestureDetector>
       { !isWeekView ? 
        <WeekCalendar key={colors.background}
           firstDay={1}
