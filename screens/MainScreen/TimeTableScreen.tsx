@@ -25,6 +25,7 @@ import dayjs from "dayjs";
 import { AnimatedRollingNumber } from "react-native-animated-rolling-numbers";
 import { Directions, Gesture, GestureDetector } from "react-native-gesture-handler";
 import { runOnJS } from "react-native-reanimated";
+import { Calendar1, CalendarSearch, ChevronLeft, ChevronRight } from "lucide-react-native";
 
 type TimeTableScreenProps = StaticScreenProps<{
   isWeekView: boolean
@@ -128,10 +129,10 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
     navigation.setOptions({
       headerRight: () => {
         return <>
-          <IconButton name='calendar-clear-outline' onPress={openDatePicker} style={{
+          <IconButton icon={CalendarSearch} onPress={openDatePicker} style={{
           backgroundColor: 'transparent'
           }} iconColor={colors.onBackground} />
-          <IconButton name='calendar-number-outline' onPress={() => setDate(new Date)} style={{
+          <IconButton icon={Calendar1} onPress={() => setDate(new Date)} style={{
             backgroundColor: 'transparent'
           }} iconColor={colors.onBackground} />
         </>
@@ -276,14 +277,14 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
         /> : 
         <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginHorizontal: 8}}>
           <View style={styles.arrowButtonContainerStyle}>
-            <IconButton iconColor={colors.onBackground} name="chevron-back-outline"  style={{ backgroundColor: 'transparent'}} onPress={() => setDate(dayjs(date).subtract(1, 'week').toDate())} />
+            <IconButton iconColor={colors.onBackground} icon={ChevronLeft}  style={{ backgroundColor: 'transparent'}} onPress={() => setDate(dayjs(date).subtract(1, 'week').toDate())} />
           </View>
           <View style={{alignItems: 'center'}}>
             <Text style={{color: colors.onBackground}}>Week</Text>
             {WeekNum}
           </View>
           <View style={styles.arrowButtonContainerStyle}>
-            <IconButton iconColor={colors.onBackground} name="chevron-forward-outline" style={{ backgroundColor: 'transparent'}} onPress={() => setDate(dayjs(date).add(1, 'week').toDate())}/>
+            <IconButton iconColor={colors.onBackground} icon={ChevronRight} style={{ backgroundColor: 'transparent'}} onPress={() => setDate(dayjs(date).add(1, 'week').toDate())}/>
           </View>
         </View>}
       </CalendarProvider>

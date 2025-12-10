@@ -9,6 +9,7 @@ import IconButton from "../../components/ui/IconButton"
 import CustomCourseRow from "../../components/customCourses/CustomCourseRow"
 import EditCustomLectureModal from "../../components/customCourses/EditCustomLectureModal"
 import { invalidateLecturesQueries } from "../../util/http/reactQuery"
+import { Plus } from "lucide-react-native"
 
 const QUERY_CUSTOM_COURSES = 'customCourses'
 
@@ -75,7 +76,7 @@ function CustomCoursesScreen() {
         data={customCourses} 
         renderItem={({item, index}) => <CustomCourseRow key={item.id} onSwipeDelete={() => deleteCoures(index)} customCourse={item} onPress={() => onCollumnPressed(index)} onLongPress={() => onCollumnLongPressed(index)}/>}  />
       <View style={styles.addButtonContainer}>
-        <IconButton name='add-outline' style={styles.addButton} onPress={() => setModalVisible(true)}/>
+        <IconButton icon={Plus} style={styles.addButton} onPress={() => setModalVisible(true)}/>
       </View>
     </Container>
   )

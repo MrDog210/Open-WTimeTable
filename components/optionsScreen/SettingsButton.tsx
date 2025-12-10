@@ -2,7 +2,8 @@ import { PressableProps, Pressable, type StyleProp, StyleSheet, View, type ViewS
 import Text from "../ui/Text"
 import { type ReactNode } from "react"
 import { useTheme } from "../../context/ThemeContext"
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { ArrowRight } from "lucide-react-native";
+
 
 interface MyButtonProps extends PressableProps {
   children?: ReactNode,
@@ -23,7 +24,7 @@ function SettingsButton({style, children, containerStyle, disabled = false, onPr
     <View style={[{ backgroundColor: "transparent" }, styles.containerStyle, containerStyle]}>
       <Pressable style={[styles.buttonStyle, style, { backgroundColor: disabled ? colors.surfaceDisabled : undefined }]} onPress={myOnPresss} {...props} android_ripple={{color: disabled ? undefined : colors.touchColor}}>
         <Text style={{color: colors.onBackground, flex: 1}} selectable={false}>{children}</Text>
-        <Ionicons name="arrow-forward-outline" size={24} color={colors.onBackground} />
+        <ArrowRight size={24} color={colors.onBackground} />
       </Pressable>
     </View>
   )

@@ -3,8 +3,8 @@ import { ActivityIndicator, Pressable, View } from "react-native"
 import Text from "../ui/Text"
 import { useMutation } from "@tanstack/react-query"
 import { fetchBranchesForProgramm } from "../../util/http/api"
-import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTheme } from "../../context/ThemeContext"
+import { Check } from "lucide-react-native"
 
 export interface TreeYears {
   id: number
@@ -72,7 +72,7 @@ function YearTreeRow({year, selectedBranches, setSelectedBranches, data, index}:
               alignItems: 'center',
               paddingLeft: 5
             }}>
-              { isSelected && <Ionicons name="checkmark-outline" size={24} color={colors.onBackground} /> }
+              { isSelected && <Check size={24} color={colors.onBackground} /> }
               <Text style={{ marginLeft: 5, fontWeight: isSelected ? 'bold' : undefined }}>{branch.branchName}</Text>
             </Pressable>
             )

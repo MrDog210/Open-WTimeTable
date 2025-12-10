@@ -8,8 +8,7 @@ import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 import {
   SharedValue,
 } from 'react-native-reanimated';
-import Ionicons from '@expo/vector-icons/Ionicons';
-
+import { Trash2 } from 'lucide-react-native'
 type CustomCourseRowProps = {
   customCourse: CustomLecture,
   onPress: () => void,
@@ -22,7 +21,7 @@ function RightAction(prog: SharedValue<number>, drag: SharedValue<number>) {
 
   return (
     <View style={[styles.rightAction, {backgroundColor: colors.error}]}>
-      <Ionicons name="trash-bin-outline" size={28} color={colors.onError} />
+      <Trash2 size={28} color={colors.onError} />
     </View>
   );
 }
