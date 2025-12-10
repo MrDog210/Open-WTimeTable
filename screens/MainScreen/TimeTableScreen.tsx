@@ -143,7 +143,6 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
     if(!ranOnce) {
       ranOnce = true
       updateLecturesMutation.mutateAsync(false)
-      console.log("SETTING NAVIGATION OPTIONS")
       if(route2.name === 'DayView' && defaultView === DefaultView.WEEK_VIEW) {
         navigation.navigate('Home', {screen: 'WeekView', params: {isWeekView: true}})
       }
@@ -161,7 +160,7 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
 
   useEffect(() =>{
     navigation.setOptions({
-      title: isWeekView ? formatWeekDate(week.from, week.till) : dayjs(date).format('ddd, D MMMM')
+      title: isWeekView ? `${dayjs(week.from).format('D')} - ${dayjs(week.till).format('D MMMM')}` : dayjs(date).format('ddd, D MMMM') // formatWeekDate(week.from, week.till)
     })
   }, [date, week])
 

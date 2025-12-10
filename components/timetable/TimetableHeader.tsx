@@ -9,11 +9,10 @@ function TimeTableHeader({date}: TimeTableHeaderProps) {
   return (
     <View>
       <Text style={styles.title}>{date.toLocaleString('en-us', {  weekday: 'long' })}</Text>
-      <Text style={styles.text}>{`${date.getDate()}.${date.getMonth()}`}</Text>
+      <Text style={styles.text}>{`${date.getDate()}.${date.getMonth() + 1}`}</Text>
     </View>
   )
 }
-
 export default TimeTableHeader
 
 const styles = StyleSheet.create({
