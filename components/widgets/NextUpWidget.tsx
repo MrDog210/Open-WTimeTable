@@ -10,6 +10,7 @@ type NextUpWidgetProps = {
 }
 
 function NextUpWidget({ lecture, isNextUp }: NextUpWidgetProps) {
+  "use no memo";
   return (
     <FlexWidget
       clickAction="REFRESH"

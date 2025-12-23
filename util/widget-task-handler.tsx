@@ -24,6 +24,7 @@ async function getInProgressLecture() {
 }
 
 export async function widgetTaskHandler({ renderWidget, widgetInfo, widgetAction}: WidgetTaskHandlerProps) {
+  "use no memo";
   const Widget = nameToWidget[widgetInfo.widgetName as keyof typeof nameToWidget];
   console.log("Widget info ", widgetInfo)
   console.log("Widget action ", widgetAction)

@@ -11,6 +11,7 @@ type TodayWidgetProps = {
 //const ROW_COLORS: ColorProp[] = ['#eb3b5aFF', '#fa8231ff', '#fdf9a0ff', '#20bf6bff', '#0fb9b1ff', '#2d98daff']
 
 function TodayWidget({ lectures }: TodayWidgetProps) {
+  "use no memo";
   return (
     <FlexWidget
       clickAction="REFRESH"
