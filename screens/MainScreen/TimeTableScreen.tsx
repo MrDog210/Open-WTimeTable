@@ -4,7 +4,7 @@ import Container from "../../components/ui/Container";
 import { ComponentRef, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { DefaultView, useSettings } from "../../context/UserSettingsContext";
 import { Lecture, TimetableLecture } from "../../types/types";
-import { dateFromNow, formatDate, formatWeekDate, getISODateNoTimestamp, getSchoolWeekNumber, getWeekDates } from "../../util/dateUtils";
+import { dateFromNow, getISODateNoTimestamp, getSchoolWeekNumber, getWeekDates } from "../../util/dateUtils";
 import { RefreshControl, StyleSheet, useWindowDimensions, View, } from "react-native";
 import { calculateNowLineOffset, getAllLecturesForDay, getColumnWidth, hasTimetableUpdated, updateLectures } from "../../util/timetableUtils";
 import { getAllDatesWithLectures } from "../../util/store/database";

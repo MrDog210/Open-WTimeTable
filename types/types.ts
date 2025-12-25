@@ -156,3 +156,9 @@ export type ThemeColorsType = {
   onSurfaceVariant: string,
   placeholder: string
 }
+
+export type FacultyCode = {
+  schoolCity: string
+  schoolName: string
+  inputCode: string
+}

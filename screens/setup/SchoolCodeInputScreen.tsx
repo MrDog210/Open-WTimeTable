@@ -1,4 +1,4 @@
-import { StyleSheet, KeyboardAvoidingView, Platform, Alert } from "react-native"
+import { StyleSheet, KeyboardAvoidingView, Platform, Alert, View } from "react-native"
 import Button from "../../components/ui/Button"
 import Text from "../../components/ui/Text"
 import TextInput from "../../components/ui/TextInput"
@@ -11,12 +11,16 @@ import Container from "../../components/ui/Container"
 import { init } from "../../util/store/database"
 import { useSettings } from "../../context/UserSettingsContext"
 import { useTheme } from "../../context/ThemeContext"
+import IconButton from "../../components/ui/IconButton"
+import { Search } from "lucide-react-native"
+import SearchCodesModal from "../../components/codeInput/SearchCodesModal"
 
 let hasCreatedDatabase = false
 
 function SchoolCodeInputScreen() {
   const navigation = useNavigation()
   const [code, setCode] = useState('')
+  const [modalOpen, setModalOpen] = useState(false)
   const { changeSettings } = useSettings()
   const { colors } = useTheme()
   
@@ -50,9 +54,19 @@ function SchoolCodeInputScreen() {
 
   return (
     <Container style={style.container}>
+      <SearchCodesModal 
+        open={modalOpen}
+        setOpen={(open, data) => {
+          setModalOpen(open)
+          if (data)
+            setCode(data)
+        }} />
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={style.inputContainer}>
         <Text style={{fontSize: 28, fontWeight: 'bold', textAlign: 'center'}}>Enter your school code</Text>
-        <TextInput placeholder="School code (example: 'FERI')" value={code} onChangeText={setCode} autoCapitalize="none" autoComplete="off" />
+        <View style={{flexDirection: 'row', gap: 10}}>
+          <TextInput containerStyle={{flex: 1}} placeholder="School code (example: 'FERI')" value={code} onChangeText={setCode} autoCapitalize="none" autoComplete="off" />
+          <IconButton style={{backgroundColor: 'transparent'}} iconColor={colors.onBackground} icon={Search} onPress={() => setModalOpen(true)} />
+        </View>
         { schoolInfoMutation.isError && <Text style={{color: colors.error, fontSize: 14}}>Invalid school code</Text>}
       </KeyboardAvoidingView>
       <Button loading={schoolInfoMutation.isPending} disabled={schoolInfoMutation.isPending || code.length === 0} onPress={onConfirm}>OK</Button>

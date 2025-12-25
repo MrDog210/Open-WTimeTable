@@ -14,7 +14,7 @@ function IconButton({title, onPress, icon: Icon, style, iconColor}: IconButtonPr
   const { colors } = useTheme()
 
   return (
-    <Pressable onPress={onPress} style={[{ backgroundColor: colors.primary }, styles.container, style]} android_ripple={{color: colors.touchColor}}>
+    <Pressable onPress={onPress} style={[{ backgroundColor: colors.primary, alignItems: 'center' }, styles.container, style]} android_ripple={{color: colors.touchColor}}>
       <Icon size={25} color={iconColor || colors.onPrimary} />
       {title && <Text style={styles.text}>{title}</Text>}
     </Pressable>

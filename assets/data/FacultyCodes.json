@@ -1,0 +1,247 @@
+[
+  {
+    "schoolCity": "Maribor - Hoče",
+    "schoolName": "Fakulteta za kmetijstvo in biosistemske vede",
+    "inputCode": "fkbv"
+  },
+  {
+    "schoolCity": "Maribor",
+    "schoolName": "Alma Mater Europaea University",
+    "inputCode": "almam"
+  },
+  {
+    "schoolCity": "CELJE",
+    "schoolName": "FAKULTETA ZA LOGISTKO UM",
+    "inputCode": "umfl"
+  },
+  {
+    "schoolCity": "Piran",
+    "schoolName": "EMUNI",
+    "inputCode": "emuni"
+  },
+  {
+    "schoolCity": "Ljubljana",
+    "schoolName": "FKKT",
+    "inputCode": "fkkt"
+  },
+  {
+    "schoolCity": "MARIBOR",
+    "schoolName": "FILOZOFSKA FAKULTETA",
+    "inputCode": "umff"
+  },
+  {
+    "schoolCity": "Novo mesto",
+    "schoolName": "FIŠ Novo mesto",
+    "inputCode": "nmfis"
+  },
+  {
+    "schoolCity": "Koper",
+    "schoolName": "Fakulteta za humanistične študije",
+    "inputCode": "upfhs"
+  },
+  {
+    "schoolCity": "Ljubljana",
+    "schoolName": "GEA College",
+    "inputCode": "slogea"
+  },
+  {
+    "schoolCity": "Velenje",
+    "schoolName": "Fakulteta za varstvo okolja",
+    "inputCode": "rssfvo"
+  },
+  {
+    "schoolCity": "Ljubljana",
+    "schoolName": "Fakulteta za elektrotehniko UL",
+    "inputCode": "ulfe"
+  },
+  {
+    "schoolCity": "Ljubljana",
+    "schoolName": "UM Fakulteta za varnostne vede",
+    "inputCode": "umfvv"
+  },
+  {
+    "schoolCity": "Ljubljana",
+    "schoolName": "UL, Fakulteta za socialno delo",
+    "inputCode": "ulfsd"
+  },
+  {
+    "schoolCity": "Klaipėda",
+    "schoolName": "KVK Sveikatos mokslų fakultetas",
+    "inputCode": "kvksvmf"
+  },
+  {
+    "schoolCity": "Maribor",
+    "schoolName": "Univerza v Mariboru, Pedagoška fakulteta",
+    "inputCode": "umpef"
+  },
+  {
+    "schoolCity": "Koper",
+    "schoolName": "UP Fakulteta za management",
+    "inputCode": "upmng"
+  },
+  {
+    "schoolCity": "Ljubljana",
+    "schoolName": "Veterinarska  fakulteta",
+    "inputCode": "ulvf"
+  },
+  {
+    "schoolCity": "Ljubljana",
+    "schoolName": "UL ALUO",
+    "inputCode": "aluo"
+  },
+  {
+    "schoolCity": "Sarajevo",
+    "schoolName": "Fakultet politickih nauka",
+    "inputCode": "fpnsa"
+  },
+  {
+    "schoolCity": "Portorož",
+    "schoolName": "Univerza na Primorskem, Fakulteta za turistične študije - Turistprimary",
+    "inputCode": "upfts"
+  },
+  {
+    "schoolCity": "Klaipėdos valstybinė kolegija",
+    "schoolName": "Verslo fakultetas",
+    "inputCode": "kvkvf"
+  },
+  {
+    "schoolCity": "Ljubljana",
+    "schoolName": "Fakulteta za farmacijo",
+    "inputCode": "ulffa"
+  },
+  {
+    "schoolCity": "Oxford",
+    "schoolName": "Department of Medical Sciences",
+    "inputCode": "medsci"
+  },
+  {
+    "schoolCity": "Krško/Velenje",
+    "schoolName": "Fakulteta za energetiko",
+    "inputCode": "feum"
+  },
+  {
+    "schoolCity": "Brežice",
+    "schoolName": "Fakulteta za turizem",
+    "inputCode": "umft"
+  },
+  {
+    "schoolCity": "Koper",
+    "schoolName": "UP PEF",
+    "inputCode": "uppef"
+  },
+  {
+    "schoolCity": "FZV UM",
+    "schoolName": "REFERAT ZA ŠTUDIJSKE IN ŠTUDENTSKE ZADEVE",
+    "inputCode": "umfzv"
+  },
+  {
+    "schoolCity": "MARIBOR",
+    "schoolName": "FKKT UM",
+    "inputCode": "umfkkt"
+  },
+  {
+    "schoolCity": "Maribor",
+    "schoolName": "Medicinska fakulteta UM",
+    "inputCode": "ummf"
+  },
+  {
+    "schoolCity": "Maribor",
+    "schoolName": "FGPA",
+    "inputCode": "fgpa"
+  },
+  {
+    "schoolCity": "MARIBOR",
+    "schoolName": "FAKULTETA ZA STROJNIŠTVO MARIBOR",
+    "inputCode": "umfsizr"
+  },
+  {
+    "schoolCity": "Oxford",
+    "schoolName": "Department of Earth Sciences",
+    "inputCode": "oues"
+  },
+  {
+    "schoolCity": "Maribor",
+    "schoolName": "Fakulteta za naravoslovje in matematiko, Univerza v Mariboru",
+    "inputCode": "umfnm"
+  },
+  {
+    "schoolCity": "MARIBOR",
+    "schoolName": "UM FERI",
+    "inputCode": "feri"
+  },
+  {
+    "schoolCity": "Ljubljana",
+    "schoolName": "MF_IMI",
+    "inputCode": "ulimi"
+  },
+  {
+    "schoolCity": "Jesenice",
+    "schoolName": "Fakulteta za zdravstvo Angele Boškin",
+    "inputCode": "fzab"
+  },
+  {
+    "schoolCity": "Koper",
+    "schoolName": "UP FAMNIT",
+    "inputCode": "upfamnit"
+  },
+  {
+    "schoolCity": "Ljubljana",
+    "schoolName": "NTF OTGO",
+    "inputCode": "ulntf"
+  },
+  {
+    "schoolCity": "Maribor",
+    "schoolName": "Pravna fakulteta",
+    "inputCode": "umpf"
+  },
+  {
+    "schoolCity": "Slovenija",
+    "schoolName": "Naravoslovnotehniška fakulteta - Oddelek za geologijo",
+    "inputCode": "ulntfmont"
+  },
+  {
+    "schoolCity": "Kranj",
+    "schoolName": "Fakulteta za državne in evropske študije",
+    "inputCode": "evro-fds"
+  },
+  {
+    "schoolCity": "Maribor",
+    "schoolName": "Fakulteta za strojništvo",
+    "inputCode": "umfs"
+  },
+  {
+    "schoolCity": "Nova Gorica, Ljubljana",
+    "schoolName": "Nova univerza, Evropska pravna fakulteta",
+    "inputCode": "evro-pf"
+  },
+  {
+    "schoolCity": "Ljubljana",
+    "schoolName": "Fakulteta za šport",
+    "inputCode": "ulfsp"
+  },
+  {
+    "schoolCity": "Klaipėda",
+    "schoolName": "KVK Technologijų fakultetas",
+    "inputCode": "kvktf"
+  },
+  {
+    "schoolCity": "London",
+    "schoolName": "New School",
+    "inputCode": "demo"
+  },
+  {
+    "schoolCity": "Oddelek za materiale in metalurgijo",
+    "schoolName": "Univerza v Ljubljani, Naravoslovnotehniška fakulteta",
+    "inputCode": "ulntfmt"
+  },
+  {
+    "schoolCity": "Šibenik",
+    "schoolName": "Akademska godina:2025/2026",
+    "inputCode": "hrvus"
+  },
+  {
+    "schoolCity": "Sarajevo",
+    "schoolName": "Ekonomski fakultet",
+    "inputCode": "efsa"
+  }
+]
