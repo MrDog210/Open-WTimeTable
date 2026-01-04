@@ -26,6 +26,7 @@ import { AnimatedRollingNumber } from "react-native-animated-rolling-numbers";
 import { ScrollView, Gesture, GestureDetector } from "react-native-gesture-handler";
 import { runOnJS } from "react-native-reanimated";
 import { Calendar1, CalendarSearch, ChevronLeft, ChevronRight } from "lucide-react-native";
+import { EntityTypes, getCalendarsAsync, getEventsAsync, useCalendarPermissions } from "expo-calendar";
 
 type TimeTableScreenProps = StaticScreenProps<{
   isWeekView: boolean
@@ -34,7 +35,7 @@ type TimeTableScreenProps = StaticScreenProps<{
 let ranOnce = false
 
 function TimeTableScreen({ route }: TimeTableScreenProps) {
-  const { timetableAnimationsEnabled, defaultView } = useSettings()
+  const { timetableAnimationsEnabled, defaultView, showCalendarEvents } = useSettings()
   const [modalLecture, setModalLecture] = useState<Lecture | null>(null)
   const [date, setDate] = useState<Date>(new Date()) // "2025-05-05"
   const [week, setWeek] = useState(getWeekDates(date)) // TODO: maybe remove this
@@ -46,6 +47,7 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
   const { colors, theme } = useTheme()
   const queryClient = useQueryClient()
   const windowDimensions = useWindowDimensions()
+  const [calendarPermissionStatus, requestCalendarPermission] = useCalendarPermissions();
 
   function shiftDate(days: number) {
     setDate(prev => dayjs(prev).add(days, 'day').toDate());
@@ -92,15 +94,68 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
     }
   })
 
+  async function getLecturesWithCalendarEvents(): Promise<TimetableLecture[] | undefined> {
+    if (calendarPermissionStatus && !calendarPermissionStatus.granted) {
+      await requestCalendarPermission()
+    }
+    if (calendarPermissionStatus && calendarPermissionStatus.granted) {
+      try {
+        const calendars = await getCalendarsAsync(EntityTypes.EVENT);
+        const calendarIds = calendars.map(cal => cal.id);
+        const {from, till} = getWeekDates(date)
+        const events = await getEventsAsync(
+          calendarIds,
+          from,
+          till
+        );
+        // Map expo-calendar events to TimetableLecture[]
+        
+        return events.filter(e => !e.allDay).map(({allDay, availability, startDate, endDate, id, location, notes, title}, idx) => {
+          const start = new Date(startDate)
+          const end = new Date(endDate)
+          console.log(title, startDate, endDate)
+          const lecture: Partial<Lecture> = {
+            id: id as any as number,
+            start_time: start.toISOString(),
+            end_time: end.toISOString(),
+            course: title || 'Calendar Event',
+            eventType: 'calendar',
+            note: notes,
+            branches: [],
+            rooms: location ? [{id: 0, name: location}] : [],
+            groups: [],
+            lecturers: [],
+          }
+
+          return {
+            lecture: lecture as any,
+            startDate: start.toISOString(),
+            endDate: end.toISOString(),
+          }
+        })
+      } catch (e) {
+        console.error('Failed to fetch calendar events', e);
+      }
+    }
+
+    return undefined
+  }
+
   const { data: lectures } = useQuery<TimetableLecture[]>({
     initialData: [],
     queryKey: [QUERY_LECTURES, date, isWeekView],
     queryFn: async () => {
       const data = await getAllLecturesForDay(date, isWeekView)
-      
-      if(isWeekView)
+      let calendarData: TimetableLecture[] | undefined
+
+      if (showCalendarEvents)
+        calendarData = await getLecturesWithCalendarEvents()
+      console.log(calendarData)
+      if (isWeekView)
         setWeek(getWeekDates(date)) // stupid
 
+      if(calendarData)
+        return [...data, ...calendarData]
       return data
     },
     networkMode: 'always',

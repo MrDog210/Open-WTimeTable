@@ -43,9 +43,14 @@
         {
           "android": {
             "enableProguardInReleaseBuilds": true,
-            "enableShrinkResourcesInReleaseBuilds": true
+            "enableShrinkResourcesInReleaseBuilds": true,
+            "foregroundServiceType": "dataSync"
           },
-          "ios": {}
+          "ios": {
+            "infoPlist": {
+              "UIBackgroundModes": ["fetch", "processing"]
+            }
+          }
         }
       ],
       [
@@ -86,6 +91,12 @@
               "resizeMode": "horizontal|vertical"
             }
           ]
+        }
+      ],
+      [
+        "expo-calendar",
+        {
+          "calendarPermission": "The app needs to access your calendar."
         }
       ]
     ],

@@ -35,7 +35,8 @@ const DEFAULT_VALUES: SavedSettings = {
   defaultView: DefaultView.DAY_VIEW,
   hasCompletedSetup: false,
   timetableAnimationsEnabled: false,
-  theme: Theme.SYSTEM
+  theme: Theme.SYSTEM,
+  showCalendarEvents: false
 }
 
 export function useSettings() {
@@ -52,6 +53,7 @@ type SavedSettings = {
   defaultView: DefaultView,
   timetableAnimationsEnabled: boolean,
   theme: Theme,
+  showCalendarEvents: boolean
   //language: // TODO: add multiple language support
 }
 

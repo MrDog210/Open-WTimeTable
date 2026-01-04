@@ -12,9 +12,10 @@ import SettingsButton from "../../components/optionsScreen/SettingsButton"
 import { useTheme } from "../../context/ThemeContext"
 import Switch from "../../components/ui/Switch"
 import { GITHUB_ISSUE, PLAY_STORE_LINK } from "../../util/constants"
+import { requestCalendarPermissionsAsync } from "expo-calendar"
 
 function OptionsScreen() {
-  const { changeSettings, defaultView, timetableAnimationsEnabled, theme,  } = useSettings()
+  const { changeSettings, defaultView, timetableAnimationsEnabled, theme, showCalendarEvents } = useSettings()
   const [fetchingDataMessage, setFetchingDataMessage] = useState('')
   const navigation = useNavigation()
   const {colors} = useTheme()
@@ -63,6 +64,20 @@ function OptionsScreen() {
       timetableAnimationsEnabled: enabled
     })
   }
+
+  async function changeShowCalanderEvents(enabled: boolean) {
+    const perm = requestCalendarPermissionsAsync()
+
+    changeSettings({
+      showCalendarEvents: enabled
+    })
+    
+    const {granted} = await perm
+    if (!granted)
+      changeSettings({
+        showCalendarEvents: false
+      })
+  }
   
   const pickerStyle: Partial<PickerProps> = {
     dropdownIconColor: colors.onBackground,
@@ -88,6 +103,11 @@ function OptionsScreen() {
         <Text style={styles.header}>General</Text>
         <SettingsButton onPress={restartSetup}>Restart setup</SettingsButton>
         <SettingsButton onPress={changeSelectedGroups}>Change selected groups</SettingsButton>
+        <Text style={styles.header}>Calendar sync</Text>
+        <View style={styles.switchContainer}>
+          <Text style={{alignSelf: 'center'}}>Show your calendar events in app</Text>
+          <Switch value={showCalendarEvents} onValueChange={changeShowCalanderEvents} />
+        </View>
         <Text style={[styles.header, { marginBottom: 16 }]}>Appearance</Text>
         <View style={styles.pickerContainer}>
           <Text style={{ fontWeight: '600' }}>Theme</Text>
