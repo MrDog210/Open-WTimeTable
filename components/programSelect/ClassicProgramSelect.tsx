@@ -33,7 +33,7 @@ function ClassicProgramSelect({ programms, schoolCode, chosenBranchesID, setChos
   const { data: branches} = useQuery({
     initialData: [],
     queryFn: () => {
-      //if(!multipleGroupSelect) setChosenBranchesID([])
+      setChosenBranchesID([])
       return fetchBranchesForProgramm(schoolCode, chosenProgrammID!, chosenYear!)
     },
     queryKey: [ 'branchesForProgamme', { schoolCode, chosenProgrammID, chosenYear }],
@@ -47,7 +47,7 @@ function ClassicProgramSelect({ programms, schoolCode, chosenBranchesID, setChos
     if(!program) return
     setYears(generateYearsOfProgram(Number(program.year)))
     setChosenYear(null)
-    //if(!multipleGroupSelect) setChosenBranchesID([])
+    setChosenBranchesID([])
   }
   
   return (

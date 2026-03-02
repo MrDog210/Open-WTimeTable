@@ -95,7 +95,6 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
 
   console.log(chosenBranchesID)
   const isFetching = basicProgrammesQuery.isFetching || saveAndInsertData.isPending
-  // TODO: add toggle for advance mode or simple mode
   return (
     <>
       <LoadingOverlay visible={isFetching} text={fetchingDataMessage} />
@@ -112,7 +111,7 @@ function ProgramSelectScreen({route}: ProgramSelectScreenProps) {
         </View>
         }
         <View style={styles.switchContainer}>
-          <Text style={{alignSelf: 'center'}}>Advanced mode</Text>
+          <Text style={{alignSelf: 'center'}}>Multiselect mode</Text>
           <Switch value={advancedMode} onValueChange={switchMode} />
         </View>
         <View style={{
