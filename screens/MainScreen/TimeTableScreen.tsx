@@ -5,7 +5,7 @@ import { ComponentRef, useEffect, useLayoutEffect, useMemo, useRef, useState } f
 import { DefaultView, useSettings } from "../../context/UserSettingsContext";
 import { Lecture, TimetableLecture } from "../../types/types";
 import { dateFromNow, getISODateNoTimestamp, getSchoolWeekNumber, getWeekDates } from "../../util/dateUtils";
-import { RefreshControl, StyleSheet, useWindowDimensions, View, } from "react-native";
+import { RefreshControl, StyleSheet, useWindowDimensions, View, ScrollView } from "react-native";
 import { calculateNowLineOffset, getAllLecturesForDay, getColumnWidth, hasTimetableUpdated, updateLectures } from "../../util/timetableUtils";
 import { getAllDatesWithLectures } from "../../util/store/database";
 import { markDatesForCustomLectures } from "../../util/store/customLectures";
@@ -23,9 +23,9 @@ import { useTheme } from "../../context/ThemeContext";
 import Text from "../../components/ui/Text";
 import dayjs from "dayjs";
 import { AnimatedRollingNumber } from "react-native-animated-rolling-numbers";
-import { ScrollView, Gesture, GestureDetector } from "react-native-gesture-handler";
-import { runOnJS } from "react-native-reanimated";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { Calendar1, CalendarSearch, ChevronLeft, ChevronRight } from "lucide-react-native";
+import { scheduleOnRN } from 'react-native-worklets';
 
 type TimeTableScreenProps = StaticScreenProps<{
   isWeekView: boolean
@@ -63,9 +63,9 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
       'worklet';
       const { translationX, velocityX } = event;
       if (translationX > DISTANCE_THRESHOLD && velocityX > VELOCITY_THRESHOLD) {
-        runOnJS(shiftDate)(-1);
+        scheduleOnRN(shiftDate, -1)
       } else if (translationX < -DISTANCE_THRESHOLD && velocityX < -VELOCITY_THRESHOLD) {
-        runOnJS(shiftDate)(1);
+        scheduleOnRN(shiftDate, 1)
       }
     });
 
