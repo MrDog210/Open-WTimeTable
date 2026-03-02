@@ -8,6 +8,7 @@ import Text from "../ui/Text";
 import { useTheme } from "../../context/ThemeContext";
 import DatePicker from "react-native-date-picker";
 import DropDownPicker from "../ui/DropDownPicker";
+import Container from "../ui/Container";
 
 const START_TIME = new Date()
 START_TIME.setHours(10, 0, 0)
@@ -46,7 +47,7 @@ function EditCustomLectureModal({customCourse = undefined, onCancelPressed, onCo
     {label: 'Saturday', value: 5},
     {label: 'Sunday', value: 6},
   ]);
-  const { colors } = useTheme()
+  const { colors, theme } = useTheme()
 
   function onChangeSelectedDays(days: number[]) {
     const selectedDays = [false, false, false, false, false, false, false]
@@ -70,7 +71,7 @@ function EditCustomLectureModal({customCourse = undefined, onCancelPressed, onCo
   }, [customCourse])
 
   return (
-    <View style={{backgroundColor: colors.background, flex: 1}}>
+    <Container style={{backgroundColor: colors.background, flex: 1}}>
       <ScrollView contentContainerStyle={{gap: 10}} style={styles.scrollView}>
         <Text>Course name</Text>
         <TextInput
@@ -120,19 +121,20 @@ function EditCustomLectureModal({customCourse = undefined, onCancelPressed, onCo
         <View style={styles.timePickerRow}>
           <View style={styles.timePickerContainer}>
             <Text>Start time</Text>
-            <DatePicker style={styles.timePicker} date={new Date(course.start_time)} onDateChange={(newTime) => setCourse({...course, start_time: newTime.toISOString()})} mode="time" />
+            <DatePicker theme={theme} style={styles.timePicker} date={new Date(course.start_time)} onDateChange={(newTime) => setCourse({...course, start_time: newTime.toISOString()})} mode="time" />
           </View>
           <View style={styles.timePickerContainer}>
             <Text>End time</Text>
-            <DatePicker style={styles.timePicker} date={new Date(course.end_time)} onDateChange={(newTime) => setCourse({...course, end_time: newTime.toISOString()})} mode="time" />
+            <DatePicker theme={theme} style={styles.timePicker} date={new Date(course.end_time)} onDateChange={(newTime) => setCourse({...course, end_time: newTime.toISOString()})} mode="time" />
           </View>
         </View>
+      <View style={{ height: 100 }} />
       </ScrollView>
       <View style={styles.buttonContainer}>
         <Button containerStyle={{flex: 1}} mode="SECONDARY" onPress={() => onCancelPressed()}>Cancel</Button>
         <Button containerStyle={{flex: 1}} onPress={() => onConfirmPressed(!course.id ? {...course, id: uuid.v4()} : course)}>Confirm</Button>
       </View>
-    </View>
+    </Container>
   )
 }
 
@@ -141,7 +143,7 @@ export default EditCustomLectureModal
 const styles = StyleSheet.create({
   scrollView: {
     paddingHorizontal: 15,
-    paddingTop: 15,
+    paddingTop: 30,
     gap: 10,
     columnGap: 10,
     rowGap: 10
@@ -155,7 +157,8 @@ const styles = StyleSheet.create({
   timePickerContainer: {
     flex: 1,
     maxWidth: '50%',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginVertical: 15
   },
   timePicker: {
     maxWidth: '100%'
