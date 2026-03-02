@@ -2,11 +2,10 @@
   "expo": {
     "name": "Open Wise TimeTable",
     "slug": "open-wtimetable",
-    "version": "2.2.7",
+    "version": "2.3.0",
     "orientation": "default",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.mrdog210.OpenWTimeTable2",
@@ -19,7 +18,6 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#1A1A1A"
       },
-      "edgeToEdgeEnabled": true,
       "package": "com.mrdog210.OpenWTimeTable2"
     },
     "web": {

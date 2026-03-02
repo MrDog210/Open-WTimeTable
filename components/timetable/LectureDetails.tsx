@@ -36,7 +36,7 @@ type LectureDetailsProps = {
 }
 
 function LectureDetails({modalVisible, onRequestClose, lecture}: LectureDetailsProps) {
-  const { colors } = useTheme()
+  const { colors, theme } = useTheme()
   // ANIMATIONS
   const opacity = useSharedValue(0)
   const top = useSharedValue(50)
@@ -70,7 +70,7 @@ function LectureDetails({modalVisible, onRequestClose, lecture}: LectureDetailsP
     return
 
   return (
-    <BlurView intensity={20} experimentalBlurMethod="dimezisBlurView" style={{
+    <BlurView intensity={20} tint={theme === 'dark' ? 'light' : 'dark'} style={{
         width: "100%",
         height: "100%",
         position: "absolute",

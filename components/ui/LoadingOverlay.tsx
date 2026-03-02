@@ -9,13 +9,13 @@ type LoadingOverlayProps = {
 }
 
 function LoadingOverlay({ visible, text }: LoadingOverlayProps) {
-  const { colors } = useTheme()
+  const { colors, theme } = useTheme()
   // TODO: animate intensity with reanimated
   if(!visible)
     return <></>
   
   return (
-    <BlurView experimentalBlurMethod='dimezisBlurView' intensity={25} style={styles.background}>
+    <BlurView intensity={25} tint={theme === 'dark' ? 'light' : 'dark'} style={styles.background}>
       <ActivityIndicator size={64} color={colors.onBackground} />
       <Text style={styles.text} >{text}</Text>
     </BlurView>
