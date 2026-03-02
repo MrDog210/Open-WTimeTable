@@ -29,7 +29,7 @@ Main advantage of this app over the official one is, that you can pick a separat
 ## Setup instructions
 
 1. Clone the repo
-2. run  ``` npm install ```
+2. run  ``` pnpm install ```
 3. Duplicate ```example.env``` and rename it to ```.env``` in the root folder and enter your credentials
 4. Build a dev client and install it on your device ```eas build --profile development --platform android --local```
 5. ``` npx expo start ```
