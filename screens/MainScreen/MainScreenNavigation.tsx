@@ -10,15 +10,23 @@ export const MainDrawer = createDrawerNavigator({
   screens: {
     DayView: {
       screen: TimeTableScreen,
-      initialParams: { isWeekView: false },
+      initialParams: { timelineType: 'day' },
       options: {
         drawerLabel: 'Day View',
         drawerIcon: ({ focused, color, size }) => <CalendarDays color={color} size={size} />
       }
     },
+    ContinousView: {
+      screen: TimeTableScreen,
+      initialParams: { timelineType: 'continuous' },
+      options: {
+        drawerLabel: 'Continuous View',
+        drawerIcon: ({ focused, color, size }) => <CalendarDays color={color} size={size} />
+      }
+    },
     WeekView: {
       screen: TimeTableScreen,
-      initialParams: { isWeekView: true },
+      initialParams: { timelineType: 'week' },
       options: {
         drawerLabel: 'Week View',
         drawerIcon: ({ focused, color, size }) => <CalendarRange color={color} size={size} />
