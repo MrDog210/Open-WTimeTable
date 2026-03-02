@@ -2,10 +2,11 @@ import { ScaledSize } from "react-native";
 import { Course, ExecutionType, GroupBranchChild, GroupBranchMain, GroupLecture, Lecturer, Room, TimetableLecture } from "../types/types"
 import { fetchGroupsForBranch, fetchLecturesForGroups, getSchoolInfo } from "./http/api"
 import { hasInternetConnection } from "./http/http"
-import { batchInsertGRLETC, deleteLecturesBetweenDates, getAllDistinctSelectedGroups, getLecturesForDate, insertLecture } from "./store/database"
+import { batchInsertGRLETC, deleteLecturesBetweenDates, getAllDistinctSelectedGroups, getLecturesForDate, getNextLectureInDb, insertLecture } from "./store/database"
 import { setAllBranchGroups, getSchoolInfo as getStoredSchoolInfo, getAllStoredBranchGroups, getUrlSchoolCode, setSchoolInfo } from "./store/schoolData"
 import { getDates, getISODateNoTimestamp, getWeekDates, subtrackSeconds } from "./dateUtils";
 import { getCustomLecturesForDates } from "./store/customLectures";
+import dayjs from "dayjs";
 
 export async function getAndSetAllDistinctBranchGroups(schoolCode: string, chosenBranchesID: string[]) {
   const groups: GroupBranchChild[] = []
@@ -195,4 +196,30 @@ export async function getAllLecturesForDay(date: Date, isWeekView: boolean) {
   });
 
   return [...lec, ...(await customLectures)]
+}
+
+export async function getNextLecture() {
+  const currentDate = dayjs()
+  
+  for(let i = 0; i <= 7; i++) {
+    const lectures = (await getAllLecturesForDay(currentDate.add(i, 'days').toDate(), false)).filter(lec => !!lec.lecture.course)
+    for(const lecture of lectures) {
+      if (currentDate.isBefore(dayjs(lecture.startDate)))
+        return lecture.lecture
+    }
+  }
+
+  return getNextLectureInDb() // backup old code
+}
+
+export async function getInProgressLecture() {
+  const lectures = (await getAllLecturesForDay(new Date(), false)).map(tl => tl.lecture).filter(lec => !!lec.course)
+  if (lectures.length === 0) return undefined;
+  const now = new Date();
+  now.setHours((new Date()).getHours())
+  return lectures.find(lecture => {
+    const start = new Date(lecture.start_time);
+    const end = new Date(lecture.end_time);
+    return now >= start && now <= end;
+  });
 }

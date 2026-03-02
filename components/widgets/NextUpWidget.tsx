@@ -59,7 +59,7 @@ function NextUpWidget({ lecture, isNextUp }: NextUpWidgetProps) {
             paddingBottom: 0
           }}>
             <TextWidget
-              text={`${lecture.course} - ${lecture.executionType}`}
+              text={lecture.executionType ? `${lecture.course} - ${lecture.executionType}` : lecture.course}
               style={{
                 fontSize: 18,
                 fontWeight: 'bold',

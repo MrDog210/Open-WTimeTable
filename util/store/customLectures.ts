@@ -36,6 +36,9 @@ export async function getCustomLecturesForDates(dates: Date[]): Promise<Timetabl
       const lectureEnd = new Date(lecture.end_time);
       endTime.setHours(lectureEnd.getHours(), lectureEnd.getMinutes(), lectureEnd.getSeconds(), lectureEnd.getMilliseconds());
 
+      lecture.start_time = startTime.toISOString();
+      lecture.end_time = endTime.toISOString();
+
       final.push({
         lecture: lecture as any,
         startDate: subtrackSeconds(startTime, -60), 

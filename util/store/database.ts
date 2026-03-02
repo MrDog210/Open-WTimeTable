@@ -278,7 +278,7 @@ export async function getAllDatesWithLectures() {
     return rows as any as {date: string}[]
 }
 
-export async function getNextLecture() {
+export async function getNextLectureInDb() {
   const date = new Date() // '2025-06-02T11:00:00'
   date.setHours((new Date()).getHours())
   console.log('new date: ', date)
