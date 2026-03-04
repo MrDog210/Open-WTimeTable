@@ -1,8 +1,45 @@
-import DDP, { DropDownPickerProps, ValueType } from 'react-native-dropdown-picker-plus';
+import DDP, { DropDownPickerProps, RenderBadgeItemPropsInterface, ValueType } from 'react-native-dropdown-picker-plus';
+import { Text as RNText, TouchableOpacity, View } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
 
 function DropDownPicker<T extends ValueType>({style, ...props}: DropDownPickerProps<T>) {
   const { colors, theme } = useTheme()
+
+  function removeBadgeValue(value: T) {
+    if (!('setValue' in props) || typeof props.setValue !== 'function')
+      return
+
+    ;(props.setValue as any)((state: T[] | null) => {
+      if (!Array.isArray(state))
+        return state
+      return state.filter((selectedValue) => selectedValue !== value)
+    })
+  }
+
+  function defaultRenderBadgeItem(badgeProps: RenderBadgeItemPropsInterface<T>) {
+    return (
+      <TouchableOpacity
+        style={[
+          badgeProps.badgeStyle,
+          { backgroundColor: badgeProps.getBadgeColor(`${badgeProps.value}`) }
+        ]}
+        {...badgeProps.props}
+        onPress={() => removeBadgeValue(badgeProps.value)}
+      >
+        {badgeProps.showBadgeDot && (
+          <View
+            style={[
+              badgeProps.badgeDotStyle,
+              { backgroundColor: badgeProps.getBadgeDotColor(`${badgeProps.value}`) }
+            ]}
+          />
+        )}
+        <RNText style={[badgeProps.textStyle, badgeProps.badgeTextStyle]}>
+          {badgeProps.label}
+        </RNText>
+      </TouchableOpacity>
+    )
+  }
 
   return <DDP 
     listMode='MODAL' 
@@ -59,7 +96,8 @@ function DropDownPicker<T extends ValueType>({style, ...props}: DropDownPickerPr
     showBadgeDot={false}
     extendableBadgeContainer={true}
     theme={theme === 'dark' ? 'DARK' : 'LIGHT'}
-    {...props} />
+    {...props}
+    renderBadgeItem={props.renderBadgeItem ?? (props.multiple ? defaultRenderBadgeItem : undefined)} />
 }
 
 export default DropDownPicker
