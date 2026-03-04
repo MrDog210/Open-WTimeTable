@@ -28,22 +28,25 @@ type DropDownPickerBaseProps<
   placeholder?: string;
   schema?: TSchema;
   items: DropDownItem<TSchema>[];
+  title?: string
 };
 
 type DropDownPickerSingleProps<
   TSchema extends DropDownSchema = typeof DEFAULT_SCHEMA,
 > = DropDownPickerBaseProps<TSchema> & {
   multiple?: false;
-  value?: DropDownItem<TSchema>[TSchema["value"]];
-  setValue: (val: DropDownItem<TSchema>[TSchema["value"]]) => void;
+  value?: DropDownItem<TSchema>[TSchema["value"]] | null;
+  setValue: (val: DropDownItem<TSchema>[TSchema["value"]] | null) => void;
+  onChangeValue?: (val: DropDownItem<TSchema>[TSchema["value"]] | null) => void;
 };
 
 type DropDownPickerMultiProps<
   TSchema extends DropDownSchema = typeof DEFAULT_SCHEMA,
 > = DropDownPickerBaseProps<TSchema> & {
   multiple: true;
-  value?: DropDownItem<TSchema>[TSchema["value"]][];
-  setValue: (val: DropDownItem<TSchema>[TSchema["value"]][]) => void;
+  value?: DropDownItem<TSchema>[TSchema["value"]][] | null;
+  setValue: (val: DropDownItem<TSchema>[TSchema["value"]][] | null) => void;
+  onChangeValue?: (val: DropDownItem<TSchema>[TSchema["value"]][] | null) => void;
 };
 
 type DropDownPickerProps<
@@ -60,22 +63,31 @@ function NewDropDownPicker<
     items,
     disabled,
     placeholder,
+    title
   } = props;
   const { colors } = useTheme();
   const labelKey = schema.label as TSchema["label"];
   const valueKey = schema.value as TSchema["value"];
   const [open, setOpen] = useState(false);
+  const selectedValues = useMemo(
+    () =>
+      multiple
+        ? ((value ?? []) as DropDownItem<TSchema>[TSchema["value"]][])
+        : [],
+    [multiple, value],
+  );
 
   const mappedMultiValues = useMemo(
     () =>
       multiple
-        ? (value as DropDownItem<TSchema>[TSchema["value"]][]).map(
+        ? selectedValues.map(
             (selectedValue) => {
               const matchedItem = items.find(
                 (item) => item[valueKey] === selectedValue,
               );
               return {
                 key: String(selectedValue),
+                value: selectedValue,
                 label: matchedItem
                   ? matchedItem[labelKey]
                   : String(selectedValue),
@@ -83,34 +95,74 @@ function NewDropDownPicker<
             },
           )
         : [],
-    [items, labelKey, multiple, value, valueKey],
+    [items, labelKey, multiple, selectedValues, valueKey],
   );
+
+  const selectedSingleLabel = useMemo(() => {
+    if (multiple || value == null) {
+      return null;
+    }
+
+    const matchedItem = items.find((item) => item[valueKey] === value);
+    return matchedItem ? matchedItem[labelKey] : String(value);
+  }, [items, labelKey, multiple, value, valueKey]);
 
   const pressableRipple = {
     color: disabled ? "transparent" : colors.touchColor,
     foreground: true,
   };
 
-  function isItemSelected(value): boolean {
+  function isItemSelected(
+    itemValue: DropDownItem<TSchema>[TSchema["value"]],
+  ): boolean {
+    if (multiple) {
+      return selectedValues.includes(itemValue);
+    }
 
+    return value === itemValue;
   }
+
+  function handleItemPress(itemValue: DropDownItem<TSchema>[TSchema["value"]]) {
+    if (multiple) {
+      const multiProps = props as DropDownPickerMultiProps<TSchema>;
+      const currentValues =
+        (multiProps.value ?? []) as DropDownItem<TSchema>[TSchema["value"]][];
+      const nextValues = currentValues.includes(itemValue)
+        ? currentValues.filter((selectedValue) => selectedValue !== itemValue)
+        : [...currentValues, itemValue];
+
+      multiProps.setValue(nextValues);
+      if(multiProps.onChangeValue)
+        multiProps.onChangeValue(nextValues)
+      return;
+    }
+
+    const singleProps = props as DropDownPickerSingleProps<TSchema>;
+    singleProps.setValue(value === itemValue ? null : itemValue);
+    if(singleProps.onChangeValue)
+      singleProps.onChangeValue(itemValue)
+    setOpen(false);
+  }
+
+  const placeholderText = <Text style={{ fontSize: 14, color: colors.onSurface }}>{placeholder}</Text>
 
   return (
     <>
       <View
-        style={[{ backgroundColor: colors.surface }, styles.containerStyle]}
+        style={[{ backgroundColor: disabled ? colors.surfaceVariant : colors.surface }, styles.containerStyle]}
       >
         <Pressable
           style={[styles.pressableContainer]}
           android_ripple={pressableRipple}
+          disabled={disabled}
           onPress={() => setOpen(true)}
         >
           <View
             style={{ flex: 1, flexDirection: "row", gap: 5, flexWrap: "wrap" }}
           >
-            {multiple ? (
+            {multiple ? mappedMultiValues.length === 0 ? placeholderText : (
               <>
-                {mappedMultiValues.map(({ key, label }) => (
+                {mappedMultiValues.map(({ key, label, value: selectedValue }) => (
                   <View
                     key={key}
                     style={{
@@ -128,6 +180,7 @@ function NewDropDownPicker<
                         gap: 4,
                       }}
                       android_ripple={pressableRipple}
+                      onPress={() => handleItemPress(selectedValue)}
                     >
                       <Text style={{ fontSize: 14 }}>{label}</Text>
                       <X size={14} color={colors.onBackground} />
@@ -136,7 +189,7 @@ function NewDropDownPicker<
                 ))}
               </>
             ) : (
-              <Text>{value}</Text>
+              selectedSingleLabel ? <Text>{selectedSingleLabel}</Text> : placeholderText
             )}
           </View>
           <ChevronDown color={colors.onBackground} />
@@ -150,10 +203,10 @@ function NewDropDownPicker<
       >
         <Container isHeaderShown={false}>
           <View
-            style={{ borderBottomWidth: 1, borderColor: colors.onBackground }}
+            style={{ borderBottomWidth: 1, borderColor: colors.onBackground, flexDirection: 'row', alignItems: 'center' }}
           >
+            <Text style={{paddingHorizontal: 10, fontWeight: 'bold', flex: 1, paddingVertical: 5}}>{title}</Text>
             <IconButton
-              style={{ alignSelf: "flex-end" }}
               mode="TRANSPARENT"
               icon={X}
               onPress={() => setOpen(false)}
@@ -161,17 +214,17 @@ function NewDropDownPicker<
           </View>
           <FlatList
             data={items}
+            keyExtractor={(item) => String(item[valueKey])}
             renderItem={({ item }) => (
               <Pressable
                 style={[styles.flatListLabel, { borderColor: colors.border }]}
-                key={item[schema.value]}
                 android_ripple={pressableRipple}
                 onPress={() => {
-
+                  handleItemPress(item[valueKey]);
                 }}
               >
-                <Text style={{flex: 1}}>{item[schema.label]}</Text>
-                {isItemSelected(item[schema.value]) && <Check color={colors.onBackground} />}
+                <Text style={{flex: 1}}>{item[labelKey]}</Text>
+                <Check color={!isItemSelected(item[valueKey]) ? 'transparent' :colors.onBackground} />
               </Pressable>
             )}
           />
