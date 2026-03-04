@@ -9,6 +9,7 @@ import { useTheme } from "../../context/ThemeContext";
 import DatePicker from "react-native-date-picker";
 import DropDownPicker from "../ui/DropDownPicker";
 import Container from "../ui/Container";
+import NewDropDownPicker from "../ui/NewDropDownPicker";
 
 const START_TIME = new Date()
 START_TIME.setHours(10, 0, 0)
@@ -104,13 +105,19 @@ function EditCustomLectureModal({customCourse = undefined, onCancelPressed, onCo
           placeholder={"..."}
         />
         <Text>Days of week</Text>
+        <NewDropDownPicker
+          items={items}
+          value={value}
+          setValue={setValue as any}
+          multiple
+        />
         <DropDownPicker
           placeholder='Select days of week'
           multiple
+          mode="BADGE"
           min={0}
           max={7}
           onChangeValue={onChangeSelectedDays as any}
-          mode='BADGE'
           open={open}
           value={value}
           items={items}
