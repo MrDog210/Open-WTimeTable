@@ -3,7 +3,7 @@ import { Programme } from "../../types/types"
 import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { fetchBranchesForProgramm } from "../../util/http/api"
-import DropDownPicker from "../ui/DropDownPicker"
+import NewDropDownPicker from "../ui/NewDropDownPicker"
 
 type ClassicProgramSelectProps = {
   programms: Programme[],
@@ -21,14 +21,9 @@ function generateYearsOfProgram(numOfYears: number) {
 }
 
 function ClassicProgramSelect({ programms, schoolCode, chosenBranchesID, setChosenBranchesID }: ClassicProgramSelectProps) {
-  const [programsOpen, setProgramsOpen] = useState(false)
   const [chosenProgrammID, setChosenProgrammID] = useState<string | null>(null)
-
-  const [yearOpen, setYearOpen] = useState(false)
   const [years, setYears] = useState<{id: number; name: string}[]>([])
   const [chosenYear, setChosenYear] = useState<string | null>(null)
-
-  const [branchOpen, setBranchOpen] = useState(false)
 
   const { data: branches} = useQuery({
     initialData: [],
@@ -52,9 +47,7 @@ function ClassicProgramSelect({ programms, schoolCode, chosenBranchesID, setChos
   
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ gap: 15 }}>
-      <DropDownPicker items={programms as any}
-        open={programsOpen}
-        setOpen={setProgramsOpen}
+      <NewDropDownPicker items={programms as any}
         value={chosenProgrammID}
         setValue={setChosenProgrammID}
         schema={{
@@ -62,12 +55,10 @@ function ClassicProgramSelect({ programms, schoolCode, chosenBranchesID, setChos
           value: 'id'
         }}
         onChangeValue={onProgrammIdSelected}
-        zIndex={3000}
+        title="Program"
         placeholder="Select program"
       />
-      <DropDownPicker items={years as any}
-        open={yearOpen}
-        setOpen={setYearOpen}
+      <NewDropDownPicker items={years as any}
         value={chosenYear}
         setValue={setChosenYear}
         disabled={!chosenProgrammID}
@@ -75,12 +66,10 @@ function ClassicProgramSelect({ programms, schoolCode, chosenBranchesID, setChos
           label: 'name',
           value: 'id'
         }}
-        zIndex={2000}
+        title="Year"
         placeholder="Select year"
       />
-      <DropDownPicker items={branches as any}
-        open={branchOpen}
-        setOpen={setBranchOpen}
+      <NewDropDownPicker items={branches as any}
         value={chosenBranchesID}
         setValue={setChosenBranchesID as any}
         schema={{
@@ -88,10 +77,9 @@ function ClassicProgramSelect({ programms, schoolCode, chosenBranchesID, setChos
           value: 'id'
         }}
         disabled={!chosenYear}
-        mode="BADGE"
         multiple
         //max={multipleGroupSelect ? 999 : 1}
-        zIndex={1000}
+        title="Branch"
         placeholder="Select branch"
       />
     </ScrollView>

@@ -168,6 +168,7 @@ function NewDropDownPicker<
                     style={{
                       overflow: "hidden",
                       borderRadius: 8,
+                      flexShrink: 1
                     }}
                   >
                     <Pressable
@@ -182,7 +183,7 @@ function NewDropDownPicker<
                       android_ripple={pressableRipple}
                       onPress={() => handleItemPress(selectedValue)}
                     >
-                      <Text style={{ fontSize: 14 }}>{label}</Text>
+                      <Text style={{ fontSize: 14, flexShrink: 1 }}>{label}</Text>
                       <X size={14} color={colors.onBackground} />
                     </Pressable>
                   </View>
