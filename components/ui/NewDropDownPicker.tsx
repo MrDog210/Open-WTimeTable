@@ -1,7 +1,7 @@
 import { StyleSheet, View, Pressable, Modal, FlatList } from "react-native";
 import { useTheme } from "../../context/ThemeContext";
 import Text from "./Text";
-import { ChevronDown, X } from "lucide-react-native";
+import { Check, ChevronDown, X } from "lucide-react-native";
 import { useMemo, useState } from "react";
 import Container from "./Container";
 import IconButton from "./IconButton";
@@ -91,6 +91,10 @@ function NewDropDownPicker<
     foreground: true,
   };
 
+  function isItemSelected(value): boolean {
+
+  }
+
   return (
     <>
       <View
@@ -162,8 +166,12 @@ function NewDropDownPicker<
                 style={[styles.flatListLabel, { borderColor: colors.border }]}
                 key={item[schema.value]}
                 android_ripple={pressableRipple}
+                onPress={() => {
+
+                }}
               >
-                <Text>{item[schema.label]}</Text>
+                <Text style={{flex: 1}}>{item[schema.label]}</Text>
+                {isItemSelected(item[schema.value]) && <Check color={colors.onBackground} />}
               </Pressable>
             )}
           />
@@ -194,5 +202,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 16,
     borderBottomWidth: 1,
+    flexDirection: 'row',
+    alignItems: 'center'
   },
 });
