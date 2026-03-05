@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
-import DropDownPicker from "../ui/DropDownPicker"
 import { Course, GroupWithSelected } from "../../types/types"
 import Text from "../ui/Text"
+import NewDropDownPicker from "../ui/NewDropDownPicker"
 
 type CourseGroupSelectProps = {
   course: Course,
@@ -9,23 +9,23 @@ type CourseGroupSelectProps = {
 }
 
 function CourseGroupSelect({course, groups}: CourseGroupSelectProps) {
-  const [isDropDownOpen, setIsDropDownOpen] = useState<boolean>(false)
   const [chosenGroupsID, setChosenGroupsID] = useState<number[]>([])
 
   useEffect(() => {
-    groups.forEach(group => {
-      if(group.selected)
-        setChosenGroupsID(values => [...values, group.id])
-    })
+    const selectedGroupIds = groups
+      .filter(group => group.selected)
+      .map(group => group.id)
+    setChosenGroupsID(selectedGroupIds)
   }, [groups])
 
-  function onGroupSelected(groupsIds: number[]) {
+  function onGroupSelected(groupsIds: number[] | null) {
+    const safeGroupIds = groupsIds ?? []
     groups.forEach(group => {
       group.selected = false
     });
 
-    groupsIds.forEach(groupId => {
-      let group = groups.find(g => g.id === groupId)
+    safeGroupIds.forEach(groupId => {
+      const group = groups.find(g => g.id === groupId)
       group!.selected = true
     })
   }
@@ -33,22 +33,18 @@ function CourseGroupSelect({course, groups}: CourseGroupSelectProps) {
   return (
     <>
       <Text style={{ paddingBottom: 2}}>{course.course}</Text>
-      <DropDownPicker 
+      <NewDropDownPicker 
         items={groups as any}
-        open={isDropDownOpen}
-        setOpen={setIsDropDownOpen}
-        value={chosenGroupsID}
+        value={chosenGroupsID as any}
         setValue={setChosenGroupsID as any}
         schema={{
           label: 'name',
           value: 'id'
         }}
         placeholder='Select groups'
-        multiple={true}
-        min={0}
-        max={groups.length}
+        title={course.course}
+        multiple
         onChangeValue={onGroupSelected as any}
-        mode='BADGE'
       />
     </>
   )

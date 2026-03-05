@@ -7,8 +7,8 @@ import TextInput from "../ui/TextInput";
 import Text from "../ui/Text";
 import { useTheme } from "../../context/ThemeContext";
 import DatePicker from "react-native-date-picker";
-import DropDownPicker from "../ui/DropDownPicker";
 import Container from "../ui/Container";
+import NewDropDownPicker from "../ui/NewDropDownPicker";
 
 const START_TIME = new Date()
 START_TIME.setHours(10, 0, 0)
@@ -34,11 +34,7 @@ type EditCustomLectureModalProps = {
   onConfirmPressed: (cl: CustomLecture) => void
 }
 
-function EditCustomLectureModal({customCourse = undefined, onCancelPressed, onConfirmPressed}: EditCustomLectureModalProps) {
-  const [course, setCourse] = useState<CustomLecture>(customCourse ? customCourse : DEFAULT_VALUES)
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState<number[]>([]);
-  const [items, setItems] = useState<{label: string, value: number}[]>([
+const items = [
     {label: 'Monday', value: 0},
     {label: 'Tuesday', value: 1},
     {label: 'Wednesday', value: 2},
@@ -46,7 +42,11 @@ function EditCustomLectureModal({customCourse = undefined, onCancelPressed, onCo
     {label: 'Friday', value: 4},
     {label: 'Saturday', value: 5},
     {label: 'Sunday', value: 6},
-  ]);
+  ]
+
+function EditCustomLectureModal({customCourse = undefined, onCancelPressed, onConfirmPressed}: EditCustomLectureModalProps) {
+  const [course, setCourse] = useState<CustomLecture>(customCourse ? customCourse : DEFAULT_VALUES)
+  const [value, setValue] = useState<number[]>([]);
   const { colors, theme } = useTheme()
 
   function onChangeSelectedDays(days: number[]) {
@@ -104,19 +104,14 @@ function EditCustomLectureModal({customCourse = undefined, onCancelPressed, onCo
           placeholder={"..."}
         />
         <Text>Days of week</Text>
-        <DropDownPicker
-          placeholder='Select days of week'
-          multiple
-          min={0}
-          max={7}
-          onChangeValue={onChangeSelectedDays as any}
-          mode='BADGE'
-          open={open}
-          value={value}
+        <NewDropDownPicker
           items={items}
-          setOpen={setOpen}
+          value={value}
           setValue={setValue as any}
-          setItems={setItems as any}
+          multiple
+          title="Course days"
+          placeholder='Select days of week'
+          onChangeValue={onChangeSelectedDays as any}
         />
         <View style={styles.timePickerRow}>
           <View style={styles.timePickerContainer}>

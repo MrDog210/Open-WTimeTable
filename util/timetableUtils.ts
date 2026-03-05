@@ -202,8 +202,9 @@ export async function getNextLecture() {
   const currentDate = dayjs()
   
   for(let i = 0; i <= 7; i++) {
-    const lectures = (await getAllLecturesForDay(currentDate.add(i, 'days').toDate(), false)).filter(lec => !!lec.lecture.course)
+    const lectures = (await getAllLecturesForDay(currentDate.add(i, 'days').toDate(), false)).filter(lec => !!lec.lecture.course).sort((a, b) => new Date(a.lecture.start_time).getTime() - new Date(b.lecture.start_time).getTime())
     for(const lecture of lectures) {
+      console.log('checking lecture: ' + lecture.lecture.course + ' at ' + lecture.startDate, 'results: ' + currentDate.isBefore(dayjs(lecture.startDate)))
       if (currentDate.isBefore(dayjs(lecture.startDate)))
         return lecture.lecture
     }

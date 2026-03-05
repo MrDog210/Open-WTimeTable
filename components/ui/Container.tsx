@@ -11,7 +11,8 @@ type ContainerProps = {
 
 function Container({children, style, isHeaderShown = true}: ContainerProps) {
   const {colors} = useTheme()
-   const insets = useSafeAreaInsets();
+  const insets = useSafeAreaInsets();
+
   return (
     <View style={[{flex: 1, backgroundColor: colors.background, 
         marginTop: isHeaderShown ? 0 : insets.top,
