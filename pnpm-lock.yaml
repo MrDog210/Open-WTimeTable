@@ -63,6 +63,9 @@ importers:
       expo-status-bar:
         specifier: ~55.0.4
         version: 55.0.4(react-native@0.83.2(@babel/core@7.27.4)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
+      expo-task-manager:
+        specifier: ^55.0.9
+        version: 55.0.9(expo@55.0.5(@babel/core@7.27.4)(@expo/dom-webview@55.0.3)(react-native@0.83.2(@babel/core@7.27.4)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)(typescript@5.9.3))(react-native@0.83.2(@babel/core@7.27.4)(@types/react@19.2.14)(react@19.2.0))
       lucide-react-native:
         specifier: ^0.577.0
         version: 0.577.0(react-native-svg@15.15.3(react-native@0.83.2(@babel/core@7.27.4)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0))(react-native@0.83.2(@babel/core@7.27.4)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
