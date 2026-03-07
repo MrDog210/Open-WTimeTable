@@ -1,94 +1,81 @@
-import * as BackgroundTask from 'expo-background-task';
-import * as TaskManager from 'expo-task-manager';
-import { Platform } from 'react-native';
+import * as BackgroundTask from "expo-background-task";
+import * as TaskManager from "expo-task-manager";
+import { Platform } from "react-native";
 
 import * as Notifications from "expo-notifications";
-import { dateFromNow } from '../dateUtils';
-import { hasTimetableUpdated, updateLectures } from '../timetableUtils';
+import { dateFromNow } from "../dateUtils";
+import { hasTimetableUpdated, updateLectures } from "../timetableUtils";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldPlaySound: false,
     shouldSetBadge: true,
     shouldShowBanner: true,
-    shouldShowList: true
-  })
+    shouldShowList: true,
+  }),
 });
 
-export const TIMETABLE_TASK = 'background-fetch-timetable';
+export const TIMETABLE_TASK = "background-fetch-timetable";
 
 // 1. Define the background task globally
 TaskManager.defineTask(TIMETABLE_TASK, async () => {
   try {
-    console.log("BGTASK STARTING")
+    console.log("BGTASK STARTING");
     /*sendNotification({
       title: "Checking for updates"
     })*/
-    const hasUpdated = await hasTimetableUpdated()
-    console.log("BGTASK HAS UPDATED ", hasUpdated)
+    const hasUpdated = await hasTimetableUpdated();
+    console.log("BGTASK HAS UPDATED ", hasUpdated);
 
-    if(hasUpdated) {
-      await updateLectures(new Date(), dateFromNow(200), true)
-      console.log("BGTASK UPDATE COMPLETE ")
+    if (hasUpdated) {
+      await updateLectures(new Date(), dateFromNow(200), true);
+      console.log("BGTASK UPDATE COMPLETE ");
 
       sendNotification({
-      title: "Updated timetable"
-    })
+        title: "DEBUG: Updated timetable",
+      });
     } else {
-      console.log("BGTASK NO UPDATE ")
+      console.log("BGTASK NO UPDATE ");
 
       sendNotification({
-      title: "No updates found"
-    })
+        title: "DEBUG: No timetable updates found",
+      });
     }
     return BackgroundTask.BackgroundTaskResult.Success;
   } catch (e) {
-    console.log("BGTASK ERROR ", e)
+    console.log("BGTASK ERROR ", e);
 
     sendNotification({
-      title: "ERROR"
-    })
+      title: "ERROR UPDATING TIMETABLE",
+    });
     return BackgroundTask.BackgroundTaskResult.Failed;
   }
 });
 
 const sendNotification = (content: Notifications.NotificationContentInput) => {
-    Notifications.scheduleNotificationAsync({
-      content,
-      trigger: {
-        type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
-        seconds: 1,
-      },
-    });
-  };
+  Notifications.scheduleNotificationAsync({
+    content,
+    trigger: {
+      type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+      seconds: 1,
+    },
+  });
+};
 
 // 2. Register and unregister helpers
-export const registerTimetableBackgroundTask = async () => {
-  if (Platform.OS === 'android') {
-    console.warn(
-      'expo-background-task registration skipped on Android. Use expo-background-fetch for Android background fetch.'
-    );
-    return;
-  }
-
-  return BackgroundTask.registerTaskAsync(TIMETABLE_TASK, { minimumInterval: 15 });
+export const registerTimetableBackgroundTask = async (minimumInterval: number) => {
+  return BackgroundTask.registerTaskAsync(TIMETABLE_TASK, {
+    minimumInterval: minimumInterval,
+  });
 };
 
 export const unregisterTimetableBackgroundTask = async () => {
-  if (Platform.OS === 'android') {
-    console.warn('unregisterTimetableBackgroundTask skipped on Android.');
-    return;
-  }
-
   return BackgroundTask.unregisterTaskAsync(TIMETABLE_TASK);
 };
 
 export const isTimetableBackgroundTaskRegistered = async () => {
-  if (Platform.OS === 'android') {
-    return false;
-  }
-
   return TaskManager.isTaskRegisteredAsync(TIMETABLE_TASK);
 };
 
-export const testbackgroundTask = () => BackgroundTask.triggerTaskWorkerForTestingAsync();
+export const testbackgroundTask = () =>
+  BackgroundTask.triggerTaskWorkerForTestingAsync();

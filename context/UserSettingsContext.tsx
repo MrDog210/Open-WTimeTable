@@ -2,6 +2,36 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 import * as SplashScreen from 'expo-splash-screen';
 import { storage } from "../util/constants";
 
+export const BACKGROUND_TASK_INTERVALS : {
+  label: string,
+  value: number
+}[] = [
+  {
+    label: "15 minutes",
+    value: 15
+  },
+  {
+    label: "30 minutes",
+    value: 30
+  },
+  {
+    label: "1 hour",
+    value: 60
+  },
+  {
+    label: "6 hours",
+    value: 6 * 60
+  },
+  {
+    label: "12 hours",
+    value: 12 * 60
+   },
+   {
+    label: "24 hours",
+    value: 24 * 60
+   }
+]
+
 async function saveSettings(settings: SavedSettings) {
   return storage.setItem('settings', JSON.stringify(settings))
 }
@@ -35,7 +65,8 @@ const DEFAULT_VALUES: SavedSettings = {
   defaultView: DefaultView.DAY_VIEW,
   hasCompletedSetup: false,
   timetableAnimationsEnabled: false,
-  theme: Theme.SYSTEM
+  theme: Theme.SYSTEM,
+  minimumBackgroundTaskInterval: BACKGROUND_TASK_INTERVALS[0].value
 }
 
 export function useSettings() {
@@ -52,6 +83,7 @@ type SavedSettings = {
   defaultView: DefaultView,
   timetableAnimationsEnabled: boolean,
   theme: Theme,
+  minimumBackgroundTaskInterval: number
   //language: // TODO: add multiple language support
 }
 
