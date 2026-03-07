@@ -1,5 +1,6 @@
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
+import { Platform } from 'react-native';
 
 import * as Notifications from "expo-notifications";
 import { dateFromNow } from '../dateUtils';
@@ -62,13 +63,32 @@ const sendNotification = (content: Notifications.NotificationContentInput) => {
   };
 
 // 2. Register and unregister helpers
-export const registerTimetableBackgroundTask = () =>
-  BackgroundTask.registerTaskAsync(TIMETABLE_TASK, { minimumInterval: 15 });
+export const registerTimetableBackgroundTask = async () => {
+  if (Platform.OS === 'android') {
+    console.warn(
+      'expo-background-task registration skipped on Android. Use expo-background-fetch for Android background fetch.'
+    );
+    return;
+  }
 
-export const unregisterTimetableBackgroundTask = () =>
-  BackgroundTask.unregisterTaskAsync(TIMETABLE_TASK);
+  return BackgroundTask.registerTaskAsync(TIMETABLE_TASK, { minimumInterval: 15 });
+};
 
-export const isTimetableBackgroundTaskRegistered = () =>
-  TaskManager.isTaskRegisteredAsync(TIMETABLE_TASK);
+export const unregisterTimetableBackgroundTask = async () => {
+  if (Platform.OS === 'android') {
+    console.warn('unregisterTimetableBackgroundTask skipped on Android.');
+    return;
+  }
+
+  return BackgroundTask.unregisterTaskAsync(TIMETABLE_TASK);
+};
+
+export const isTimetableBackgroundTaskRegistered = async () => {
+  if (Platform.OS === 'android') {
+    return false;
+  }
+
+  return TaskManager.isTaskRegisteredAsync(TIMETABLE_TASK);
+};
 
 export const testbackgroundTask = () => BackgroundTask.triggerTaskWorkerForTestingAsync();
