@@ -1,10 +1,10 @@
 import * as BackgroundTask from "expo-background-task";
 import * as TaskManager from "expo-task-manager";
-import { Platform } from "react-native";
 
 import * as Notifications from "expo-notifications";
 import { dateFromNow } from "../dateUtils";
 import { hasTimetableUpdated, updateLectures } from "../timetableUtils";
+import { AppState } from "react-native";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -24,6 +24,13 @@ TaskManager.defineTask(TIMETABLE_TASK, async () => {
     /*sendNotification({
       title: "Checking for updates"
     })*/
+
+    if (AppState.currentState === 'active') {
+      sendNotification({
+        title: "DEBUG: app open, stopping BG service",
+      });
+    }
+
     const hasUpdated = await hasTimetableUpdated();
     console.log("BGTASK HAS UPDATED ", hasUpdated);
 
@@ -47,6 +54,7 @@ TaskManager.defineTask(TIMETABLE_TASK, async () => {
 
     sendNotification({
       title: "ERROR UPDATING TIMETABLE",
+      body: e instanceof Error ? e.message : JSON.stringify(e),
     });
     return BackgroundTask.BackgroundTaskResult.Failed;
   }
@@ -63,7 +71,9 @@ const sendNotification = (content: Notifications.NotificationContentInput) => {
 };
 
 // 2. Register and unregister helpers
-export const registerTimetableBackgroundTask = async (minimumInterval: number) => {
+export const registerTimetableBackgroundTask = async (
+  minimumInterval: number,
+) => {
   return BackgroundTask.registerTaskAsync(TIMETABLE_TASK, {
     minimumInterval: minimumInterval,
   });
