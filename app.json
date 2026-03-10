@@ -83,7 +83,13 @@
           ]
         }
       ],
-      "expo-background-task"
+      "expo-background-task",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notifications_icon.png"
+        }
+      ]
     ],
     "extra": {
       "eas": {

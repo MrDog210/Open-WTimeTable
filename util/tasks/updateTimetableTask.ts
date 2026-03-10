@@ -5,6 +5,7 @@ import * as Notifications from "expo-notifications";
 import { dateFromNow } from "../dateUtils";
 import { hasTimetableUpdated, updateLectures } from "../timetableUtils";
 import { AppState } from "react-native";
+import { hasInternetConnection } from "../http/http";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -29,8 +30,12 @@ TaskManager.defineTask(TIMETABLE_TASK, async () => {
       sendNotification({
         title: "DEBUG: app open, stopping BG service",
       });
+      return BackgroundTask.BackgroundTaskResult.Success;
     }
-
+    
+    if (!hasInternetConnection())
+      return BackgroundTask.BackgroundTaskResult.Failed;
+    
     const hasUpdated = await hasTimetableUpdated();
     console.log("BGTASK HAS UPDATED ", hasUpdated);
 
