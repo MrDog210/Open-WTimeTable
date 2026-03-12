@@ -1,11 +1,12 @@
 import * as BackgroundTask from "expo-background-task";
 import * as TaskManager from "expo-task-manager";
-
+import { storage } from '../constants';
 import * as Notifications from "expo-notifications";
 import { dateFromNow } from "../dateUtils";
 import { hasTimetableUpdated, updateLectures } from "../timetableUtils";
 import { AppState } from "react-native";
 import { hasInternetConnection } from "../http/http";
+import dayjs from "dayjs";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -16,12 +17,31 @@ Notifications.setNotificationHandler({
   }),
 });
 
+function getLastUpdateTime() {
+  return storage.getItem('lastUpdateTime')
+}
+
+function setLastUpdateTime(time: Date) {
+  return storage.setItem('lastUpdateTime', time.toISOString())
+}
+
 export const TIMETABLE_TASK = "background-fetch-timetable";
 
 // 1. Define the background task globally
 TaskManager.defineTask(TIMETABLE_TASK, async () => {
   try {
     console.log("BGTASK STARTING");
+
+    const lastUpdateTimeStr = await getLastUpdateTime();
+    if (lastUpdateTimeStr && dayjs(lastUpdateTimeStr).diff(dayjs(), 'minutes') < 5) {
+      sendNotification({
+        title: "DEBUG: Skipping update",
+        body: "Less than 5 minutes since last update",
+      });
+      return BackgroundTask.BackgroundTaskResult.Success;
+    }
+    setLastUpdateTime(new Date());
+
     /*sendNotification({
       title: "Checking for updates"
     })*/
@@ -33,7 +53,7 @@ TaskManager.defineTask(TIMETABLE_TASK, async () => {
       return BackgroundTask.BackgroundTaskResult.Success;
     }
     
-    if (!hasInternetConnection())
+    if (!(await hasInternetConnection()))
       return BackgroundTask.BackgroundTaskResult.Failed;
     
     const hasUpdated = await hasTimetableUpdated();
