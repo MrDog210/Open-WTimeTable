@@ -33,7 +33,7 @@ TaskManager.defineTask(TIMETABLE_TASK, async () => {
     console.log("BGTASK STARTING");
 
     const lastUpdateTimeStr = await getLastUpdateTime();
-    if (lastUpdateTimeStr && dayjs(lastUpdateTimeStr).diff(dayjs(), 'minutes') < 5) {
+    if (lastUpdateTimeStr && dayjs().diff(lastUpdateTimeStr, 'minutes') < 5) {
       sendNotification({
         title: "DEBUG: Skipping update",
         body: "Less than 5 minutes since last update",
