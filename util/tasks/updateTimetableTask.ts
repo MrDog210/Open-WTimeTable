@@ -32,16 +32,6 @@ TaskManager.defineTask(TIMETABLE_TASK, async () => {
   try {
     console.log("BGTASK STARTING");
 
-    const lastUpdateTimeStr = await getLastUpdateTime();
-    if (lastUpdateTimeStr && dayjs().diff(lastUpdateTimeStr, 'minutes') < 5) {
-      sendNotification({
-        title: "DEBUG: Skipping update",
-        body: "Less than 5 minutes since last update",
-      });
-      return BackgroundTask.BackgroundTaskResult.Success;
-    }
-    setLastUpdateTime(new Date());
-
     /*sendNotification({
       title: "Checking for updates"
     })*/
@@ -55,6 +45,16 @@ TaskManager.defineTask(TIMETABLE_TASK, async () => {
     
     if (!(await hasInternetConnection()))
       return BackgroundTask.BackgroundTaskResult.Failed;
+
+    const lastUpdateTimeStr = await getLastUpdateTime();
+    if (lastUpdateTimeStr && dayjs().diff(lastUpdateTimeStr, 'minutes') < 5) {
+      sendNotification({
+        title: "DEBUG: Skipping update",
+        body: "Less than 5 minutes since last update",
+      });
+      return BackgroundTask.BackgroundTaskResult.Success;
+    }
+    setLastUpdateTime(new Date());
     
     const hasUpdated = await hasTimetableUpdated();
     console.log("BGTASK HAS UPDATED ", hasUpdated);
