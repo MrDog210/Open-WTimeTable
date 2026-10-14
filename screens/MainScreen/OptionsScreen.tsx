@@ -15,7 +15,7 @@ import { GITHUB_ISSUE, PLAY_STORE_LINK } from "../../util/constants"
 
 import { isTimetableBackgroundTaskRegistered, registerTimetableBackgroundTask, unregisterTimetableBackgroundTask } from "../../util/tasks/updateTimetableTask"
 import * as Notifications from "expo-notifications";
-import { deleteLecturesBetweenDates } from "../../util/store/database"
+import { deleteLecturesBetweenDates, getLecturesForDate } from "../../util/store/database"
 import dayjs from "dayjs"
 
 function OptionsScreen() {
@@ -193,7 +193,10 @@ function OptionsScreen() {
           </Picker>
         </View>
         <SettingsButton onPress={deleteTimetableAndSetInvalidDate}>DEBUG: DELETE TIMETABLE (for testing)</SettingsButton>
-
+        <SettingsButton onPress={async () => {
+          const oldLectures = await getLecturesForDate((new Date()).toISOString())
+          const newLectures = await fetch
+        }}>TEST DIFF FUNCTION</SettingsButton>
         <View style={{height: 150}} />
       </ScrollView>
     </>

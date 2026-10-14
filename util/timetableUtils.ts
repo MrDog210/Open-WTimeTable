@@ -1,5 +1,5 @@
 import { ScaledSize } from "react-native";
-import { Course, ExecutionType, GroupBranchChild, GroupBranchMain, GroupLecture, Lecturer, Room, TimetableLecture } from "../types/types"
+import { Course, ExecutionType, GroupBranchChild, GroupBranchMain, GroupLecture, Lecturer, LectureWise, Room, TimetableLecture } from "../types/types"
 import { fetchGroupsForBranch, fetchLecturesForGroups, getSchoolInfo } from "./http/api"
 import { hasInternetConnection } from "./http/http"
 import { batchInsertGRLETC, deleteLecturesBetweenDates, getAllDistinctSelectedGroups, getLecturesForDate, getNextLectureInDb, insertLecture } from "./store/database"
@@ -223,4 +223,16 @@ export async function getInProgressLecture() {
     const end = new Date(lecture.end_time);
     return now >= start && now <= end;
   });
+}
+
+export function compareTimetablesAndCheckForChanges(oldLectures: TimetableLecture[], newLectures: LectureWise[]) {
+  oldLectures = oldLectures.sort((a, b) => new Date(a.lecture.start_time).getTime() - new Date(b.lecture.start_time).getTime())
+  newLectures = newLectures.sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime())
+
+  for (const oldLecture of oldLectures) {
+    const newLecture = newLectures.find(newLecture => Number(newLecture.courseId) === Number(oldLecture.lecture.courseId) && dayjs(newLecture.start_time).isSame(oldLecture.lecture.start_time, 'minute'))
+    if (!newLecture) {
+      console.log('lecture removed: ' + oldLecture.lecture.course)
+    }
+  }
 }
