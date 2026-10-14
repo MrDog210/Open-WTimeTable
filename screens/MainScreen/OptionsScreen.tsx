@@ -193,10 +193,10 @@ function OptionsScreen() {
           </Picker>
         </View>
         <SettingsButton onPress={deleteTimetableAndSetInvalidDate}>DEBUG: DELETE TIMETABLE (for testing)</SettingsButton>
-        <SettingsButton onPress={async () => {
+        { /* <SettingsButton onPress={async () => {
           const oldLectures = await getLecturesForDate((new Date()).toISOString())
           const newLectures = await fetch
-        }}>TEST DIFF FUNCTION</SettingsButton>
+        }}>TEST DIFF FUNCTION</SettingsButton> */ }
         <View style={{height: 150}} />
       </ScrollView>
     </>
