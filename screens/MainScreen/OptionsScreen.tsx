@@ -5,7 +5,7 @@ import LoadingOverlay from "../../components/ui/LoadingOverlay"
 import { Alert, Linking, ScrollView, StyleSheet, View } from "react-native"
 import { useMutation } from "@tanstack/react-query"
 import { getSchoolYearDates } from "../../util/dateUtils"
-import { updateLectures } from "../../util/timetableUtils"
+import { compareTimetablesAndCheckForChanges, getAllLecturesForDay, updateLectures } from "../../util/timetableUtils"
 import Text from "../../components/ui/Text"
 import { Picker, PickerItemProps, PickerProps } from '@react-native-picker/picker';
 import SettingsButton from "../../components/optionsScreen/SettingsButton"
@@ -15,7 +15,9 @@ import { GITHUB_ISSUE, PLAY_STORE_LINK } from "../../util/constants"
 
 import { isTimetableBackgroundTaskRegistered, registerTimetableBackgroundTask, unregisterTimetableBackgroundTask } from "../../util/tasks/updateTimetableTask"
 import * as Notifications from "expo-notifications";
-import { deleteLecturesBetweenDates, getLecturesForDate } from "../../util/store/database"
+import { deleteLecturesBetweenDates, getAllDistinctSelectedGroups } from "../../util/store/database"
+import { fetchLecturesForGroups } from "../../util/http/api"
+import { getSchoolInfo as getStoredSchoolInfo } from "../../util/store/schoolData"
 import dayjs from "dayjs"
 
 function OptionsScreen() {
@@ -194,8 +196,13 @@ function OptionsScreen() {
         </View>
         <SettingsButton onPress={deleteTimetableAndSetInvalidDate}>DEBUG: DELETE TIMETABLE (for testing)</SettingsButton>
         <SettingsButton onPress={async () => {
-          const oldLectures = await getLecturesForDate((new Date()).toISOString())
-          const newLectures = await fetch
+          const today = new Date()
+          const oldLectures = await getAllLecturesForDay(today, false)
+          const schoolInfo = await getStoredSchoolInfo()
+          const selectedGroups = await getAllDistinctSelectedGroups()
+          const newLectures = await fetchLecturesForGroups(schoolInfo.schoolCode, selectedGroups, today, today)
+          const hasChanges = await compareTimetablesAndCheckForChanges(oldLectures, newLectures)
+          console.log('Timetable has changes: ' + hasChanges)
         }}>TEST DIFF FUNCTION</SettingsButton>
         <View style={{height: 150}} />
       </ScrollView>

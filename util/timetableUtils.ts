@@ -2,7 +2,7 @@ import { ScaledSize } from "react-native";
 import { Course, ExecutionType, GroupBranchChild, GroupBranchMain, GroupLecture, Lecturer, LectureWise, Room, TimetableLecture } from "../types/types"
 import { fetchGroupsForBranch, fetchLecturesForGroups, getSchoolInfo } from "./http/api"
 import { hasInternetConnection } from "./http/http"
-import { batchInsertGRLETC, deleteLecturesBetweenDates, getAllDistinctSelectedGroups, getLecturesForDate, getNextLectureInDb, insertLecture } from "./store/database"
+import { batchInsertGRLETC, deleteLecturesBetweenDates, getAllDistinctSelectedGroups, getAllSelectedCourseGroups, getLecturesForDate, getNextLectureInDb, insertLecture } from "./store/database"
 import { setAllBranchGroups, getSchoolInfo as getStoredSchoolInfo, getAllStoredBranchGroups, getUrlSchoolCode, setSchoolInfo } from "./store/schoolData"
 import { getDates, getISODateNoTimestamp, getWeekDates, subtrackSeconds } from "./dateUtils";
 import { getCustomLecturesForDates } from "./store/customLectures";
@@ -225,14 +225,35 @@ export async function getInProgressLecture() {
   });
 }
 
-export function compareTimetablesAndCheckForChanges(oldLectures: TimetableLecture[], newLectures: LectureWise[]) {
-  oldLectures = oldLectures.sort((a, b) => new Date(a.lecture.start_time).getTime() - new Date(b.lecture.start_time).getTime())
-  newLectures = newLectures.sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime())
+export async function compareTimetablesAndCheckForChanges(oldLectures: TimetableLecture[], newLectures: LectureWise[]) {
+  const selectedCourseGroups = await getAllSelectedCourseGroups()
+  console.log("selectedCourseGroups: " + JSON.stringify(selectedCourseGroups, null, '\t'))
+  const selectedCourseGroupKeys = new Set(
+    selectedCourseGroups.map(({courses_id, groups_id}) => `${courses_id}:${groups_id}`)
+  )
+  const filteredNewLectures = newLectures.filter(lecture =>
+    lecture.groups.some(group => selectedCourseGroupKeys.has(`${lecture.courseId}:${group.id}`))
+  )
+  console.log("filteredNewLectures: " + JSON.stringify(filteredNewLectures, null, '\t'))
+  console.log("oldLectures: ")
+  for (const lecture of oldLectures) {
+    console.log(`  ${lecture.lecture.course} at ${lecture.startDate}`)
+  }  
 
-  for (const oldLecture of oldLectures) {
-    const newLecture = newLectures.find(newLecture => Number(newLecture.courseId) === Number(oldLecture.lecture.courseId) && dayjs(newLecture.start_time).isSame(oldLecture.lecture.start_time, 'minute'))
-    if (!newLecture) {
-      console.log('lecture removed: ' + oldLecture.lecture.course)
-    }
-  }
+  const lectureKey = (courseId: number | string, startTime: string) =>
+    `${Number(courseId)}:${dayjs(startTime).format('YYYY-MM-DD HH:mm')}`
+  const oldLectureKeys = oldLectures
+    .filter(({lecture}) => lecture.courseId !== undefined && lecture.courseId !== null)
+    .map(({lecture}) => lectureKey(lecture.courseId, lecture.start_time))
+  const newLectureKeys = filteredNewLectures.map(lecture => lectureKey(lecture.courseId, lecture.start_time))
+
+  if (oldLectureKeys.length !== newLectureKeys.length)
+    return true
+
+  const oldLectureCounts = new Map<string, number>()
+  oldLectureKeys.forEach(key => oldLectureCounts.set(key, (oldLectureCounts.get(key) ?? 0) + 1))
+  const newLectureCounts = new Map<string, number>()
+  newLectureKeys.forEach(key => newLectureCounts.set(key, (newLectureCounts.get(key) ?? 0) + 1))
+
+  return [...oldLectureCounts].some(([key, count]) => newLectureCounts.get(key) !== count)
 }

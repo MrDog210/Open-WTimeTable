@@ -237,6 +237,11 @@ export async function getAllDistinctSelectedGroups() {
   return groupsIds
 }
 
+export async function getAllSelectedCourseGroups() {
+  const { rows } = await db.executeWithHostObjects(`SELECT courses_id, groups_id FROM selected_groups`)
+  return rows as { courses_id: number, groups_id: number }[]
+}
+
 export async function deleteLecturesBetweenDates(start_time: Date, end_time: Date) { // this function is INLCUSIVE for start and end date
   const startTime = getISODateNoTimestamp(start_time)
   const endTime = getISODateNoTimestamp(end_time)
