@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native"
-import { useState } from "react"
-import { DefaultView, Theme, useSettings } from "../../context/UserSettingsContext"
+import { useEffect, useState } from "react"
+import { BACKGROUND_TASK_INTERVALS, DefaultView, Theme, useSettings } from "../../context/UserSettingsContext"
 import LoadingOverlay from "../../components/ui/LoadingOverlay"
 import { Alert, Linking, ScrollView, StyleSheet, View } from "react-native"
 import { useMutation } from "@tanstack/react-query"
@@ -13,11 +13,26 @@ import { useTheme } from "../../context/ThemeContext"
 import Switch from "../../components/ui/Switch"
 import { GITHUB_ISSUE, PLAY_STORE_LINK } from "../../util/constants"
 
+import { isTimetableBackgroundTaskRegistered, registerTimetableBackgroundTask, unregisterTimetableBackgroundTask } from "../../util/tasks/updateTimetableTask"
+import * as Notifications from "expo-notifications";
+import { deleteLecturesBetweenDates, getLecturesForDate } from "../../util/store/database"
+import dayjs from "dayjs"
+
 function OptionsScreen() {
-  const { changeSettings, defaultView, timetableAnimationsEnabled, theme,  } = useSettings()
+  const [isBGTaskRegistered, setIsBGTaskRegistered] = useState<boolean>(false);
+  const { changeSettings, defaultView, timetableAnimationsEnabled, theme, minimumBackgroundTaskInterval } = useSettings()
   const [fetchingDataMessage, setFetchingDataMessage] = useState('')
   const navigation = useNavigation()
   const {colors} = useTheme()
+
+  useEffect(() => {
+    updateBGTaskRegistered()
+  }, [])
+
+  const updateBGTaskRegistered = async () => {
+    const registered = await isTimetableBackgroundTaskRegistered()
+    setIsBGTaskRegistered(registered)
+  }
 
   const changeSelectedGroupsMutation = useMutation({
     mutationFn: async () => {
@@ -28,6 +43,39 @@ function OptionsScreen() {
       navigation.navigate('GroupSelect', { isEditing: true })
     }
   })
+
+  const toggleBGTask = useMutation({
+    mutationFn: async (newState: boolean) => {
+      if (newState) {
+        await registerTimetableBackgroundTask(minimumBackgroundTaskInterval);
+
+        console.log(
+          "TASK REGISTERED: ",
+          await isTimetableBackgroundTaskRegistered(),
+        );
+        const response = await Notifications.requestPermissionsAsync();
+        console.log("NOTIFICATIONS ALLOWED: ", response);
+
+        sendNotification();
+        updateBGTaskRegistered();
+      } else {
+        await unregisterTimetableBackgroundTask();
+        updateBGTaskRegistered();
+      }
+    },
+  });
+
+  const changeMinimumBackgroundTaskInterval = useMutation({
+    mutationFn: async (newInterval: number) => {
+      await changeSettings({
+        minimumBackgroundTaskInterval: newInterval,
+      });
+      if (await isTimetableBackgroundTaskRegistered()) {
+        await unregisterTimetableBackgroundTask();
+        await registerTimetableBackgroundTask(newInterval);
+      }
+    },
+  });
 
   function restartSetup() {
     changeSettings({
@@ -63,7 +111,7 @@ function OptionsScreen() {
       timetableAnimationsEnabled: enabled
     })
   }
-  
+
   const pickerStyle: Partial<PickerProps> = {
     dropdownIconColor: colors.onBackground,
     dropdownIconRippleColor: colors.touchColor,
@@ -79,6 +127,23 @@ function OptionsScreen() {
     style: {
       backgroundColor: colors.background,
     }
+  }
+
+  const sendNotification = () => {
+    Notifications.scheduleNotificationAsync({
+      content: {
+        title: "🧪 Test Notification!",
+        body: "This is a test.",
+      },
+      trigger: {
+        type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+        seconds: 1,
+      },
+    });
+  };
+
+  async function deleteTimetableAndSetInvalidDate() {
+    await deleteLecturesBetweenDates(new Date(), dayjs().add(2, 'week').toDate())
   }
 
   return (
@@ -114,6 +179,25 @@ function OptionsScreen() {
         <Text style={styles.header}>Misc</Text>
         <SettingsButton onPress={() => Linking.openURL(GITHUB_ISSUE)}>Report a issue or suggest a feature on GitHub</SettingsButton>
         <SettingsButton onPress={() => Linking.openURL(PLAY_STORE_LINK)}>Leave feadback on Play Store</SettingsButton>
+        <Text style={styles.header}>Background task</Text>
+        <View style={styles.switchContainer}>
+          <Text style={{alignSelf: 'center'}}>Check for updates in background</Text>
+          <Switch value={isBGTaskRegistered} onValueChange={toggleBGTask.mutate} disabled={toggleBGTask.isPending} />
+        </View>
+        <View style={styles.pickerContainer}>
+          <Text>Timetable refresh interval</Text>
+          <Picker mode="dropdown" {...pickerStyle} selectedValue={minimumBackgroundTaskInterval} onValueChange={(t) => changeMinimumBackgroundTaskInterval.mutateAsync(t)}>
+            {BACKGROUND_TASK_INTERVALS.map(({ label, value }) => (
+              <Picker.Item {...pickerItmeStyle} key={value} label={label} value={value} />
+            ))}
+          </Picker>
+        </View>
+        { /*<SettingsButton onPress={deleteTimetableAndSetInvalidDate}>DEBUG: DELETE TIMETABLE (for testing)</SettingsButton>
+         <SettingsButton onPress={async () => {
+          const oldLectures = await getLecturesForDate((new Date()).toISOString())
+          const newLectures = await fetch
+        }}>TEST DIFF FUNCTION</SettingsButton> */ }
+        <View style={{height: 150}} />
       </ScrollView>
     </>
   )

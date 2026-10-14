@@ -5,7 +5,7 @@ import { ComponentRef, useEffect, useLayoutEffect, useMemo, useRef, useState } f
 import { DefaultView, useSettings } from "../../context/UserSettingsContext";
 import { Lecture, TimetableLecture } from "../../types/types";
 import { dateFromNow, getISODateNoTimestamp, getSchoolWeekNumber, getWeekDates } from "../../util/dateUtils";
-import { RefreshControl, StyleSheet, useWindowDimensions, View, ScrollView } from "react-native";
+import { RefreshControl, StyleSheet, useWindowDimensions, View, ScrollView, AppState } from "react-native";
 import { calculateNowLineOffset, getAllLecturesForDay, getColumnWidth, hasTimetableUpdated, updateLectures } from "../../util/timetableUtils";
 import { getAllDatesWithLectures } from "../../util/store/database";
 import { markDatesForCustomLectures } from "../../util/store/customLectures";
@@ -26,6 +26,7 @@ import { AnimatedRollingNumber } from "react-native-animated-rolling-numbers";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { Calendar1, CalendarSearch, ChevronLeft, ChevronRight } from "lucide-react-native";
 import { scheduleOnRN } from 'react-native-worklets';
+import { isTimetableBackgroundTaskRegistered } from "../../util/tasks/updateTimetableTask";
 
 type TimeTableScreenProps = StaticScreenProps<{
   isWeekView: boolean
@@ -152,13 +153,27 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
   }, [])
 
   useEffect(() => {
-    const scrollPadding = isWeekView ? 45 : -5
-    scrollRef.current?.scrollTo({ // we scroll to 'now line'
+    const scrollPadding = isWeekView ? 45 : -5;
+    scrollRef.current?.scrollTo({
+      // we scroll to 'now line'
       //x: getColumnWidth(isWeekView),
       y: calculateNowLineOffset(scrollPadding),
-      animated: true
-    })
-  }, [])
+      animated: true,
+    });
+
+    const subscription = AppState.addEventListener(
+      "change",
+      async (nextAppState) => {
+        if (nextAppState === "active" && await isTimetableBackgroundTaskRegistered()) {
+          queryClient.invalidateQueries()
+        }
+      },
+    );
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   useEffect(() =>{
     navigation.setOptions({
