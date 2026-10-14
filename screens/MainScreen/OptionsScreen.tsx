@@ -181,7 +181,7 @@ function OptionsScreen() {
         <SettingsButton onPress={() => Linking.openURL(PLAY_STORE_LINK)}>Leave feadback on Play Store</SettingsButton>
         <Text style={styles.header}>Background task</Text>
         <View style={styles.switchContainer}>
-          <Text style={{alignSelf: 'center'}}>BG TASKS AND NOTIFICATIONS</Text>
+          <Text style={{alignSelf: 'center'}}>Check for updates in background</Text>
           <Switch value={isBGTaskRegistered} onValueChange={toggleBGTask.mutate} disabled={toggleBGTask.isPending} />
         </View>
         <View style={styles.pickerContainer}>
@@ -192,8 +192,8 @@ function OptionsScreen() {
             ))}
           </Picker>
         </View>
-        <SettingsButton onPress={deleteTimetableAndSetInvalidDate}>DEBUG: DELETE TIMETABLE (for testing)</SettingsButton>
-        { /* <SettingsButton onPress={async () => {
+        { /*<SettingsButton onPress={deleteTimetableAndSetInvalidDate}>DEBUG: DELETE TIMETABLE (for testing)</SettingsButton>
+         <SettingsButton onPress={async () => {
           const oldLectures = await getLecturesForDate((new Date()).toISOString())
           const newLectures = await fetch
         }}>TEST DIFF FUNCTION</SettingsButton> */ }

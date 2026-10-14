@@ -8,6 +8,8 @@ import { AppState } from "react-native";
 import { hasInternetConnection } from "../http/http";
 import dayjs from "dayjs";
 
+const NOTIFICATIONS_ENANLED = false
+
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldPlaySound: false,
@@ -86,6 +88,7 @@ TaskManager.defineTask(TIMETABLE_TASK, async () => {
 });
 
 const sendNotification = (content: Notifications.NotificationContentInput) => {
+  if (!NOTIFICATIONS_ENANLED) return;
   Notifications.scheduleNotificationAsync({
     content,
     trigger: {
