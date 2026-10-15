@@ -50,7 +50,6 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
   const queryClient = useQueryClient()
   const windowDimensions = useWindowDimensions()
   const sheet = useRef<TrueSheet>(null)
-  const insets = useSafeAreaInsets()
 
   const openSheet = async () => {
     await sheet.current?.present()
@@ -224,7 +223,6 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
         }}
       >
         {modalLecture && <LectureDetails lecture={modalLecture} />}
-        <View style={{height: insets.bottom}} />
       </TrueSheet>
       <DatePicker modal open={showDatePicker} date={date} onConfirm={onConfirmDate} onCancel={onCancelDate} mode="date" />
       <CalendarProvider 

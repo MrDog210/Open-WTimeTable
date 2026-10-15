@@ -1,19 +1,18 @@
-import { type JSX, useEffect, useState } from "react"
+import { useState } from "react"
 import { Lecture } from "../../types/types"
-import Animated, { Easing, useSharedValue, withTiming } from "react-native-reanimated"
 import { setNoteForCourse } from "../../util/store/database"
-import { Modal, ScrollView, View, StyleSheet } from "react-native"
+import { ScrollView, View, StyleSheet } from "react-native"
 import Text from "../ui/Text"
-import Divider from "../ui/Divider"
 import { getTimeFromDate } from "../../util/dateUtils"
 import { formatArray } from "../../util/timetableUtils"
-import Button from "../ui/Button"
 import { useTheme } from "../../context/ThemeContext"
 import EditUsersNote from "./EditUsersNote"
-import { BlurView } from "expo-blur"
-import { Clock, DoorClosed, GraduationCap, GroupIcon, Info, Link, LucideIcon, NotebookPen, Pencil, UserGroup } from "lucide-react-native"
+import { Clock, DoorClosed, GraduationCap, Info, Link, LucideIcon, NotebookPen, Pencil, UserGroup } from "lucide-react-native"
 import IconButton from "../ui/IconButton"
 import Badge from "../ui/Badge"
+import { useSafeAreaInsets } from "react-native-safe-area-context"
+import { useQueryClient } from "@tanstack/react-query"
+import { QUERY_LECTURES } from "../../util/http/reactQuery"
 
 type ContentCardProps = {
   Icon: LucideIcon,
@@ -54,7 +53,7 @@ function ContentCard({Icon, title, contents}: ContentCardProps) {
 }
 
 type LectureDetailsProps = {
-  lecture: Lecture
+  lecture: Lecture,
 }
 
 function LectureDetails({lecture}: LectureDetailsProps) {
@@ -62,17 +61,20 @@ function LectureDetails({lecture}: LectureDetailsProps) {
   const [customNote, setCustomNote] = useState<string>(usersNote ? usersNote.note : '')
   const [isEditing, setIsEditing] = useState(false)
   const {colors} = useTheme()
-
-  function updateCustomNote(newCustomNote: string) {
-    setNoteForCourse(newCustomNote, course_id, executionType_id)
-    setCustomNote(newCustomNote)
-    setIsEditing(false)
-  }
+  const insets = useSafeAreaInsets()
+  const queryClient = useQueryClient()
 
   /*useEffect(() => {
+    setCustomNote(usersNote?.note ?? '')
     setIsEditing(false)
-    setCustomNote(usersNote ? usersNote.note : '')
-  }, [lecture, usersNote])*/
+  }, [lecture.id, usersNote?.note])*/
+
+  async function updateCustomNote(newCustomNote: string) {
+    await setNoteForCourse(newCustomNote, course_id, executionType_id)
+    setCustomNote(newCustomNote)
+    setIsEditing(false)
+    queryClient.invalidateQueries({ queryKey: [QUERY_LECTURES] })
+  }
 
   return (
     <View style={styles.container}>
@@ -100,6 +102,7 @@ function LectureDetails({lecture}: LectureDetailsProps) {
               <IconButton icon={Pencil} iconColor={colors.onSurface} iconSize={20} onPress={() => setIsEditing(true)} mode="TRANSPARENT"  />
             </View>
           </View>
+          <View style={{height: insets.bottom}} />
         </ScrollView>
       ) : (
         <EditUsersNote note={customNote} onCancelPressed={() => setIsEditing(false)} onConfirmPressed={updateCustomNote} />

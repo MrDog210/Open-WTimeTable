@@ -14,12 +14,16 @@ function EditUsersNote({note, onCancelPressed, onConfirmPressed}: EditUsersNoteP
   const [uNote, setUNote] = useState(note)
 
   return(
-    <View style={{flex: 1}}>
+    <View style={styles.container}>
       <View style={styles.contentContainer}>
         <Text style={{fontWeight: 'bold'}}>Edit note:</Text>
-        <View style={{flex: 1, justifyContent: 'center'}}>
-          <TextInput value={uNote} onChangeText={setUNote} />
-        </View>
+        <TextInput
+          value={uNote}
+          onChangeText={setUNote}
+          autoFocus
+          returnKeyType="done"
+          onSubmitEditing={() => onConfirmPressed(uNote)}
+        />
       </View>
       <View style={styles.buttonContainer}>
         <Button mode='SECONDARY' containerStyle={styles.button} onPress={onCancelPressed}>Cancel</Button>
@@ -32,8 +36,10 @@ function EditUsersNote({note, onCancelPressed, onConfirmPressed}: EditUsersNoteP
 export default EditUsersNote
 
 const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+  },
   contentContainer: {
-    flex: 1,
     padding: 10,
     gap: 10
   },
@@ -44,6 +50,7 @@ const styles = StyleSheet.create({
     paddingTop: 0
   },
   button: {
-    flex: 1
+    flex: 1,
+    minHeight: 50
   }
 })
