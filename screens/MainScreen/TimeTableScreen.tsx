@@ -217,7 +217,7 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
       <TrueSheet
         ref={sheet}
         detents={['auto']}
-        backgroundColor={theme === 'dark' ? colors.surface : '#ffffffff'}
+        backgroundColor={colors.surface}
         cornerRadius={20}
         grabberOptions={{
           color: colors.onSurface

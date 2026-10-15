@@ -11,7 +11,7 @@ import Button from "../ui/Button"
 import { useTheme } from "../../context/ThemeContext"
 import EditUsersNote from "./EditUsersNote"
 import { BlurView } from "expo-blur"
-import { DoorClosed, GraduationCap, GroupIcon, Info, Link, LucideIcon, NotebookPen, Pencil, UserGroup } from "lucide-react-native"
+import { Clock, DoorClosed, GraduationCap, GroupIcon, Info, Link, LucideIcon, NotebookPen, Pencil, UserGroup } from "lucide-react-native"
 import IconButton from "../ui/IconButton"
 import Badge from "../ui/Badge"
 
@@ -27,9 +27,15 @@ function ContentCard({Icon, title, contents}: ContentCardProps) {
     return <></>
 
   return (
-    <View style={{flex: 1, flexDirection: 'row', marginVertical: 10, gap: 10, alignItems: 'center'}}>
+    <View style={{
+      flex: 1, 
+      flexDirection: 'row', 
+      marginVertical: 10, 
+      gap: 10, 
+      alignItems: 'center',
+    }}>
       <View style={{
-        backgroundColor: colors.surface,
+        backgroundColor: colors.surfaceVariant,
         padding: 10,
         borderRadius: 8
       }}>
@@ -76,16 +82,14 @@ function LectureDetails({lecture}: LectureDetailsProps) {
             flex: 1,
             flexDirection: 'row',
             gap: 10,
-            justifyContent: 'center'
+            justifyContent: 'center',
+            alignItems: 'center'
           }}>
-            <Text style={styles.title}>{course ? course + course : eventType}</Text>
+            <Text style={styles.title}>{course ? course : eventType}</Text>
             {executionType && <Badge>{executionType}</Badge>}
           </View>
           <View style={styles.contentsContainer}>
-            <View style={styles.subtitle}>
-              <Text>{`${getTimeFromDate(start_time)} - ${getTimeFromDate(end_time)}`}</Text>
-              
-            </View>
+            <ContentCard title="Time" Icon={Clock} contents={`${getTimeFromDate(start_time)} - ${getTimeFromDate(end_time)}`} />
             <ContentCard title="Rooms" Icon={DoorClosed} contents={formatArray(rooms, 'name')} />
             <ContentCard title="Groups" Icon={UserGroup} contents={formatArray(groups, 'name')} />
             <ContentCard title="Lecturers" Icon={GraduationCap} contents={formatArray(lecturers, 'name')} />
@@ -117,6 +121,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     paddingVertical: 10,
     fontSize: 22,
+    flexShrink: 1,
   },
   line: {
     marginVertical: 0
@@ -125,11 +130,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     marginVertical: 5,
     flexGrow: 1
-  },
-  subtitle: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    paddingVertical: 5,
   },
   button: {
     flex: 1

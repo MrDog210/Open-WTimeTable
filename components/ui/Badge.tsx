@@ -25,7 +25,7 @@ function Badge({children}: BadgeProps) {
       <Text style={{
         fontSize: 14,
         color: colors.primary,
-        fontWeight: '500'
+        fontWeight: '800'
       }}>{children}</Text>
     </View></View>
   )
