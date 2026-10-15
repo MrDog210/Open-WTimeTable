@@ -8,10 +8,11 @@ type IconButtonProps = {
   icon: ElementType,
   style?: StyleProp<ViewStyle>,
   iconColor?: string
-  mode?: 'PRIMARY' | 'TRANSPARENT'
+  mode?: 'PRIMARY' | 'TRANSPARENT',
+  iconSize?: number
 }
 
-function IconButton({title, onPress, icon: Icon, style, iconColor, mode = 'PRIMARY'}: IconButtonProps) {
+function IconButton({title, onPress, icon: Icon, style, iconColor, mode = 'PRIMARY', iconSize}: IconButtonProps) {
   const { colors } = useTheme()
 
   let bgColor: string
@@ -27,7 +28,7 @@ function IconButton({title, onPress, icon: Icon, style, iconColor, mode = 'PRIMA
 
   return (
     <Pressable onPress={onPress} style={[{ backgroundColor: bgColor, alignItems: 'center' }, styles.container, style]} android_ripple={{color: colors.touchColor, foreground: true}}>
-      <Icon size={25} color={iconColor || fgColor} />
+      <Icon size={iconSize || 25} color={iconColor || fgColor} />
       {title && <Text style={styles.text}>{title}</Text>}
     </Pressable>
   )

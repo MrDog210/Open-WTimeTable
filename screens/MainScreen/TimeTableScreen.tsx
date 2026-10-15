@@ -27,6 +27,7 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { Calendar1, CalendarSearch, ChevronLeft, ChevronRight } from "lucide-react-native";
 import { scheduleOnRN } from 'react-native-worklets';
 import { isTimetableBackgroundTaskRegistered } from "../../util/tasks/updateTimetableTask";
+import { TrueSheet } from "@lodev09/react-native-true-sheet"
 
 type TimeTableScreenProps = StaticScreenProps<{
   isWeekView: boolean
@@ -47,6 +48,11 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
   const { colors, theme } = useTheme()
   const queryClient = useQueryClient()
   const windowDimensions = useWindowDimensions()
+  const sheet = useRef<TrueSheet>(null)
+
+  const openSheet = async () => {
+    await sheet.current?.present()
+  }
 
   function shiftDate(days: number) {
     setDate(prev => dayjs(prev).add(days, 'day').toDate());
@@ -183,6 +189,7 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
 
   function lecturePressed(lecture: Lecture) {
     setModalLecture(lecture)
+    openSheet()
   }
 
   function openDatePicker() {
@@ -205,7 +212,17 @@ function TimeTableScreen({ route }: TimeTableScreenProps) {
   const WeekNum = useMemo(() => <AnimatedRollingNumber key={theme} textStyle={{fontSize: 16, color: colors.onBackground}} value={getSchoolWeekNumber(date)} />, [date, theme])
   return (
     <Container>
-      <LectureDetails modalVisible={!!modalLecture} lecture={modalLecture!} onRequestClose={() => {setModalLecture(null)}} />
+      <TrueSheet
+        ref={sheet}
+        detents={['auto']}
+        backgroundColor={colors.surface}
+        cornerRadius={20}
+        grabberOptions={{
+          color: colors.onSurface
+        }}
+      >
+        {modalLecture && <LectureDetails lecture={modalLecture} />}
+      </TrueSheet>
       <DatePicker modal open={showDatePicker} date={date} onConfirm={onConfirmDate} onCancel={onCancelDate} mode="date" />
       <CalendarProvider 
         date={getISODateNoTimestamp(date)}

@@ -45,6 +45,7 @@ function ThemeContextProvider({children}: {children: ReactNode}) {
       selectedColorScheme = selectedTheme === Theme.LIGHT ? 'light' : 'dark'
     console.log("final theme", selectedColorScheme)
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setColors(selectedColorScheme === 'dark' ? DARK_MODE_COLORS : LIGHT_MODE_COLORS)
     setTheme(selectedColorScheme)
   }, [colorScheme, selectedTheme])

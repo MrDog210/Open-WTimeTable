@@ -19,6 +19,7 @@ export const storage = new Storage({})
 
 export const LIGHT_MODE_COLORS: ThemeColorsType = {
   primary: "rgb(186, 26, 32)",
+  primaryBackground: "hsl(357.8, 75.5%, 80.6%)",
   onPrimary: "rgb(255, 255, 255)",
   secondary: "#eb5261",
   onSecondary: "rgb(255, 255, 255)",
@@ -39,6 +40,7 @@ export const LIGHT_MODE_COLORS: ThemeColorsType = {
 
 export const DARK_MODE_COLORS: ThemeColorsType = {
   primary: "#419bf9",
+    primaryBackground: "hsl(210.7, 93.9%, 90.6%)",
   onPrimary: "white",
   secondary: "#8CC3FC",
   onSecondary: "white",

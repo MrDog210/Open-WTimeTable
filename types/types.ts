@@ -139,6 +139,7 @@ export type ExecutionType = {
 
 export type ThemeColorsType = {
   primary: string,
+  primaryBackground: string,
   secondary: string,
   onPrimary: string,
   onSecondary: string,
@@ -154,7 +155,7 @@ export type ThemeColorsType = {
   border: string,
   surfaceVariant: string
   onSurfaceVariant: string,
-  placeholder: string
+  placeholder: string,
 }
 
 export type FacultyCode = {
