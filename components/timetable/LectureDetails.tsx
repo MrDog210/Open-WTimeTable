@@ -11,22 +11,38 @@ import Button from "../ui/Button"
 import { useTheme } from "../../context/ThemeContext"
 import EditUsersNote from "./EditUsersNote"
 import { BlurView } from "expo-blur"
-import { DoorClosed, GraduationCap, GroupIcon, Info, Link, LucideIcon, NotebookPen, UserGroup } from "lucide-react-native"
+import { DoorClosed, GraduationCap, GroupIcon, Info, Link, LucideIcon, NotebookPen, Pencil, UserGroup } from "lucide-react-native"
+import IconButton from "../ui/IconButton"
+import Badge from "../ui/Badge"
 
 type ContentCardProps = {
   Icon: LucideIcon,
+  title: string,
   contents?: string | null
 }
 
-function ContentCard({Icon, contents}: ContentCardProps) {
+function ContentCard({Icon, title, contents}: ContentCardProps) {
   const { colors } = useTheme()
   if(contents === null || contents === undefined || contents === '')
     return <></>
 
   return (
-    <View style={{flexDirection: 'row', marginVertical: 5, gap: 10, alignItems: 'center'}}>
-      <Icon color={colors.onSurface} />
-      <Text>{contents} {contents} {contents} {contents} {contents}</Text>
+    <View style={{flex: 1, flexDirection: 'row', marginVertical: 10, gap: 10, alignItems: 'center'}}>
+      <View style={{
+        backgroundColor: colors.surface,
+        padding: 10,
+        borderRadius: 8
+      }}>
+        <Icon color={colors.onSurface} size={20} />
+      </View>
+      <View style={{
+        marginLeft: 3
+      }}>
+        <Text style={{
+          color: colors.onSurface
+        }}>{title}</Text>
+        <Text style={{flex: 1, fontWeight: '500'}}>{contents}</Text>
+      </View>
     </View>
   )
 }
@@ -39,6 +55,7 @@ function LectureDetails({lecture}: LectureDetailsProps) {
   const {course, course_id, eventType, start_time, end_time, note, showLink, rooms, groups, lecturers, executionType, executionType_id, usersNote} = lecture
   const [customNote, setCustomNote] = useState<string>(usersNote ? usersNote.note : '')
   const [isEditing, setIsEditing] = useState(false)
+  const {colors} = useTheme()
 
   function updateCustomNote(newCustomNote: string) {
     setNoteForCourse(newCustomNote, course_id, executionType_id)
@@ -55,21 +72,29 @@ function LectureDetails({lecture}: LectureDetailsProps) {
     <View style={styles.container}>
       { !isEditing ? (
         <ScrollView>
-          <View style={styles.titleContainer}>
-            <Text style={styles.title}>{course ? course : eventType}</Text>
+          <View style={{
+            flex: 1,
+            flexDirection: 'row',
+            gap: 10,
+            justifyContent: 'center'
+          }}>
+            <Text style={styles.title}>{course ? course + course : eventType}</Text>
+            {executionType && <Badge>{executionType}</Badge>}
           </View>
-          <Divider style={styles.line}/>
           <View style={styles.contentsContainer}>
             <View style={styles.subtitle}>
               <Text>{`${getTimeFromDate(start_time)} - ${getTimeFromDate(end_time)}`}</Text>
-              {executionType && <Text>{executionType}</Text>}
+              
             </View>
-            <ContentCard Icon={DoorClosed} contents={formatArray(rooms, 'name')} />
-            <ContentCard Icon={UserGroup} contents={formatArray(groups, 'name')} />
-            <ContentCard Icon={GraduationCap} contents={formatArray(lecturers, 'name')} />
-            <ContentCard Icon={Info} contents={note} />
-            <ContentCard Icon={Link} contents={showLink} />
-            <ContentCard Icon={NotebookPen} contents={customNote} />
+            <ContentCard title="Rooms" Icon={DoorClosed} contents={formatArray(rooms, 'name')} />
+            <ContentCard title="Groups" Icon={UserGroup} contents={formatArray(groups, 'name')} />
+            <ContentCard title="Lecturers" Icon={GraduationCap} contents={formatArray(lecturers, 'name')} />
+            <ContentCard title="" Icon={Info} contents={note} />
+            <ContentCard title="Link" Icon={Link} contents={showLink} />
+            <View style={{flexDirection: 'row', flex: 1, justifyContent: 'center'}}>
+              <ContentCard title="My note" Icon={NotebookPen} contents={customNote !== '' ? customNote : 'No note added'} />
+              <IconButton icon={Pencil} iconColor={colors.onSurface} iconSize={20} onPress={() => setIsEditing(true)} mode="TRANSPARENT"  />
+            </View>
           </View>
         </ScrollView>
       ) : (
@@ -85,16 +110,13 @@ export default LectureDetails
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 10,
-    paddingTop: 20
-  },
-  titleContainer: {
-    //backgroundColor: COLORS.background.secondary
+    paddingTop: 20,
   },
   title: {
-    fontWeight: 'bold',
+    fontWeight: '800',
     textAlign: 'center',
     paddingVertical: 10,
-    fontSize: 18
+    fontSize: 22,
   },
   line: {
     marginVertical: 0
