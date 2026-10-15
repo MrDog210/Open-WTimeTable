@@ -57,7 +57,7 @@ function HourSlice({style, item, onPress, smallMode = false, animationsDisabled 
             <Text style={textSize}>{formatArray(lecturers, 'name')}</Text>
           </View>
           <View style={styles.bottomContainer}>
-            {usersNote && <Text style={[{/*color: COLORS.foreground.secondary,*/textAlign:'left'}, textSize]}>{usersNote.note}</Text>}
+            {usersNote && <Text style={[{/*color: COLORS.foreground.secondary,*/textAlign:'left', flex: 1}, textSize]}>{usersNote.note}</Text>}
             {colorText && <Text style={[{color: hexColor, textAlign:'right'}, textSize]}>{colorText}</Text>}
           </View>
       </Animated.View>
