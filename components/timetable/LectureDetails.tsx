@@ -20,33 +20,51 @@ type ContentCardProps = {
   contents?: string | null
 }
 
-function ContentCard({Icon, title, contents}: ContentCardProps) {
+function ContentCard({ Icon, title, contents }: ContentCardProps) {
   const { colors } = useTheme()
-  if(contents === null || contents === undefined || contents === '')
+
+  if (contents === null || contents === undefined || contents === '') {
     return <></>
+  }
 
   return (
-    <View style={{
-      flex: 1, 
-      flexDirection: 'row', 
-      marginVertical: 10, 
-      gap: 10, 
-      alignItems: 'center',
-    }}>
-      <View style={{
-        backgroundColor: colors.surfaceVariant,
-        padding: 10,
-        borderRadius: 8
-      }}>
+    <View
+      style={{
+        flexDirection: 'row',
+        marginVertical: 10,
+        gap: 10,
+        alignItems: 'center',
+      }}
+    >
+      <View
+        style={{
+          backgroundColor: colors.surfaceVariant,
+          padding: 10,
+          borderRadius: 8,
+        }}
+      >
         <Icon color={colors.onSurface} size={20} />
       </View>
-      <View style={{
-        marginLeft: 3
-      }}>
-        <Text style={{
-          color: colors.onSurface
-        }}>{title}</Text>
-        <Text style={{flex: 1, fontWeight: '500'}}>{contents}</Text>
+      <View
+        style={{
+          flex: 1,
+          minWidth: 0,
+          marginLeft: 3,
+        }}
+      >
+        {title !== '' && (
+          <Text style={{ color: colors.onSurface }}>
+            {title}
+          </Text>
+        )}
+        <Text
+          style={{
+            fontWeight: '500',
+            flexShrink: 1,
+          }}
+        >
+          {contents}
+        </Text>
       </View>
     </View>
   )
@@ -98,7 +116,9 @@ function LectureDetails({lecture}: LectureDetailsProps) {
             <ContentCard title="" Icon={Info} contents={note} />
             <ContentCard title="Link" Icon={Link} contents={showLink} />
             <View style={{flexDirection: 'row', flex: 1, justifyContent: 'center'}}>
-              <ContentCard title="My note" Icon={NotebookPen} contents={customNote !== '' ? customNote : 'No note added'} />
+              <View style={{flex: 1}}>
+                <ContentCard title="My note" Icon={NotebookPen} contents={customNote !== '' ? customNote : 'No note added'} />
+              </View>
               <IconButton icon={Pencil} iconColor={colors.onSurface} iconSize={20} onPress={() => setIsEditing(true)} mode="TRANSPARENT"  />
             </View>
           </View>

@@ -28,7 +28,6 @@ import { Calendar1, CalendarSearch, ChevronLeft, ChevronRight } from "lucide-rea
 import { scheduleOnRN } from 'react-native-worklets';
 import { isTimetableBackgroundTaskRegistered } from "../../util/tasks/updateTimetableTask";
 import { TrueSheet } from "@lodev09/react-native-true-sheet"
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type TimeTableScreenProps = StaticScreenProps<{
   isWeekView: boolean
