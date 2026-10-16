@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { StyleSheet, View } from 'react-native';
 import { WidgetPreview } from 'react-native-android-widget';
 import NextUpWidget from './NextUpWidget';
