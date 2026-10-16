@@ -15,6 +15,7 @@ function CourseGroupSelect({course, groups}: CourseGroupSelectProps) {
     const selectedGroupIds = groups
       .filter(group => group.selected)
       .map(group => group.id)
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setChosenGroupsID(selectedGroupIds)
   }, [groups])
 

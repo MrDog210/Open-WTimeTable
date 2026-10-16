@@ -65,6 +65,7 @@ function EditCustomLectureModal({customCourse = undefined, onCancelPressed, onCo
   }
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCourse(customCourse ? customCourse : DEFAULT_VALUES)
     syncDropdown()
   // eslint-disable-next-line react-hooks/exhaustive-deps
